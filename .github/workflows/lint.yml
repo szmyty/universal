@@ -28,6 +28,6 @@ jobs:
         run: pnpm install
 
       - name: Run MegaLinter
-        run: npx mega-linter-runner --install --path .
+        run: npx mega-linter-runner --path .
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
