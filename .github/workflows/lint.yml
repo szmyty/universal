@@ -1,0 +1,30 @@
+name: Mega Linter
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - develop
+  pull_request:
+
+jobs:
+  mega-linter:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: pnpm install # or npm install if not using pnpm
+
+      - name: Run MegaLinter
+        run: npx mega-linter-runner --install --reporter --path .
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
