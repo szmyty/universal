@@ -94,27 +94,27 @@ export default defineConfig({
         {
             name: "backend-terms",
             path: resolve(dictionariesDir, "backend-terms.dictionary"),
-            addWords: true,
+            addWords: false,
         },
         {
             name: "devops-cloud-terms",
             path: resolve(dictionariesDir, "devops-cloud-terms.dictionary"),
-            addWords: true,
+            addWords: false,
         },
         {
             name: "frontend-terms",
             path: resolve(dictionariesDir, "frontend-terms.dictionary"),
-            addWords: true,
+            addWords: false,
         },
         {
             name: "programming-terms",
             path: resolve(dictionariesDir, "programming-terms.dictionary"),
-            addWords: true,
+            addWords: false,
         },
         {
             name: "software-terms",
             path: resolve(dictionariesDir, "software-terms.dictionary"),
-            addWords: true,
+            addWords: false,
         },
     ],
     dictionaries: [

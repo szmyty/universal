@@ -1,4 +1,15 @@
 {
     "telemetry.feedback.enabled": false,
-    "emojisense.emojiDecoratorsEnabled": true
+    "emojisense.emojiDecoratorsEnabled": true,
+    "cSpell.enabled": true,
+    "cSpell.caseSensitive": false,
+    "cSpell.language": "en",
+    "cSpell.useLocallyInstalledCSpellDictionaries": true,
+    "cSpell.diagnosticLevelFlaggedWords": "Information",
+    "cSpell.hideAddToDictionaryCodeActions": false,
+    "cSpell.maxDuplicateProblems": 20,
+    "cSpell.mergeCSpellSettings": true,
+    "cSpell.useGitignore": true,
+    "cSpell.logFile": ".cache/cspell/cspell.log",
+    "cSpell.trustedWorkspace": true
 }
