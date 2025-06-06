@@ -12,11 +12,7 @@
     "cSpell.useGitignore": true,
     "cSpell.logFile": ".cache/cspell/cspell.log",
     "cSpell.trustedWorkspace": true,
-
-    // Enable format on save
     "editor.formatOnSave": true,
-
-    // Prettier as default formatter for key languages
     "[javascript]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },

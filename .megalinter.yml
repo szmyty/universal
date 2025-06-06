@@ -1,0 +1,65 @@
+# This is a configuration file for MegaLinter, a code quality tool.
+CONSOLE_REPORTER: true
+CONSOLE_REPORTER_SECTIONS: true
+
+CONFIG_REPORTER: true
+CONFIG_REPORTER_SUB_FOLDER: IDE-config
+
+GITHUB_COMMENT_REPORTER: true
+GITHUB_STATUS_REPORTER: true
+CLEAR_REPORT_FOLDER: true
+
+JSON_REPORTER: true
+JSON_REPORTER_OUTPUT_DETAIL: detailed
+
+LOG_FILE: mega-linter.log
+LOG_LEVEL: INFO
+
+MARKDOWN_SUMMARY_REPORTER: true
+MARKDOWN_SUMMARY_REPORTER_FILE_NAME: SUMMARY.md
+
+REPORTERS_MARKDOWN_TYPE: advanced
+REPORT_OUTPUT_FOLDER: reports/megalinter
+
+COPYPASTE_JSCPD_CONFIG_FILE: .jscpd.json
+
+TAP_REPORTER: true
+TAP_REPORTER_SUB_FOLDER: tap
+
+TEXT_REPORTER: true
+TEXT_REPORTER_SUB_FOLDER: linters_logs
+
+SPELL_CSPELL_CONFIG_FILE: cspell.config.mjs
+
+IGNORE_GITIGNORED_FILES: true
+
+JAVASCRIPT_PRETTIER_CONFIG_FILE: .prettier.config.mjs
+JSON_PRETTIER_CONFIG_FILE: .prettier.config.mjs
+TYPESCRIPT_PRETTIER_CONFIG_FILE: .prettier.config.mjs
+YAML_PRETTIER_CONFIG_FILE: .prettier.config.mjs
+
+DISABLE_LINTERS:
+  - REPOSITORY_DEVSKIM
+
+EXCLUDED_DIRECTORIES:
+  - node_modules
+  - .git
+  - .idea
+  - reports
+  - dist
+  - build
+  - coverage
+  - .history
+  - .cache
+  - .next
+  - .nuxt
+  - .vercel
+  - .output
+  - venv
+  - .venv
+  - .history
+  - .pytest_cache
+  - .mypy_cache
+  - .ruff_cache
+
+SHOW_ELAPSED_TIME: true

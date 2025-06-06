@@ -1,14 +1,12 @@
 version: "3"
 tasks:
-  dev:
-    cmds: ["pnpm run dev"]
-  build:
-    cmds: ["pnpm run build"]
-  test:
-    cmds: ["pnpm run test"]
   lint:spellcheck:
     cmds: ["pnpm run lint:spellcheck"]
   format:check:
     cmds: ["pnpm run format:check"]
   format:
     cmds: ["pnpm run format"]
+  lint:check:
+    cmds: ["pnpm run lint:check"]
+  lint:copypaste:
+    cmds: ["pnpm run lint:copypaste"]
