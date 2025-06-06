@@ -1,6 +1,6 @@
-import { defineConfig } from 'cspell';
-import { dirname, resolve, relative } from 'path';
-import { fileURLToPath } from 'url';
+import { defineConfig } from "cspell";
+import { dirname, resolve, relative } from "path";
+import { fileURLToPath } from "url";
 
 // Timestamp for unique report filenames
 const utcTimestamp = Math.floor(Date.now() / 1000);
@@ -15,21 +15,28 @@ function getProjectRoot() {
 console.log(`Project root directory: ${getProjectRoot()}`);
 
 // Directory where custom dictionaries are stored
-const dictionariesDir = resolve(getProjectRoot(), '.vscode/dictionaries');
+const dictionariesDir = resolve(getProjectRoot(), ".vscode/dictionaries");
 console.log(`Dictionaries directory: ${dictionariesDir}`);
 
 // Directory where reports will be saved
-const reportsDir = relative(process.cwd(), resolve(getProjectRoot(), 'reports/cspell'));
+const reportsDir = relative(
+    process.cwd(),
+    resolve(getProjectRoot(), "reports/cspell"),
+);
 console.log(`Reports directory: ${reportsDir}`);
 
 // Directory where cache will be stored
-const cacheDir = resolve(getProjectRoot(), '.cache/cspell');
+const cacheDir = resolve(getProjectRoot(), ".cache/cspell");
 console.log(`Cache directory: ${cacheDir}`);
 
 // Define the CSpell configuration
+/**
+ *  @type { import('cspell').CSpellSettings }
+ */
 export default defineConfig({
-    $schema: "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
-    version: '0.2',
+    $schema:
+        "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
+    version: "0.2",
     language: "en",
     name: "Project CSpell Configuration",
     description: "CSpell configuration for the project",
@@ -37,50 +44,52 @@ export default defineConfig({
     allowCompoundWords: false,
     caseSensitive: false,
     userWords: ["cspell"],
-    globRoot: '.',
+    globRoot: ".",
     files: [
-        "src/**/*.{ts,tsx,js,jsx,vue}",      // Frontend source
-        "scripts/**/*.{ts,js,sh}",           // Utility scripts
-        "tests/**/*.{ts,tsx,js,jsx}",        // Tests
-        "**/*.{md,markdown}",                // Markdown
-        "**/*.{json,yaml,yml}",              // Config files
-        "**/*.{html,css,scss,less}",         // Web styles/templates
-        ".github/**/*.{yml,yaml}",           // GitHub Actions
-        "*.{md,json,yml}",                   // Root files
+        "src/**/*.{ts,tsx,js,jsx,vue}", // Frontend source
+        "scripts/**/*.{ts,js,sh}", // Utility scripts
+        "tests/**/*.{ts,tsx,js,jsx}", // Tests
+        "**/*.{md,markdown}", // Markdown
+        "**/*.{json,yaml,yml}", // Config files
+        "**/*.{html,css,scss,less}", // Web styles/templates
+        ".github/**/*.{yml,yaml}", // GitHub Actions
+        "*.{md,json,yml}", // Root files
     ],
     enableGlobDot: true,
     ignorePaths: [
         `${dictionariesDir}/**/*.dictionary`, // Ignore custom dictionaries
-        '/backend-terms.txt',
-        '**/node_modules/**',
-        '**/dist/**',
-        '**/build/**',
-        '**/.next/**',
-        '**/.vercel/**',
-        '**/.turbo/**',
-        '**/coverage/**',
-        '**/out/**',
-        '**/tmp/**',
-        '**/temp/**',
-        '**/logs/**',
-        '**/log/**',
-        '**/vendor/**',
-        '**/bower_components/**',
+        "/backend-terms.txt",
+        "**/node_modules/**",
+        "**/dist/**",
+        "**/build/**",
+        "**/.next/**",
+        "**/.vercel/**",
+        "**/.turbo/**",
+        "**/coverage/**",
+        "**/out/**",
+        "**/tmp/**",
+        "**/temp/**",
+        "**/logs/**",
+        "**/log/**",
+        "**/vendor/**",
+        "**/bower_components/**",
         "**/pnpm-lock.yaml",
         "**/yarn.lock",
         "**/package-lock.json",
         "**/.cache/**",
         "**/reports/**",
+        "**/.vscode/**",
     ],
     noConfigSearch: true,
     readonly: false,
     reporters: [
-        'default',
+        "default",
         [
-            "@cspell/cspell-json-reporter", {
-                "outFile": `${reportsDir}/cspell-report-${utcTimestamp}.json`
-            }
-        ]
+            "@cspell/cspell-json-reporter",
+            {
+                outFile: `${reportsDir}/cspell-report-${utcTimestamp}.json`,
+            },
+        ],
     ],
     useGitignore: true,
     gitignoreRoot: [],
@@ -123,13 +132,13 @@ export default defineConfig({
         "devops-cloud-terms",
         "frontend-terms",
         "programming-terms",
-        "software-terms"
+        "software-terms",
     ],
     cache: {
         useCache: true,
         cacheLocation: cacheDir,
         cacheStrategy: "content",
-        cacheFormat: "universal"
+        cacheFormat: "universal",
     },
     failFast: true,
     loadDefaultConfiguration: true,

@@ -1,11 +1,14 @@
 {
-  "name": "universal-devtools",
-  "private": true,
-  "packageManager": "pnpm@9.15.4",
-  "scripts": {
-    "lint:spellcheck": "cspell --config .cspell.config.mjs"
-  },
-  "devDependencies": {
-    "cspell": "^9.0.2"
-  }
+    "name": "universal-devtools",
+    "private": true,
+    "packageManager": "pnpm@9.15.4",
+    "scripts": {
+        "format": "prettier --config .prettier.config.mjs --write .",
+        "format:check": "prettier --config .prettier.config.mjs --check .",
+        "lint:spellcheck": "cspell --config .cspell.config.mjs"
+    },
+    "devDependencies": {
+        "cspell": "^9.0.2",
+        "prettier": "^3.5.3"
+    }
 }

@@ -1,0 +1,35 @@
+{
+    "issues": [
+        {
+            "text": "esbenp",
+            "offset": 122,
+            "line": {
+                "text": "        \"esbenp.prettier-vscode\"\n",
+                "offset": 113
+            },
+            "length": 6,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 5,
+            "col": 10,
+            "uri": "file:///Users/szmyty/.files/src/repos/universal/.vscode/extensions.json",
+            "context": {
+                "text": "        \"esbenp.prettier-vscode\"",
+                "offset": 113
+            }
+        }
+    ],
+    "info": [],
+    "debug": [],
+    "error": [],
+    "progress": [],
+    "result": {
+        "files": 1,
+        "filesWithIssues": [
+            "/Users/szmyty/.files/src/repos/universal/.vscode/extensions.json"
+        ],
+        "issues": 1,
+        "errors": 0,
+        "cachedFiles": 0
+    }
+}
