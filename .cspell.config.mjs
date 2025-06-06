@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 // Timestamp for unique report filenames
 const utcTimestamp = Math.floor(Date.now() / 1000);
 
+// Get the project root directory
 function getProjectRoot() {
     // __dirname is not available in ES modules, so use fileURLToPath
     const currentFile = fileURLToPath(import.meta.url);
@@ -12,8 +13,16 @@ function getProjectRoot() {
     return dirname(currentFile);
 }
 
+// Directory where custom dictionaries are stored
 const dictionariesDir = resolve(getProjectRoot(), '.vscode/dictionaries');
 
+// Directory where reports will be saved
+const reportsDir = resolve(getProjectRoot(), 'reports/cspell');
+
+// Directory where cache will be stored
+const cacheDir = resolve(getProjectRoot(), '.cache/cspell');
+
+// Define the CSpell configuration
 export default defineConfig({
     $schema: "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
     version: '0.2',
@@ -37,7 +46,8 @@ export default defineConfig({
     ],
     enableGlobDot: true,
     ignorePaths: [
-        '/project-words.txt',
+        `${dictionariesDir}/**/*.dictionary`, // Ignore custom dictionaries
+        '/backend-terms.txt',
         '**/node_modules/**',
         '**/dist/**',
         '**/build/**',
@@ -59,7 +69,7 @@ export default defineConfig({
     reporters: [
         [
             "@cspell/cspell-json-reporter", {
-                "outFile": `reports/cspell/cspell-report-${utcTimestamp}.json`
+                "outFile": `${reportsDir}/cspell-report-${utcTimestamp}.json`
             }
         ]
     ],
@@ -75,27 +85,27 @@ export default defineConfig({
         {
             name: "backend-terms",
             path: resolve(dictionariesDir, "backend-terms.dictionary"),
-            addWords: false,
+            addWords: true,
         },
         {
             name: "devops-cloud-terms",
             path: resolve(dictionariesDir, "devops-cloud-terms.dictionary"),
-            addWords: false,
+            addWords: true,
         },
         {
             name: "frontend-terms",
             path: resolve(dictionariesDir, "frontend-terms.dictionary"),
-            addWords: false,
+            addWords: true,
         },
         {
             name: "programming-terms",
             path: resolve(dictionariesDir, "programming-terms.dictionary"),
-            addWords: false,
+            addWords: true,
         },
         {
             name: "software-terms",
             path: resolve(dictionariesDir, "software-terms.dictionary"),
-            addWords: false,
+            addWords: true,
         },
     ],
     dictionaries: [
@@ -108,7 +118,7 @@ export default defineConfig({
     ],
     cache: {
         useCache: true,
-        cacheLocation: "./.cache/cspell",
+        cacheLocation: cacheDir,
         cacheStrategy: "content",
         cacheFormat: "universal"
     },
