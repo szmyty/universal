@@ -1,21 +1,9 @@
 {
   "statistics": {
-    "detectionDate": "2025-06-06T20:34:54.539Z",
+    "detectionDate": "2025-06-06T20:53:49.549Z",
     "formats": {
       "json": {
         "sources": {
-          "/tmp/lint/.vscode/tasks.json": {
-            "lines": 3,
-            "tokens": 23,
-            "sources": 1,
-            "clones": 0,
-            "duplicatedLines": 0,
-            "duplicatedTokens": 0,
-            "percentage": 0,
-            "percentageTokens": 0,
-            "newDuplicatedLines": 0,
-            "newClones": 0
-          },
           "/tmp/lint/.vscode/settings.json": {
             "lines": 36,
             "tokens": 211,
@@ -52,6 +40,18 @@
             "newDuplicatedLines": 0,
             "newClones": 0
           },
+          "/tmp/lint/.kics.config.json": {
+            "lines": 6,
+            "tokens": 41,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
           "/tmp/lint/.jscpd.json": {
             "lines": 12,
             "tokens": 72,
@@ -66,8 +66,8 @@
           }
         },
         "total": {
-          "lines": 78,
-          "tokens": 459,
+          "lines": 81,
+          "tokens": 477,
           "sources": 5,
           "clones": 0,
           "duplicatedLines": 0,
@@ -81,8 +81,8 @@
       "yaml": {
         "sources": {
           "/tmp/lint/Taskfile.yml": {
-            "lines": 17,
-            "tokens": 102,
+            "lines": 11,
+            "tokens": 66,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -93,8 +93,8 @@
             "newClones": 0
           },
           "/tmp/lint/.megalinter.yml": {
-            "lines": 62,
-            "tokens": 254,
+            "lines": 72,
+            "tokens": 296,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -106,8 +106,8 @@
           }
         },
         "total": {
-          "lines": 79,
-          "tokens": 356,
+          "lines": 83,
+          "tokens": 362,
           "sources": 2,
           "clones": 0,
           "duplicatedLines": 0,
@@ -188,8 +188,8 @@
       }
     },
     "total": {
-      "lines": 372,
-      "tokens": 2103,
+      "lines": 379,
+      "tokens": 2127,
       "sources": 10,
       "clones": 0,
       "duplicatedLines": 0,

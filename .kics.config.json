@@ -1,0 +1,7 @@
+{
+    "path": ".",
+    "verbose": true,
+    "log-file": true,
+    "exclude-paths": ["reports/", ".history/"],
+    "output-path": "reports/kics"
+}
