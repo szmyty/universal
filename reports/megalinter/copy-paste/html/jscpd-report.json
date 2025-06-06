@@ -1,7 +1,59 @@
 {
   "statistics": {
-    "detectionDate": "2025-06-06T20:53:49.549Z",
+    "detectionDate": "2025-06-06T21:15:15.301Z",
     "formats": {
+      "yaml": {
+        "sources": {
+          "/tmp/lint/.github/workflows/lint.yml": {
+            "lines": 34,
+            "tokens": 200,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/tmp/lint/Taskfile.yml": {
+            "lines": 11,
+            "tokens": 66,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/tmp/lint/.megalinter.yml": {
+            "lines": 72,
+            "tokens": 296,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          }
+        },
+        "total": {
+          "lines": 117,
+          "tokens": 562,
+          "sources": 3,
+          "clones": 0,
+          "duplicatedLines": 0,
+          "duplicatedTokens": 0,
+          "percentage": 0,
+          "percentageTokens": 0,
+          "newDuplicatedLines": 0,
+          "newClones": 0
+        }
+      },
       "json": {
         "sources": {
           "/tmp/lint/.vscode/settings.json": {
@@ -17,8 +69,8 @@
             "newClones": 0
           },
           "/tmp/lint/.vscode/extensions.json": {
-            "lines": 6,
-            "tokens": 22,
+            "lines": 7,
+            "tokens": 26,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -66,49 +118,9 @@
           }
         },
         "total": {
-          "lines": 81,
-          "tokens": 477,
+          "lines": 82,
+          "tokens": 481,
           "sources": 5,
-          "clones": 0,
-          "duplicatedLines": 0,
-          "duplicatedTokens": 0,
-          "percentage": 0,
-          "percentageTokens": 0,
-          "newDuplicatedLines": 0,
-          "newClones": 0
-        }
-      },
-      "yaml": {
-        "sources": {
-          "/tmp/lint/Taskfile.yml": {
-            "lines": 11,
-            "tokens": 66,
-            "sources": 1,
-            "clones": 0,
-            "duplicatedLines": 0,
-            "duplicatedTokens": 0,
-            "percentage": 0,
-            "percentageTokens": 0,
-            "newDuplicatedLines": 0,
-            "newClones": 0
-          },
-          "/tmp/lint/.megalinter.yml": {
-            "lines": 72,
-            "tokens": 296,
-            "sources": 1,
-            "clones": 0,
-            "duplicatedLines": 0,
-            "duplicatedTokens": 0,
-            "percentage": 0,
-            "percentageTokens": 0,
-            "newDuplicatedLines": 0,
-            "newClones": 0
-          }
-        },
-        "total": {
-          "lines": 83,
-          "tokens": 362,
-          "sources": 2,
           "clones": 0,
           "duplicatedLines": 0,
           "duplicatedTokens": 0,
@@ -188,9 +200,9 @@
       }
     },
     "total": {
-      "lines": 379,
-      "tokens": 2127,
-      "sources": 10,
+      "lines": 414,
+      "tokens": 2331,
+      "sources": 11,
       "clones": 0,
       "duplicatedLines": 0,
       "duplicatedTokens": 0,
