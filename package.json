@@ -3,9 +3,9 @@
   "private": true,
   "packageManager": "pnpm@9.15.4",
   "scripts": {
-    "cspell": "cspell \"**\""
+    "lint:spellcheck": "cspell --config .cspell.config.mjs"
   },
   "devDependencies": {
-    "cspell": "^6.0.0"
+    "cspell": "^9.0.2"
   }
 }

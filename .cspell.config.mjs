@@ -1,5 +1,5 @@
 import { defineConfig } from 'cspell';
-import { dirname, resolve } from 'path';
+import { dirname, resolve, relative } from 'path';
 import { fileURLToPath } from 'url';
 
 // Timestamp for unique report filenames
@@ -12,15 +12,19 @@ function getProjectRoot() {
     // The config file is at the project root
     return dirname(currentFile);
 }
+console.log(`Project root directory: ${getProjectRoot()}`);
 
 // Directory where custom dictionaries are stored
 const dictionariesDir = resolve(getProjectRoot(), '.vscode/dictionaries');
+console.log(`Dictionaries directory: ${dictionariesDir}`);
 
 // Directory where reports will be saved
-const reportsDir = resolve(getProjectRoot(), 'reports/cspell');
+const reportsDir = relative(process.cwd(), resolve(getProjectRoot(), 'reports/cspell'));
+console.log(`Reports directory: ${reportsDir}`);
 
 // Directory where cache will be stored
 const cacheDir = resolve(getProjectRoot(), '.cache/cspell');
+console.log(`Cache directory: ${cacheDir}`);
 
 // Define the CSpell configuration
 export default defineConfig({
@@ -62,11 +66,16 @@ export default defineConfig({
         '**/log/**',
         '**/vendor/**',
         '**/bower_components/**',
-        "**/pnpm-lock.yaml"
+        "**/pnpm-lock.yaml",
+        "**/yarn.lock",
+        "**/package-lock.json",
+        "**/.cache/**",
+        "**/reports/**",
     ],
     noConfigSearch: true,
     readonly: false,
     reporters: [
+        'default',
         [
             "@cspell/cspell-json-reporter", {
                 "outFile": `${reportsDir}/cspell-report-${utcTimestamp}.json`
