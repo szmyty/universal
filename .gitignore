@@ -32,3 +32,4 @@
 **/*.bak
 **/*.swp
 **/Thumbs.db
+pnpm-lock.yaml
