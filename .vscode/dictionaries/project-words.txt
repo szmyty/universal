@@ -1,0 +1,12 @@
+autopep
+Buildx
+dbaeumer
+devcontainer
+devcontainers
+moby
+ossdata
+pgsql
+pylance
+tamasfe
+devnet
+preconfigured

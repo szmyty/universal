@@ -1,0 +1,34 @@
+# .gitignore
+# This file specifies the files and directories that should be ignored by Git.
+# It helps to keep your repository clean by excluding files that are generated
+# automatically or are specific to your local environment.
+
+# Visual Studio Code configuration files
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-workspace
+!.vscode/dictionaries
+
+**/.history
+**/.cache
+**/.DS_Store
+**/node_modules
+**/dist
+**/build
+**/coverage
+**/logs
+**/temp
+**/tmp
+**/out
+**/debug
+**/release
+**/vendor
+**/bower_components
+**/*.log
+**/*.tmp
+**/*.bak
+**/*.swp
+**/Thumbs.db
