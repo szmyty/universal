@@ -17,4 +17,3 @@ Run the spell checker:
 ```sh
 pnpm cspell
 ```
-

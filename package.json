@@ -9,6 +9,8 @@
     },
     "devDependencies": {
         "cspell": "^9.0.2",
-        "prettier": "^3.5.3"
+        "prettier": "^3.5.3",
+        "prettier-plugin-pkg": "^0.20.0",
+        "prettier-plugin-sh": "^0.17.4"
     }
 }

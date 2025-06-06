@@ -32,6 +32,7 @@ console.log(`Cache directory: ${cacheDir}`);
 // Define the CSpell configuration
 /**
  *  @type { import('cspell').CSpellSettings }
+ *  @see https://cspell.org/docs/Configuration/properties
  */
 export default defineConfig({
     $schema:
