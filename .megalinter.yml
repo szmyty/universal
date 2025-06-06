@@ -49,6 +49,7 @@ EXCLUDED_DIRECTORIES:
   - .idea
   - reports
   - dist
+  - logs
   - build
   - coverage
   - .history

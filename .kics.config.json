@@ -2,6 +2,7 @@
     "path": ".",
     "verbose": true,
     "log-file": true,
+    "log-path": "logs/kics.log",
     "exclude-paths": ["reports/", ".history/"],
     "output-path": "reports/kics"
 }
