@@ -1,0 +1,53 @@
+name: Update Project Tree
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+permissions:
+  contents: write
+
+jobs:
+  generate-tree-doc:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install --yes tree
+
+      - name: Generate docs/tree.md
+        run: |
+          mkdir -p docs
+          {
+            echo '# Project Structure'
+            echo ''
+            echo '```'
+            git ls-tree -r --name-only HEAD \
+              | grep -vE '^reports/' \
+              | tree --fromfile
+            echo '```'
+          } > docs/tree.md
+
+      - name: Auto-commit updated tree.md
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: update project structure tree"
+          branch: ${{ github.ref_name }}
+          commit_options: "--no-verify"
+          file_pattern: docs/tree.md
+          repository: .
+          status_options: "--untracked-files=no"
+          push_options: ""
+          skip_dirty_check: false
+          skip_fetch: true
+          skip_checkout: true
+          disable_globbing: false
+          create_branch: false
+          create_git_tag_only: false
