@@ -16,6 +16,7 @@
 ├── .kics.config.json
 ├── .mailmap
 ├── .megalinter.yml
+├── .pre-commit-config.yaml
 ├── .prettier.config.mjs
 ├── .prettierignore
 ├── .vscode
@@ -41,6 +42,7 @@
 │   └── tree.md
 ├── package.json
 ├── pnpm-workspace.yaml
+├── poetry.lock
 ├── poetry.toml
 ├── pyproject.toml
 ├── services
@@ -49,5 +51,5 @@
 │       └── README.md
 └── universal.code-workspace
 
-10 directories, 37 files
+10 directories, 39 files
 ```
