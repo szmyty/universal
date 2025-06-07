@@ -51,16 +51,19 @@ tasks:
     silent: true
 
   hooks:install:
-    desc: Install pre-commit hooks
+    desc: Install pre-commit hooks (inside Poetry venv)
     cmds:
-      - pre-commit install
+      - poetry run pre-commit install
+    silent: true
 
   hooks:run:
-    desc: Run all pre-commit hooks manually against all files
+    desc: Run all pre-commit hooks on all files (Poetry)
     cmds:
-      - pre-commit run --all-files
+      - poetry run pre-commit run --all-files
+    silent: true
 
   hooks:ci:
-    desc: Run pre-commit checks without installing (CI-safe)
+    desc: CI-safe pre-commit hook run (Poetry, no install)
     cmds:
-      - pre-commit run --all-files --show-diff-on-failure --color always
+      - poetry run pre-commit run --all-files --show-diff-on-failure --color always
+    silent: true
