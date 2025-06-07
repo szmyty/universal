@@ -16,8 +16,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref }}
 
       - name: Install dependencies
         run: sudo apt-get update && sudo apt-get install --yes tree
@@ -39,7 +37,6 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chore: update project structure tree"
-          branch: ${{ github.ref_name }}
           commit_options: "--no-verify"
           file_pattern: docs/tree.md
           repository: .
