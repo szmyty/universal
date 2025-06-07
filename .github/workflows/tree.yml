@@ -23,7 +23,7 @@ jobs:
           {
             echo '# Project Structure'
             echo ''
-            echo '```'
+            echo '```text'
             git ls-tree -r --name-only HEAD \
               | grep -vE '^reports/' \
               | tree --fromfile

@@ -1,0 +1,4 @@
+fileignoreconfig:
+    - filename: reports/talisman/talisman_reports/data/report.json
+      checksum: 28a3377d4525be7617888e109f295fae5908cb4421f7beaf97295033b2ba7b90
+version: "1.0"

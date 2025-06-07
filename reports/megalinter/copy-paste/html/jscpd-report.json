@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2025-06-07T18:52:26.736Z",
+    "detectionDate": "2025-06-07T23:40:54.377Z",
     "formats": {
       "yaml": {
         "sources": {
@@ -41,8 +41,20 @@
             "newClones": 0
           },
           "/tmp/lint/Taskfile.yml": {
-            "lines": 50,
-            "tokens": 249,
+            "lines": 80,
+            "tokens": 518,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/tmp/lint/.pre-commit-config.yaml": {
+            "lines": 53,
+            "tokens": 335,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -66,9 +78,49 @@
           }
         },
         "total": {
-          "lines": 218,
-          "tokens": 1050,
-          "sources": 5,
+          "lines": 301,
+          "tokens": 1654,
+          "sources": 6,
+          "clones": 0,
+          "duplicatedLines": 0,
+          "duplicatedTokens": 0,
+          "percentage": 0,
+          "percentageTokens": 0,
+          "newDuplicatedLines": 0,
+          "newClones": 0
+        }
+      },
+      "markdown": {
+        "sources": {
+          "/tmp/lint/docs/tree.md": {
+            "lines": 50,
+            "tokens": 253,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/tmp/lint/README.md": {
+            "lines": 22,
+            "tokens": 109,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          }
+        },
+        "total": {
+          "lines": 72,
+          "tokens": 362,
+          "sources": 2,
           "clones": 0,
           "duplicatedLines": 0,
           "duplicatedTokens": 0,
@@ -81,8 +133,8 @@
       "json": {
         "sources": {
           "/tmp/lint/.vscode/settings.json": {
-            "lines": 36,
-            "tokens": 211,
+            "lines": 43,
+            "tokens": 255,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -129,36 +181,8 @@
             "newClones": 0
           },
           "/tmp/lint/.jscpd.json": {
-            "lines": 13,
-            "tokens": 76,
-            "sources": 1,
-            "clones": 0,
-            "duplicatedLines": 0,
-            "duplicatedTokens": 0,
-            "percentage": 0,
-            "percentageTokens": 0,
-            "newDuplicatedLines": 0,
-            "newClones": 0
-          }
-        },
-        "total": {
-          "lines": 86,
-          "tokens": 500,
-          "sources": 5,
-          "clones": 0,
-          "duplicatedLines": 0,
-          "duplicatedTokens": 0,
-          "percentage": 0,
-          "percentageTokens": 0,
-          "newDuplicatedLines": 0,
-          "newClones": 0
-        }
-      },
-      "markdown": {
-        "sources": {
-          "/tmp/lint/README.md": {
             "lines": 16,
-            "tokens": 83,
+            "tokens": 88,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -170,9 +194,9 @@
           }
         },
         "total": {
-          "lines": 16,
-          "tokens": 83,
-          "sources": 1,
+          "lines": 96,
+          "tokens": 556,
+          "sources": 5,
           "clones": 0,
           "duplicatedLines": 0,
           "duplicatedTokens": 0,
@@ -224,9 +248,9 @@
       }
     },
     "total": {
-      "lines": 519,
-      "tokens": 2838,
-      "sources": 13,
+      "lines": 668,
+      "tokens": 3777,
+      "sources": 15,
       "clones": 0,
       "duplicatedLines": 0,
       "duplicatedTokens": 0,

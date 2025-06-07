@@ -6,7 +6,10 @@
         "**/node_modules/**",
         "**/.history/**",
         "**/reports/**",
-        "**/logs/**"
+        "**/logs/**",
+        "**/coverage/**",
+        "**/venv/**",
+        "**/.venv/**"
     ],
     "absolute": true,
     "gitignore": true,

@@ -73,3 +73,9 @@ tasks:
     cmds:
       - poetry run pre-commit autoupdate
     silent: true
+
+  security:talisman:
+    desc: Run Talisman security checks
+    cmds:
+      - talisman --scan --loglevel warn --reportDirectory reports/talisman
+    silent: true
