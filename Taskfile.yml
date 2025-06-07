@@ -7,26 +7,36 @@ vars:
     sh: uname -s
 
 tasks:
+  lint:
+    desc: Run MegaLinter with auto-fix
+    cmds: ["pnpm run lint"]
+
+  lint:check:
+    desc: Run MegaLinter without auto-fix
+    cmds: ["pnpm run lint:check"]
+
+  secrets:
+    desc: Scan for secrets using gitleaks
+    cmds:
+      - gitleaks detect --source . --config=.gitleaks.toml --redact
+
   lint:spellcheck:
     cmds: ["pnpm run lint:spellcheck"]
+
   format:check:
     cmds: ["pnpm run format:check"]
+
   format:
     cmds: ["pnpm run format"]
-  lint:check:
-    cmds: ["pnpm run lint:check"]
+
   lint:copypaste:
     cmds: ["pnpm run lint:copypaste"]
-  uniq:
-    vars:
-      NUMBERS: "0,1,1,1,2,2,3"
-    cmds:
-      - 'echo {{splitList "," .NUMBERS | uniq | join ", " }}!'
-    silent: true
+
   os:
     cmds:
       - 'echo "Running on {{OS}}/{{ARCH}}"'
     silent: true
+
   act:sanity:
     desc: Run act with correct container arch for Apple Silicon
     cmds:

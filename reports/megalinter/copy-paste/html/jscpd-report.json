@@ -1,9 +1,33 @@
 {
   "statistics": {
-    "detectionDate": "2025-06-06T21:15:15.301Z",
+    "detectionDate": "2025-06-07T18:52:26.736Z",
     "formats": {
       "yaml": {
         "sources": {
+          "/tmp/lint/.github/workflows/tree.yml": {
+            "lines": 46,
+            "tokens": 206,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/tmp/lint/.github/workflows/sanity.yml": {
+            "lines": 15,
+            "tokens": 94,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
           "/tmp/lint/.github/workflows/lint.yml": {
             "lines": 34,
             "tokens": 200,
@@ -17,8 +41,8 @@
             "newClones": 0
           },
           "/tmp/lint/Taskfile.yml": {
-            "lines": 11,
-            "tokens": 66,
+            "lines": 50,
+            "tokens": 249,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -29,8 +53,8 @@
             "newClones": 0
           },
           "/tmp/lint/.megalinter.yml": {
-            "lines": 72,
-            "tokens": 296,
+            "lines": 73,
+            "tokens": 301,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -42,9 +66,9 @@
           }
         },
         "total": {
-          "lines": 117,
-          "tokens": 562,
-          "sources": 3,
+          "lines": 218,
+          "tokens": 1050,
+          "sources": 5,
           "clones": 0,
           "duplicatedLines": 0,
           "duplicatedTokens": 0,
@@ -69,8 +93,8 @@
             "newClones": 0
           },
           "/tmp/lint/.vscode/extensions.json": {
-            "lines": 7,
-            "tokens": 26,
+            "lines": 9,
+            "tokens": 34,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -93,8 +117,8 @@
             "newClones": 0
           },
           "/tmp/lint/.kics.config.json": {
-            "lines": 6,
-            "tokens": 41,
+            "lines": 7,
+            "tokens": 48,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -105,8 +129,8 @@
             "newClones": 0
           },
           "/tmp/lint/.jscpd.json": {
-            "lines": 12,
-            "tokens": 72,
+            "lines": 13,
+            "tokens": 76,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -118,8 +142,8 @@
           }
         },
         "total": {
-          "lines": 82,
-          "tokens": 481,
+          "lines": 86,
+          "tokens": 500,
           "sources": 5,
           "clones": 0,
           "duplicatedLines": 0,
@@ -200,9 +224,9 @@
       }
     },
     "total": {
-      "lines": 414,
-      "tokens": 2331,
-      "sources": 11,
+      "lines": 519,
+      "tokens": 2838,
+      "sources": 13,
       "clones": 0,
       "duplicatedLines": 0,
       "duplicatedTokens": 0,

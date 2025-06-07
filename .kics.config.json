@@ -1,6 +1,6 @@
 {
     "path": ".",
-    "verbose": true,
+    "verbose": false,
     "log-file": true,
     "log-path": "logs/kics.log",
     "exclude-paths": ["reports/", ".history/"],

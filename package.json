@@ -7,7 +7,7 @@
         "format": "prettier --config .prettier.config.mjs --write .",
         "format:check": "prettier --config .prettier.config.mjs --check .",
         "lint:spellcheck": "cspell --config .cspell.config.mjs",
-        "lint": "mega-linter-runner --config .mega-linter.yml --fix --path .",
+        "lint": "mega-linter-runner --fix --path .",
         "lint:check": "mega-linter-runner --path .",
         "lint:copypaste": "jscpd --config .jscpd.json"
     },
