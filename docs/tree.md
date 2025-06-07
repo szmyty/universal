@@ -41,11 +41,13 @@
 │   └── tree.md
 ├── package.json
 ├── pnpm-workspace.yaml
+├── poetry.toml
+├── pyproject.toml
 ├── services
 │   ├── README.md
 │   └── api
 │       └── README.md
 └── universal.code-workspace
 
-10 directories, 35 files
+10 directories, 37 files
 ```
