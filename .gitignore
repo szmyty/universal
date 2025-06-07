@@ -33,3 +33,5 @@
 **/*.swp
 **/Thumbs.db
 pnpm-lock.yaml
+**/.venv
+**/venv

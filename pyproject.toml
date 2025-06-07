@@ -14,7 +14,6 @@ python = "^3.12"
 pre-commit = "^4.2.0"
 pre-commit-hooks = "^5.0.0"
 
-
 [build-system]
 requires = ["poetry-core>=1.5"]
 build-backend = "poetry.core.masonry.api"

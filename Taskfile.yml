@@ -67,3 +67,9 @@ tasks:
     cmds:
       - poetry run pre-commit run --all-files --show-diff-on-failure --color always
     silent: true
+
+  hooks:autoupdate:
+    desc: Update pre-commit hooks to latest versions
+    cmds:
+      - poetry run pre-commit autoupdate
+    silent: true

@@ -46,3 +46,9 @@ repos:
         name: "🧹 fs · Trim trailing whitespace"
       - id: end-of-file-fixer
         name: "🧹 fs · Ensure newline at EOF"
+
+  - repo: https://github.com/thoughtworks/talisman
+    rev: v1.37.0
+    hooks:
+      - id: talisman-commit
+      - id: talisman-push
