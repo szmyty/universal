@@ -6,10 +6,16 @@ Currently the workspace includes the [cspell](https://github.com/streetsidesoftw
 
 ## Usage
 
-Install the dev tools:
+Install the Node.js dev tools:
 
 ```sh
 pnpm install
+```
+
+Install the Python dev tools:
+
+```sh
+poetry install --with dev
 ```
 
 Run the spell checker:
