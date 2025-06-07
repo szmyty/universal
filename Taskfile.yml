@@ -1,4 +1,11 @@
 version: "3"
+
+vars:
+  ARCH:
+    sh: uname -m
+  PLATFORM:
+    sh: uname -s
+
 tasks:
   lint:spellcheck:
     cmds: ["pnpm run lint:spellcheck"]
@@ -10,3 +17,25 @@ tasks:
     cmds: ["pnpm run lint:check"]
   lint:copypaste:
     cmds: ["pnpm run lint:copypaste"]
+  uniq:
+    vars:
+      NUMBERS: "0,1,1,1,2,2,3"
+    cmds:
+      - 'echo {{splitList "," .NUMBERS | uniq | join ", " }}!'
+    silent: true
+  os:
+    cmds:
+      - 'echo "Running on {{OS}}/{{ARCH}}"'
+    silent: true
+  act:sanity:
+    desc: Run act with correct container arch for Apple Silicon
+    cmds:
+      - |
+        echo "🧠 Detected: {{OS}}/{{ARCH}}"
+        if [[ "{{OS}}" == "darwin" && "{{ARCH}}" == "arm64" ]]; then
+          echo "⚙️  Apple Silicon detected — forcing container arch to linux/amd64"
+          act push --job sanity-check --container-architecture linux/amd64 --verbose
+        else
+          act push --job sanity-check --verbose
+        fi
+    silent: true

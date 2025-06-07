@@ -3,6 +3,8 @@
         "streetsidesoftware.code-spell-checker",
         "editorconfig.editorconfig",
         "esbenp.prettier-vscode",
-        "github.vscode-github-actions"
+        "github.vscode-github-actions",
+        "task.vscode-task",
+        "sanjulaganepola.github-local-actions"
     ]
 }
