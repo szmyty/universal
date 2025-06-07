@@ -1,6 +1,6 @@
 # Project Structure
 
-```
+```text
 .
 ├── .actrc
 ├── .cspell.config.mjs
@@ -19,6 +19,7 @@
 ├── .pre-commit-config.yaml
 ├── .prettier.config.mjs
 ├── .prettierignore
+├── .talismanrc
 ├── .vscode
 │   ├── dictionaries
 │   │   ├── backend-terms.dictionary
@@ -51,5 +52,5 @@
 │       └── README.md
 └── universal.code-workspace
 
-10 directories, 39 files
+10 directories, 40 files
 ```
