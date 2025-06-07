@@ -37,6 +37,8 @@
 │   ├── README.md
 │   └── ui
 │       └── README.md
+├── docs
+│   └── tree.md
 ├── package.json
 ├── pnpm-workspace.yaml
 ├── services
@@ -45,5 +47,5 @@
 │       └── README.md
 └── universal.code-workspace
 
-9 directories, 34 files
+10 directories, 35 files
 ```
