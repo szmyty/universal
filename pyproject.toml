@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "universal-devtools"
+name = "universal"
 version = "0.1.0"
 description = "Python development tools for the universal monorepo."
 authors = ["Universal <dev@example.com>"]
@@ -8,12 +8,12 @@ readme = "README.md"
 package-mode = false
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.12"
 
 [tool.poetry.group.dev.dependencies]
-black = "^23.12.1"
-flake8 = "^7.0.0"
-isort = "^5.13.2"
+pre-commit = "^4.2.0"
+pre-commit-hooks = "^5.0.0"
+
 
 [build-system]
 requires = ["poetry-core>=1.5"]

@@ -49,3 +49,18 @@ tasks:
           act push --job sanity-check --verbose
         fi
     silent: true
+
+  hooks:install:
+    desc: Install pre-commit hooks
+    cmds:
+      - pre-commit install
+
+  hooks:run:
+    desc: Run all pre-commit hooks manually against all files
+    cmds:
+      - pre-commit run --all-files
+
+  hooks:ci:
+    desc: Run pre-commit checks without installing (CI-safe)
+    cmds:
+      - pre-commit run --all-files --show-diff-on-failure --color always
