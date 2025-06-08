@@ -1,6 +1,6 @@
 # Project Structure
 
-```
+```text
 .
 ├── .actrc
 ├── .cspell.config.mjs
@@ -19,6 +19,7 @@
 ├── .pre-commit-config.yaml
 ├── .prettier.config.mjs
 ├── .prettierignore
+├── .talismanrc
 ├── .vscode
 │   ├── dictionaries
 │   │   ├── backend-terms.dictionary
@@ -31,25 +32,25 @@
 │   ├── launch.json
 │   ├── settings.json
 │   └── tasks.json
-├── LICENSE
-├── README.md
-├── Taskfile.yml
 ├── apps
 │   ├── README.md
 │   └── ui
 │       └── README.md
 ├── docs
 │   └── tree.md
+├── LICENSE
 ├── package.json
 ├── pnpm-workspace.yaml
 ├── poetry.lock
 ├── poetry.toml
 ├── pyproject.toml
+├── README.md
 ├── services
-│   ├── README.md
-│   └── api
-│       └── README.md
+│   ├── api
+│   │   └── README.md
+│   └── README.md
+├── Taskfile.yml
 └── universal.code-workspace
 
-10 directories, 39 files
+10 directories, 40 files
 ```

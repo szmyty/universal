@@ -37,6 +37,12 @@ tasks:
       - 'echo "Running on {{OS}}/{{ARCH}}"'
     silent: true
 
+  generate-tree:
+    desc: Generate docs/tree.md
+    cmds:
+      - bash ./scripts/gen-tree.sh
+    silent: true
+
   act:sanity:
     desc: Run act with correct container arch for Apple Silicon
     cmds:

@@ -52,3 +52,11 @@ repos:
     hooks:
       - id: talisman-commit
       - id: talisman-push
+
+  ### PNG Images ###
+  - repo: https://github.com/shssoichiro/oxipng
+    rev: v9.1.5
+    hooks:
+      - id: oxipng
+        name: "🖼️ images · Optimize PNG files"
+        args: ["-o", "4", "--strip", "safe", "--alpha"]
