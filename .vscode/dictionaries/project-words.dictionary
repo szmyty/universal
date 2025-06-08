@@ -10,4 +10,5 @@ ossdata
 pgsql
 preconfigured
 pylance
+taskfile
 tamasfe

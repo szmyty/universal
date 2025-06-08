@@ -7,6 +7,14 @@ vars:
     sh: uname -s
 
 tasks:
+  setup:
+    desc: Install dependencies and set up the environment
+    cmds:
+      - pnpm install
+      - poetry install --no-root
+      - task hooks:install
+    silent: true
+
   lint:
     desc: Run MegaLinter with auto-fix
     cmds: ["pnpm run lint"]
@@ -32,6 +40,10 @@ tasks:
   lint:copypaste:
     cmds: ["pnpm run lint:copypaste"]
 
+  packages:
+    desc: List all installed packages
+    cmds: ["poetry show --tree"]
+
   os:
     cmds:
       - 'echo "Running on {{OS}}/{{ARCH}}"'
@@ -40,7 +52,7 @@ tasks:
   generate-tree:
     desc: Generate docs/tree.md
     cmds:
-      - bash ./scripts/gen-tree.sh
+      - bash ./scripts/generate-tree.sh
     silent: true
 
   act:sanity:
@@ -60,6 +72,8 @@ tasks:
     desc: Install pre-commit hooks (inside Poetry venv)
     cmds:
       - poetry run pre-commit install
+      - poetry run pre-commit autoupdate
+      - poetry run pre-commit install-hooks
     silent: true
 
   hooks:run:

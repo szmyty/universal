@@ -40,5 +40,7 @@
         "**/*.code-search": true,
         "**/.git": true,
         "**/reports": true
-    }
+    },
+    "git.ignoreLimitWarning": true,
+    "cSpell.words": ["TASKFILE"]
 }

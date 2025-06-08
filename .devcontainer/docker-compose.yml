@@ -1,0 +1,18 @@
+services:
+  dev:
+    container_name: ${COMPOSE_PROJECT_NAME:-devcontainer}-dev
+    hostname: ${COMPOSE_PROJECT_NAME:-devcontainer}-dev
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - ..:/workspace:cached
+    command: sleep infinity
+    privileged: true
+    user: vscode
+    networks:
+      - devnet
+
+networks:
+  devnet:
+    driver: bridge
