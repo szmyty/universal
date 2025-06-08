@@ -1,17 +1,31 @@
-name: Update Project Tree
+name: Deploy Project Tree to Pages
 
 on:
+  # Trigger on pushes to main/master
   push:
-    branches:
-      - main
-      - master
+    branches: ["main", "master"]
 
+  # Allow manual execution from the Actions tab
+  workflow_dispatch:
+
+# GitHub Pages requires specific permissions
 permissions:
-  contents: write
+  contents: read # to checkout the code
+  pages: write # to deploy to Pages
+  id-token: write # to authenticate deployment
+
+# Avoid concurrency issues — only one Pages deploy at a time
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
-  generate-tree-doc:
+  deploy:
     runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Checkout repository
@@ -19,29 +33,17 @@ jobs:
 
       - name: Generate docs/tree.md
         run: |
-          mkdir -p docs
-          {
-            echo '# Project Structure'
-            echo ''
-            echo '```text'
-            git ls-tree -r --name-only HEAD \
-              | grep -vE '^reports/' \
-              | tree --fromfile
-            echo '```'
-          } > docs/tree.md
+          chmod +x ./scripts/gen-tree.sh
+          ./scripts/gen-tree.sh
 
-      - name: Auto-commit updated tree.md
-        uses: stefanzweifel/git-auto-commit-action@ddb7ae415961225797e0234a7018a30ba1e66bb3
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload tree.md as artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          commit_message: "chore: update project structure tree"
-          commit_options: "--no-verify"
-          file_pattern: docs/tree.md
-          repository: .
-          status_options: "--untracked-files=all"
-          push_options: ""
-          skip_dirty_check: false
-          skip_fetch: true
-          skip_checkout: true
-          disable_globbing: false
-          create_branch: false
-          create_git_tag_only: false
+          path: docs/tree.md
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
