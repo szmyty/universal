@@ -1,10 +1,19 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import 'normalize.css';
-import './styles/global.css';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import { AuthProvider, AuthWrapper, MockAuthProvider } from "@universal/auth";
+import "./styles/global.css";
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+const Provider = import.meta.env.VITE_FAKE_AUTH === "true"
+  ? MockAuthProvider
+  : AuthProvider;
+
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <div>Hello World</div>
-  </React.StrictMode>,
+    <Provider>
+      <AuthWrapper>
+        <App />
+      </AuthWrapper>
+    </Provider>
+  </React.StrictMode>
 );
