@@ -91,18 +91,34 @@
 
 # 🚀 Future Enhancements
 
-- **Internal Dev Portal**:
-  - Dashboard with links to docs, APIs, Storybook, changelogs
-- **Hosted Dev Environments**:
-  - Coder, Devbox, or GitHub Codespaces
-- **Infrastructure as Code**:
-  - Terraform or Pulumi-managed infra, secrets, and cloud resources
-- **Package Publishing**:
-  - GitHub Packages for internal modules (npm, PyPI)
-- **Design System + Tokens**:
-  - Storybook + Style Dictionary integration
-- **Developer Dashboards**:
-  - GitHub Insights + Project Health visualizations
+- **🧭 Internal Developer Portal**  
+  Backstage or a Docusaurus-powered dashboard that links together internal docs, APIs, changelogs, and component libraries.
+
+- **🧠 Hosted AI Coding Assistants (Private Codex Alternative)**  
+  Integrate a self-hosted, open-source assistant like:
+  - [`Continue.dev`](https://github.com/continuedev/continue) (chat + autocompletions)
+  - [`OpenDevin`](https://github.com/OpenDevin/OpenDevin) (agent-style task executor)
+  - `Cody` (from Sourcegraph) for codebase Q&A  
+  These tools would connect to internal GitHub repos and provide DX-enhancing features like:
+  - Code search and summarization
+  - PR/commit explanation
+  - Task-based AI code refactoring or generation  
+  Paired with local LLMs like **Code Llama**, **StarCoder**, or **WizardCoder** using **Ollama** or **LM Studio**.
+
+- **🖥️ Hosted Dev Environments (Zero Setup DX)**  
+  GitHub Codespaces, Coder, or Devbox to enable instant cloud-based onboarding.
+
+- **🌐 Infrastructure as Code Layer**  
+  Terraform or Pulumi modules to manage dev/test/staging infrastructure, including secrets and env config deployment.
+
+- **📦 Internal Package Publishing**  
+  GitHub Packages (npm, PyPI) for internal modules with versioning + changelog automation.
+
+- **🎨 Design System Integration**  
+  Storybook-powered design system synced with Style Dictionary or Tailwind config tokens.
+
+- **📊 DX Dashboards**  
+  GitHub Insights, changelog visualizations, coverage reports — either as a homepage widget or embeddable doc element.
 
 # 📘 Closing Thoughts
 
