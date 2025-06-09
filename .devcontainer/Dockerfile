@@ -113,6 +113,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-cache \
     ripgrep=14.1.0-1 \
     strace=6.8-0ubuntu2 \
     sudo=1.9.15p5-3ubuntu5 \
+    sysdig=0.36.0+repack-1 \
     sysstat=12.6.1-2 \
     tar=1.35+dfsg-3build1 \
     tcpdump=4.99.4-3ubuntu4 \
@@ -139,7 +140,6 @@ RUN dpkg-query -W -f='${Package}=${Version}\n' > apt-packages.lock
 RUN sed -i '/^#\?SYS_UID_MAX/ d' /etc/login.defs && echo 'SYS_UID_MAX 99999' >> /etc/login.defs && \
     sed -i '/^#\?SYS_GID_MAX/ d' /etc/login.defs && echo 'SYS_GID_MAX 99999' >> /etc/login.defs
 
-
 # Copy install-google-fonts script
 COPY scripts/install-google-fonts.sh /workspace/scripts/install-google-fonts.sh
 
@@ -156,7 +156,7 @@ RUN if [ "${INSTALL_GOOGLE_FONTS}" = "true" ]; then \
 ENV DEVTOOLS_HOME=/opt/devtools
 
 # Create devtools directory
-RUN mkdir -p --mode 777 "${DEVTOOLS_HOME}"
+RUN mkdir -p "${DEVTOOLS_HOME}"
 
 ENV TASKFILE_HOME_DIR="${DEVTOOLS_HOME}/.task"
 
@@ -179,7 +179,8 @@ COPY .tool-versions /workspace/.tool-versions
 # Install devtools
 RUN chmod +x /workspace/scripts/devtools.sh && \
     bash /workspace/scripts/devtools.sh && \
-    rm -rf /workspace/scripts
+    rm -rf /workspace/scripts && \
+    chown --recursive vscode:vscode "${DEVTOOLS_HOME}"
 
 # Copy Taskfile and project configuration files
 COPY Taskfile.yml pyproject.toml poetry.toml package.json /workspace/

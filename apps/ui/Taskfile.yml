@@ -1,0 +1,8 @@
+version: "3"
+
+tasks:
+  dev:
+    desc: Install dependencies and set up the environment
+    cmds:
+      - pnpm dev
+    silent: true

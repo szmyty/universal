@@ -12,12 +12,77 @@ declare -A KNOWN_PLUGINS=(
     [go]=go
     [java]=java
     [rust]=rustc
-    [yarn]=yarn
-    [terraform]=terraform
-    [direnv]=direnv
-    [awscli]=aws
-    [kubectl]=kubectl
 )
+
+ASDF_PLUGIN_DATA=$(cat <<EOF
+nodejs node https://github.com/asdf-vm/asdf-nodejs.git
+python python3 https://github.com/danhper/asdf-python.git
+poetry poetry https://github.com/asdf-community/asdf-poetry.git
+pnpm pnpm https://github.com/jonathanmorley/asdf-pnpm.git
+ruby ruby https://github.com/asdf-vm/asdf-ruby.git
+go go https://github.com/asdf-vm/asdf-golang.git
+java java https://github.com/halcyon/asdf-java.git
+rust rustc https://github.com/code-lever/asdf-rust.git
+EOF
+)
+
+mapfile -t ASDF_PLUGIN_TABLE <<< "$ASDF_PLUGIN_DATA"
+
+# -----------------------------------------------------------------------------
+# Function: get_plugin_command
+#
+# Description:
+#   Retrieves the command associated with a given asdf plugin.
+#
+# Usage:
+#   command=$(get_plugin_command nodejs)
+#
+# Arguments:
+#   $1 - Plugin name (e.g., "nodejs", "python").
+#
+# Returns:
+#   Prints the command name associated with the plugin.
+#   Exits with an error if the plugin is not found.
+# -----------------------------------------------------------------------------
+get_plugin_command() {
+  local plugin="$1"
+  for entry in "${ASDF_PLUGIN_TABLE[@]}"; do
+    local plugin_name command_name url
+    read -r plugin_name command_name url <<< "$entry"
+    if [[ "$plugin" == "$plugin_name" ]]; then
+      echo "$command_name"
+      return
+    fi
+  done
+}
+
+# -----------------------------------------------------------------------------
+# Function: get_plugin_url
+#
+# Description:
+#   Returns the URL of the specified asdf plugin.
+#
+# Usage:
+#   url=$(get_plugin_url nodejs)
+#
+# Arguments:
+#   $1 - Plugin name (e.g., "nodejs", "python").
+#
+# Returns:
+#   Prints the URL of the plugin repository.
+#   Exits with an error if the plugin is not found.
+# -----------------------------------------------------------------------------
+get_plugin_url() {
+  local plugin="$1"
+  for entry in "${ASDF_PLUGIN_TABLE[@]}"; do
+    local plugin_name command_name url
+    read -r plugin_name command_name url <<< "$entry"
+    if [[ "$plugin" == "$plugin_name" ]]; then
+      echo "$url"
+      return
+    fi
+  done
+}
 
 # -----------------------------------------------------------------------------
 # Function: cmd::exists
@@ -1226,6 +1291,16 @@ install_asdf_plugin() {
 
     if ! has_asdf_plugin "$plugin_name"; then
         log "📥 Adding plugin: $plugin_name"
+
+        local plugin_url
+        plugin_url="$(get_plugin_url "$plugin_name")"
+
+        if [[ -n "$plugin_url" ]]; then
+            asdf plugin add "$plugin_name" "$plugin_url"
+        else
+            asdf plugin add "$plugin_name"
+        fi
+
         if ! asdf plugin add "$plugin_name"; then
             log "❌ Failed to add plugin: $plugin_name"
             return 1
@@ -1441,23 +1516,6 @@ install::taskfile() {
 }
 
 # -----------------------------------------------------------------------------
-# Function: install::mega_linter
-#
-# Description:
-#   Installs the MegaLinter Runner globally using npm if it is not already
-#   present in the PATH.
-# -----------------------------------------------------------------------------
-install::mega_linter() {
-    if command -v mega-linter-runner >/dev/null 2>&1; then
-        log::success "✅ MegaLinter Runner already installed"
-        return
-    fi
-
-    log "📥 Installing MegaLinter Runner via npm..."
-    npm install -g mega-linter-runner
-}
-
-# -----------------------------------------------------------------------------
 # Function: install
 #
 # Description:
@@ -1469,7 +1527,7 @@ install() {
     install::asdf
     install_asdf_plugins
     install::taskfile
-    # install::mega_linter
+    # install::oxipng
     log::success "🔧 Development tools installation complete."
 }
 
