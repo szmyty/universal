@@ -7,6 +7,24 @@ import subprocess
 from typing import Dict, List
 from pathlib import Path
 
+LOG_FILE_PATH = Path(
+    os.path.expanduser(
+        os.path.expandvars(
+            os.environ.get("LOG_FILE", str(Path("/home/vscode") / ".devtools"))
+        )
+    )
+)
+LOG_FILE_HANDLE = None
+
+def init_logging() -> None:
+    """Initialize logging to file if possible."""
+    global LOG_FILE_HANDLE
+    try:
+        LOG_FILE_PATH.parent.mkdir(parents=True, exist_ok=True)
+        LOG_FILE_HANDLE = open(LOG_FILE_PATH, "a", encoding="utf-8")
+    except Exception as e:
+        print(f"⚠️  Failed to open log file {LOG_FILE_PATH}: {e}")
+
 # === Constants ===
 USER_HOME = Path("/home/vscode")
 SSH_DIR = USER_HOME / ".ssh"
@@ -19,8 +37,15 @@ DOCKER_INIT_SCRIPT = Path("/usr/local/share/docker-init.sh")
 
 
 def log(msg: str) -> None:
-    """Print a structured log message."""
-    print(f"🔧 {msg}")
+    """Print a structured log message to stdout and file."""
+    line = f"🔧 {msg}"
+    print(line)
+    if LOG_FILE_HANDLE:
+        try:
+            LOG_FILE_HANDLE.write(line + "\n")
+            LOG_FILE_HANDLE.flush()
+        except Exception:
+            pass
 
 
 def run(cmd: List[str], **kwargs) -> None:
@@ -272,11 +297,18 @@ def main() -> None:
 
 def main_wrapper() -> None:
     """Wrap main logic with error trapping."""
+    init_logging()
     try:
         main()
     except Exception as e:
         log(f"💥 Fatal error: {e}")
         sys.exit(1)
+    finally:
+        if LOG_FILE_HANDLE:
+            try:
+                LOG_FILE_HANDLE.close()
+            except Exception:
+                pass
 
 
 if __name__ == "__main__":

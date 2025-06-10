@@ -24,3 +24,4 @@ set to `none` the proxy will be disabled.
 | `no_proxy` | Comma-separated hosts excluded from proxy | string | `` |
 | `docker_dns` | DNS server for Docker daemon | string | `8.8.8.8` |
 | `insecure_registries` | Comma separated list of insecure registries | string | `` |
+| `log_file` | File path for docker-proxy setup logs | string | `$HOME/.devtools` |
