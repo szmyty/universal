@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ------------------------------------------------------------------------------
-# Script: gen-tree.sh
+# Script: generate-tree.sh
 #
 # Description:
 #   Generates a Markdown file (docs/tree.md) representing the Git-tracked

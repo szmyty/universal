@@ -1,12 +1,12 @@
 {
   "statistics": {
-    "detectionDate": "2025-06-07T23:40:54.377Z",
+    "detectionDate": "2025-06-08T04:35:33.825Z",
     "formats": {
       "yaml": {
         "sources": {
           "/tmp/lint/.github/workflows/tree.yml": {
-            "lines": 46,
-            "tokens": 206,
+            "lines": 48,
+            "tokens": 255,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -41,8 +41,8 @@
             "newClones": 0
           },
           "/tmp/lint/Taskfile.yml": {
-            "lines": 80,
-            "tokens": 518,
+            "lines": 90,
+            "tokens": 575,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -53,8 +53,8 @@
             "newClones": 0
           },
           "/tmp/lint/.pre-commit-config.yaml": {
-            "lines": 53,
-            "tokens": 335,
+            "lines": 61,
+            "tokens": 393,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -78,9 +78,49 @@
           }
         },
         "total": {
-          "lines": 301,
-          "tokens": 1654,
+          "lines": 321,
+          "tokens": 1818,
           "sources": 6,
+          "clones": 0,
+          "duplicatedLines": 0,
+          "duplicatedTokens": 0,
+          "percentage": 0,
+          "percentageTokens": 0,
+          "newDuplicatedLines": 0,
+          "newClones": 0
+        }
+      },
+      "bash": {
+        "sources": {
+          "/tmp/lint/scripts/list_package_versions.sh": {
+            "lines": 31,
+            "tokens": 101,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "/tmp/lint/scripts/generate-tree.sh": {
+            "lines": 42,
+            "tokens": 154,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          }
+        },
+        "total": {
+          "lines": 73,
+          "tokens": 255,
+          "sources": 2,
           "clones": 0,
           "duplicatedLines": 0,
           "duplicatedTokens": 0,
@@ -93,8 +133,8 @@
       "markdown": {
         "sources": {
           "/tmp/lint/docs/tree.md": {
-            "lines": 50,
-            "tokens": 253,
+            "lines": 53,
+            "tokens": 267,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -105,8 +145,8 @@
             "newClones": 0
           },
           "/tmp/lint/README.md": {
-            "lines": 22,
-            "tokens": 109,
+            "lines": 24,
+            "tokens": 114,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -118,8 +158,8 @@
           }
         },
         "total": {
-          "lines": 72,
-          "tokens": 362,
+          "lines": 77,
+          "tokens": 381,
           "sources": 2,
           "clones": 0,
           "duplicatedLines": 0,
@@ -248,9 +288,9 @@
       }
     },
     "total": {
-      "lines": 668,
-      "tokens": 3777,
-      "sources": 15,
+      "lines": 766,
+      "tokens": 4215,
+      "sources": 17,
       "clones": 0,
       "duplicatedLines": 0,
       "duplicatedTokens": 0,

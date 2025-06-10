@@ -35,3 +35,9 @@
 pnpm-lock.yaml
 **/.venv
 **/venv
+**/.pnpm-store
+
+
+# Added by cargo
+
+/target
