@@ -24,4 +24,7 @@ Run the spell checker:
 pnpm cspell
 ```
 
+For a preconfigured development environment using Docker, see
+[Dev Container Usage](docs/devcontainer.md).
+
 📁 [View Project Tree](https://szmyty.github.io/universal//tree.md)
