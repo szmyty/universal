@@ -28,6 +28,11 @@
             "type": "string",
             "default": "",
             "description": "Comma separated list of insecure registries"
+        },
+        "log_file": {
+            "type": "string",
+            "default": "$HOME/.devtools",
+            "description": "File path for docker-proxy setup logs"
         }
     },
     "containerEnv": {
@@ -38,7 +43,8 @@
         "https_proxy": "${HTTPSPROXY}",
         "no_proxy": "${NOPROXY}",
         "DOCKER_DNS": "${DOCKERDNS}",
-        "INSECURE_REGISTRIES": "${INSECUREREGISTRIES}"
+        "INSECURE_REGISTRIES": "${INSECUREREGISTRIES}",
+        "LOG_FILE": "${LOGFILE}"
     },
     "installsAfter": [
         "ghcr.io/devcontainers/features/common-utils",
