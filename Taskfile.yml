@@ -99,3 +99,9 @@ tasks:
     cmds:
       - talisman --scan --loglevel warn --reportDirectory reports/talisman
     silent: true
+
+  write:scientific-paper:
+    desc: Write a scientific paper about the project
+    cmds:
+      - latexmk -cd -pdf -pvc docs/scientific-paper/main.tex
+    silent: true
