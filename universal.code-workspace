@@ -6,5 +6,14 @@
     ],
     "settings": {
         "git.ignoreLimitWarning": true,
+        "cSpell.logFile": ".cache/cspell/cspell.log",
+        "cSpell.trustedWorkspace": true,
+        "telemetry.feedback.enabled": false,
+        "emojisense.emojiDecoratorsEnabled": true,
+        "remote.WSL.downloadInBackground": true,
+        "remote.WSL.useShellEnvironment": true,
+        "editor.insertSpaces": true,
+        "remote.autoForwardPorts": true,
+        "terminal.integrated.defaultProfile.linux": "bash",
     },
 }

@@ -1,0 +1,47 @@
+{
+    "id": "docker-proxy",
+    "version": "1.0.0",
+    "name": "Docker Proxy Setup",
+    "description": "Configure Docker proxy and daemon settings",
+    "options": {
+        "http_proxy": {
+            "type": "string",
+            "default": "",
+            "description": "HTTP proxy URL or \"none\" to disable"
+        },
+        "https_proxy": {
+            "type": "string",
+            "default": "",
+            "description": "HTTPS proxy URL or \"none\" to disable"
+        },
+        "no_proxy": {
+            "type": "string",
+            "default": "",
+            "description": "Comma-separated list of hosts that should be excluded from proxy"
+        },
+        "docker_dns": {
+            "type": "string",
+            "default": "8.8.8.8",
+            "description": "DNS server for Docker daemon"
+        },
+        "insecure_registries": {
+            "type": "string",
+            "default": "",
+            "description": "Comma separated list of insecure registries"
+        }
+    },
+    "containerEnv": {
+        "HTTP_PROXY": "${HTTPPROXY}",
+        "HTTPS_PROXY": "${HTTPSPROXY}",
+        "NO_PROXY": "${NOPROXY}",
+        "http_proxy": "${HTTPPROXY}",
+        "https_proxy": "${HTTPSPROXY}",
+        "no_proxy": "${NOPROXY}",
+        "DOCKER_DNS": "${DOCKERDNS}",
+        "INSECURE_REGISTRIES": "${INSECUREREGISTRIES}"
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils",
+        "ghcr.io/devcontainers/features/docker-in-docker",
+    ]
+}
