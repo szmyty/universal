@@ -11,6 +11,7 @@ export function RootLayout() {
           <a href="/">Home</a>
           <a href="/about">About</a>
           <a href="/admin">Admin</a>
+          <a href="/superadmin">Super Admin</a>
         </nav>
       </header>
 

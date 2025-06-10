@@ -7,6 +7,7 @@ import { callbackRoute } from "./callback.route";
 import { lazy, Suspense } from "react";
 import type { ComponentType } from "react";
 import PageLoader from "@universal/components/PageLoader";
+import { superAdminRoute } from "./super_admin.route";
 
 // ✅ Safely lazy-load NotFound with correct type casting
 const LazyNotFound = lazy(() =>
@@ -33,6 +34,7 @@ export const routeTree = rootRoute.addChildren([
   homeRoute,
   aboutRoute,
   adminRoute,
+  superAdminRoute,
   callbackRoute
 ]);
 
