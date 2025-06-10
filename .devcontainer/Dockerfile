@@ -18,6 +18,9 @@ ARG LC_ALL=en_US.UTF-8
 ARG INSTALL_GOOGLE_FONTS=true
 ARG GOOGLE_FONTS_SHA=2b5bd4077bd9269cdf3114266603372af6c3222d
 
+# TeX Live
+ARG INSTALL_TEXLIVE=true
+
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive \
     DEBCONF_NONINTERACTIVE_SEEN=true \
@@ -37,7 +40,8 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PIP_NO_CACHE_DIR=1 \
     PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" \
     GOOGLE_FONTS_SHA=${GOOGLE_FONTS_SHA} \
-    INSTALL_GOOGLE_FONTS=${INSTALL_GOOGLE_FONTS}
+    INSTALL_GOOGLE_FONTS=${INSTALL_GOOGLE_FONTS} \
+    INSTALL_TEXLIVE=${INSTALL_TEXLIVE}
 
 # Disable the automatic removal of downloaded packages
 RUN rm -f /etc/apt/apt.conf.d/docker-clean; \
@@ -126,6 +130,20 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-cache \
     xz-utils=5.6.1+really5.4.5-1ubuntu0.2 \
     zlib1g-dev=1:1.3.dfsg-3.1ubuntu2.1 \
     zsh=5.9-6ubuntu2
+
+# Conditionally install TeX Live full and fonts
+RUN if [ "${INSTALL_TEXLIVE}" = "true" ]; then \
+    apt-get update -qq && \
+    apt-get install --yes --no-install-recommends \
+        texlive-full \
+        fonts-noto \
+        fonts-noto-cjk \
+        fonts-noto-color-emoji \
+        fonts-lmodern && \
+    fc-cache -f; \
+    else \
+    echo "📁 Skipping TeX Live install"; \
+    fi
 
 RUN echo "LC_ALL=en_US.UTF-8" >> /etc/environment \
     && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
