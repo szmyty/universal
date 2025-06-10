@@ -12,6 +12,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { VitePWA } from "vite-plugin-pwa";
 import pkg from "./package.json";
 import fixReactVirtualized from "esbuild-plugin-react-virtualized";
+import { visualizer } from "rollup-plugin-visualizer";
 
 // Resolve __dirname since we're in ES module context
 const __filename = fileURLToPath(import.meta.url);
@@ -40,6 +41,13 @@ export default defineConfig({
         }),
         VitePWA(),
         tailwindcss(),
+        visualizer({
+            filename: "stats.html",
+            open: true, // auto-opens browser after build
+            gzipSize: true,
+            brotliSize: true,
+            emitFile: true,
+        }),
     ],
     server: {
         port: Number(process.env.UI_PORT) || 5173,
@@ -59,6 +67,15 @@ export default defineConfig({
     optimizeDeps: {
         esbuildOptions: {
             plugins: [fixReactVirtualized],
+        },
+    },
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    vendor: ["react", "react-dom"], // Separate React into its own chunk
+                },
+            },
         },
     },
 });

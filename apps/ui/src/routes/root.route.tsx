@@ -8,10 +8,10 @@ export function RootLayout() {
       <MockBanner />
       <header className="bg-gray-800 text-white px-4 py-3">
         <nav className="space-x-4">
-          <a href="/">Home</a>
-          <a href="/about">About</a>
-          <a href="/admin">Admin</a>
-          <a href="/superadmin">Super Admin</a>
+          <a href="/" onMouseEnter={() => import("../pages/Home.js")}>Home</a>
+          <a href="/about" onMouseEnter={() => import("../pages/About.js")}>About</a>
+          <a href="/admin" onMouseEnter={() => import("../pages/Admin.js")}>Admin</a>
+          <a href="/superadmin" onMouseEnter={() => import("../pages/SuperAdminPanel.js")}>Super Admin</a>
         </nav>
       </header>
 
