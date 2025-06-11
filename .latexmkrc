@@ -1,112 +1,153 @@
 #!/usr/bin/env perl
 ###############################################################################
-# Universal LaTeXmk RC – project-relative, cache at project root
-# Author : Alan Szmyt (public domain / MIT)
+# Universal LaTeXmk RC  ·  robust path handling + color/file logging
 ###############################################################################
 use strict;
 use warnings;
-use Cwd    qw(abs_path getcwd);
-use File::Basename qw(dirname);
+use Cwd            qw(abs_path getcwd);
+use File::Basename qw(basename dirname);
+use File::Path     qw(make_path);
 
-# ---------- globals required under 'use strict' -----------------------------
-our ($deps_out, $out_dir, $aux_dir, $tmpdir);
+no warnings 'redefine';  # silence harmless dup-subs
 
-# ---------- engine & compile options ---------------------------------------
-$pdf_mode = 5;                                # XeLaTeX default
-$pdf_mode = 4 if grep { /-lualatex/ } @ARGV;  # CLI override
+###############################################################################
+# Globals required by 'use strict'
+###############################################################################
+our ($out_dir, $tmpdir, $deps_out, $post_latex_hook, $failure_hook);
+our @default_files;  # <-- fixed: ensure @default_files is declared
 
-my $COMMON = join ' ',
-  qw(-interaction=nonstopmode -file-line-error -synctex=1 -shell-escape
-     -recorder -8bit);
-set_tex_cmds("$COMMON %O %S");
+###############################################################################
+# 0 ▪ Tiny logger  (color only when LATEXMK_DEBUG=1 and tty)
+###############################################################################
+my $DEBUG = $ENV{LATEXMK_DEBUG} // 0;
+my %CLR   = (RESET=>"\e[0m", INFO=>"\e[32m", WARN=>"\e[33m",
+             ERROR=>"\e[31m", NOTE=>"\e[36m");
 
-$warnings_as_errors       = 0;
-$show_time                = 0;
-$max_repeat               = 20;
-$always_view_file_via_temporary = 0;
-$preview_mode             = 1;
-$emulate_aux              = 1;
-$silent                   = 1;
-$silence_logfile_warnings = 1;
-$ENV{max_print_line}      = 9999;
-$ENV{TZ}                  = 'America/New_York';
+sub log_msg {
+    my ($lvl,$msg)=@_;
+    my $color = ($DEBUG && -t STDERR) ? ($CLR{$lvl}//'') : '';
+    print STDERR "[${color}$lvl$CLR{RESET}] $msg\n" if $DEBUG;
 
-# ---------- project-relative roots -----------------------------------------
-# latexmk has already chdir’d because of -cd (if supplied), so '.' *is* project root
-$ENV{PROJECT_ROOT} //= abs_path('.');
-$ENV{TEX_RESOURCES}     = "$ENV{PROJECT_ROOT}/resources";
-$ENV{FIGURES_DIR}       = "$ENV{PROJECT_ROOT}/figures";
+    my $log_dir = '.cache/latex';
+    make_path($log_dir) unless -d $log_dir;
 
-$ENV{TEX_STYLE}   = "$ENV{TEX_RESOURCES}/style";
-$ENV{LUA_SCRIPTS} = "$ENV{TEX_RESOURCES}/scripts";
+    if ( open my $FH, '>>', "$log_dir/latex.log" ) {
+        print $FH "[$lvl] $msg\n";
+        close $FH;
+    }
+}
+
+###############################################################################
+# 1 ▪ Calculate directories
+###############################################################################
+# main tex given on CLI
+my ($main_cli) = grep { $_ !~ /^-/ } @ARGV;
+$main_cli   //= 'main.tex';
+my $main_abs    = abs_path($main_cli);        # works even before -cd
+my $project_dir = dirname($main_abs);         # docs/<subdir>
+my $sub_name    = basename($project_dir);     # proposal, paper, etc.
+
+# repo root = first parent with .git, else parent of docs/<subdir>
+my $repo_root = $project_dir;
+until (-d "$repo_root/.git" || $repo_root eq '/' ) {
+    my $up = dirname($repo_root);
+    last if $up eq $repo_root;    # reached root
+    $repo_root = $up;
+}
+$repo_root = dirname(dirname($project_dir)) unless -d "$repo_root/.git";
+
+$out_dir  = "$repo_root/.cache/latex/$sub_name/out";
+$tmpdir   = "$repo_root/.cache/latex/$sub_name/tmp";
+$deps_out = "$repo_root/.cache/latex/$sub_name/dependencies.list";
+make_path($out_dir, $tmpdir);
+
+log_msg(INFO => "Project    : $sub_name");
+log_msg(INFO => "Main .tex  : $main_abs");
+log_msg(INFO => "Out dir    : $out_dir");
+
+###############################################################################
+# 2 ▪ Resource env-vars
+###############################################################################
+$ENV{PROJECT_ROOT} = $project_dir;
+$ENV{TEX_RESOURCES}= "$project_dir/resources";
+$ENV{FIGURES_DIR}  = "$project_dir/figures";
+$ENV{TEX_STYLE}    = "$ENV{TEX_RESOURCES}/style";
+$ENV{LUA_SCRIPTS}  = "$ENV{TEX_RESOURCES}/scripts";
+
+sub ensure_path {
+    my ($var,$dir)=@_; return unless -d $dir;
+    my $sep=$^O=~/Win32/?';':':';
+    my @p=split/$sep/,$ENV{$var}//''; push @p,$dir unless grep{$_ eq $dir}@p;
+    $ENV{$var}=join $sep,@p;
+}
 ensure_path('TEXINPUTS', "$ENV{TEX_STYLE}//");
 ensure_path('TEXINPUTS', "$ENV{LUA_SCRIPTS}//");
 ensure_path('TEXINPUTS', './texmf//');
 
-# main entry point & defaults
-$ENV{MAIN_TEX_FILE} ||= "$ENV{PROJECT_ROOT}/main.tex";
-@default_files        = ($ENV{MAIN_TEX_FILE});
+@default_files = ($main_abs);  # <-- now properly declared
 
-# ---------- build/cache directories (stay at project root) -----------------
-$out_dir  = "$ENV{PROJECT_ROOT}/.cache/latex/out";
-$aux_dir  = "$out_dir/aux";
-$tmpdir   = "$ENV{PROJECT_ROOT}/.cache/latex/tmp";
-$deps_out = "$ENV{PROJECT_ROOT}/.cache/latex/dependencies.list";
+###############################################################################
+# 3 ▪ Engine & compile options
+###############################################################################
+sub set_tex_cmds {
+    my($o)=@_;
+    $pdflatex = "pdflatex $o";
+    $lualatex = "lualatex $o";
+    $xelatex  = "xelatex  $o";
+}
 
-# ---------- bibliography ----------------------------------------------------
+$pdf_mode = grep /^-lualatex/, @ARGV ? 4 : 5;  # 4 = LuaLaTeX, 5 = XeLaTeX
+
+my $COMMON = join ' ',
+  "-jobname=%R",
+  "-output-directory=$out_dir",
+  qw(-interaction=nonstopmode -file-line-error -synctex=1 -shell-escape
+     -recorder -8bit);
+
+# ✅ Let latexmk insert the correct input path
+set_tex_cmds("$COMMON %O %S");
+
+# 🔥 Remove this (it's redundant and overrides your engines)
+# $latex = 'pdflatex %O %S';
+
+$max_repeat   = 20;
+$preview_mode = 1;
+$silent       = 1;
+
+###############################################################################
+# 4 ▪ Bibliography
+###############################################################################
 $bibtex_use = 2;
-$biber      = 'biber --validate-datamodel %O %S';
+$biber = "biber --output_directory=$out_dir --validate-datamodel %O %S";
 
-# ---------- files eligible for 'clean' --------------------------------------
-push @generated_exts, qw(
-  acn acr alg glg glo gls ist nav snm synctex.gz fdb_latexmk
-);
-
-# ---------- smart PDF previewer -------------------------------------------
-sub _cmd_exists {
-    my ($cmd) = @_;
-    return ( `which $cmd 2>/dev/null` ) ? 1 : 0;
-}
-
+###############################################################################
+# 5 ▪ Smart PDF viewer
+###############################################################################
+sub _cmd_exists { ( `which $_[0] 2>/dev/null` ) ? 1 : 0 }
 sub detect_pdf_viewer {
-    my @candidates;
-
-    # ---- VS Code terminal (local, WSL, or Dev-Container) -------------------
-    if ($ENV{TERM_PROGRAM} && $ENV{TERM_PROGRAM} eq 'vscode') {
-        return _cmd_exists('code')
-          ? 'code -r %S'        # reuse window, let VS Code render PDF tab
-          : '';                 # extension (LaTeX-Workshop) will auto-refresh
+    if ($ENV{TERM_PROGRAM}//'' eq 'vscode') {
+        return _cmd_exists('code') ? 'code -r %S' : '';
     }
-
-    # ---- Native Windows-Subsystem-for-Linux shell --------------------------
     if ($ENV{WSL_DISTRO_NAME}) {
-        @candidates = (
-          'wslview %S',                     # opens with Windows default
-          'explorer.exe %S',
-          'cmd.exe /C start "" "%S"'
-        );
+        for ('wslview %S','explorer.exe %S','cmd.exe /C start "" "%S"'){
+            (my$p=$_)=~s/ .*$//; return $_ if _cmd_exists($p);
+        }
     }
-    # ---- macOS -------------------------------------------------------------
-    elsif ($^O =~ /darwin/) {
-        @candidates = ('open %S');
+    return 'open %S'       if $^O=~/darwin/ && _cmd_exists('open');
+    return 'start "" %S'   if $^O=~/Win32/;
+    for ('zathura %S','okular %S','evince %S','mupdf %S','xdg-open %S'){
+        (my$p=$_)=~s/ .*$//; return $_ if _cmd_exists($p);
     }
-    # ---- Native Windows perl ----------------------------------------------
-    elsif ($^O =~ /Win32/) {
-        @candidates = ('start "" %S');
-    }
-    # ---- Standard desktop Linux/BSD ---------------------------------------
-    else {
-        @candidates = (
-          'zathura %S', 'okular %S', 'evince %S',
-          'mupdf %S',   'xdg-open %S',
-        );
-    }
-
-    for my $cmd (@candidates) {
-        (my $probe = $cmd) =~ s/ .*$//;  $probe =~ s/^"//;   # first word
-        return $cmd if _cmd_exists($probe);
-    }
-    return '';                      # headless CI: no viewer
+    return '';
 }
-
 $pdf_previewer = detect_pdf_viewer();
+
+###############################################################################
+# 6 ▪ Hooks
+###############################################################################
+$post_latex_hook = sub { log_msg(NOTE  => "LaTeX pass complete"); };
+$failure_hook    = sub { log_msg(ERROR => "Build failed"); };
+
+# Optional: override texmfvar/config for isolation
+$ENV{TEXMFVAR}    = "$tmpdir/texmf-var";
+$ENV{TEXMFCONFIG} = "$tmpdir/texmf-config";

@@ -105,3 +105,13 @@ tasks:
     cmds:
       - latexmk -cd -pdf -pvc docs/scientific-paper/main.tex
     silent: true
+    env:
+      LATEXMK_DEBUG: "1"
+
+  write:proposal:
+    desc: Build or live-preview the government proposal
+    cmds:
+      - latexmk -cd -pdf -pvc docs/proposal/main.tex -verbose
+    silent: true
+    env:
+      LATEXMK_DEBUG: "1"

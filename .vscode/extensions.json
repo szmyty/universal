@@ -5,6 +5,7 @@
         "esbenp.prettier-vscode",
         "github.vscode-github-actions",
         "task.vscode-task",
-        "sanjulaganepola.github-local-actions"
+        "sanjulaganepola.github-local-actions",
+        "richterger.perl"
     ]
 }
