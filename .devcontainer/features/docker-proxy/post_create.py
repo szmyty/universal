@@ -166,30 +166,34 @@ def reload_systemd() -> None:
         log("⚠️ Failed to reload systemd daemon (non-fatal)")
 
 def restart_docker_daemon() -> None:
-    """Restart the Docker daemon using service (non-systemd)"""
+    """Restart the Docker daemon in Docker-in-Docker environments."""
+    # First try using the service command (for systemd based containers)
     try:
         run(["sudo", "service", "docker", "restart"])
         log("✅ Docker restarted via service command.")
+        return
     except subprocess.CalledProcessError as e:
-        log(f"❌ Failed to restart Docker via service: {e}")
-        sys.exit(1)
+        log(f"⚠️ Failed to restart Docker via service: {e}. Falling back to docker-init script...")
 
-# def restart_docker_daemon() -> None:
-#     try:
-#         log("Restarting Docker daemon using custom script...")
-#         run(["sudo", "pkill", "-f", "dockerd"])
-#     except subprocess.CalledProcessError:
-#         log("⚠️ 'dockerd' was not running — skipping.")
-#     try:
-#         run(["sudo", "pkill", "-f", "containerd"])
-#     except subprocess.CalledProcessError:
-#         log("⚠️ 'containerd' was not running — skipping.")
-#     try:
-#         run(["bash", str(DOCKER_INIT_SCRIPT)])
-#         log("✅ Docker restarted successfully.")
-#     except subprocess.CalledProcessError as e:
-#         log(f"❌ Failed to run Docker init script: {e}")
-#         sys.exit(1)
+    # Fall back to using the docker-init script provided by the docker-in-docker feature
+    if DOCKER_INIT_SCRIPT.exists():
+        try:
+            run(["sudo", "pkill", "-f", "dockerd"])
+        except subprocess.CalledProcessError:
+            log("⚠️ 'dockerd' was not running — skipping.")
+        try:
+            run(["sudo", "pkill", "-f", "containerd"])
+        except subprocess.CalledProcessError:
+            log("⚠️ 'containerd' was not running — skipping.")
+        try:
+            run(["bash", str(DOCKER_INIT_SCRIPT)])
+            log("✅ Docker restarted via docker-init script.")
+            return
+        except subprocess.CalledProcessError as e:
+            log(f"❌ Failed to run Docker init script: {e}")
+    else:
+        log(f"❌ {DOCKER_INIT_SCRIPT} not found.")
+    sys.exit(1)
 
 def verify_docker_connection() -> None:
     try:
@@ -252,15 +256,15 @@ def main():
     LOG_FILE_PATH = Path(args.log_file)
     init_logging(LOG_FILE_PATH)
 
-    # log("🚀 Setting up Docker proxy environment...")
-    # setup_ssh()
-    # setup_docker_config(args.http_proxy, args.https_proxy, args.no_proxy)
-    # setup_daemon_json(args.docker_dns, args.insecure_registries)
-    # setup_systemd_proxy(args.http_proxy, args.https_proxy, args.no_proxy)
-    # reload_systemd()
-    # restart_docker_daemon()
-    # verify_docker_connection()
-    # verify_proxy_settings()
+    log("🚀 Setting up Docker proxy environment...")
+    setup_ssh()
+    setup_docker_config(args.http_proxy, args.https_proxy, args.no_proxy)
+    setup_daemon_json(args.docker_dns, args.insecure_registries)
+    setup_systemd_proxy(args.http_proxy, args.https_proxy, args.no_proxy)
+    reload_systemd()
+    restart_docker_daemon()
+    verify_docker_connection()
+    verify_proxy_settings()
     log("✅ Dev container setup complete.")
 
 if __name__ == "__main__":
