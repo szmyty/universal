@@ -10,7 +10,7 @@ tasks:
   setup:
     desc: Install dependencies and set up the environment
     cmds:
-      - pnpm install
+      - pnpm install --frozen-lockfile
       - poetry install --no-root
     silent: true
 
