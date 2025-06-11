@@ -127,12 +127,17 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-cache \
     xz-utils=5.6.1+really5.4.5-1ubuntu0.2 \
     zlib1g-dev=1:1.3.dfsg-3.1ubuntu2.1 \
     zsh=5.9-6ubuntu2 \
-    texlive-full \
-    fonts-noto \
-    fonts-noto-cjk \
-    fonts-noto-color-emoji \
-    fonts-lmodern \
-    pwgen=2.08-2build2
+    texlive-full=2023.20240207-1 \
+    fonts-noto=20201225-2 \
+    fonts-noto-cjk=1:20230817+repack1-3 \
+    fonts-noto-color-emoji=2.047-0ubuntu0.24.04.1 \
+    fonts-lmodern=2.005-1 \
+    pwgen=2.08-2build2 \
+    apt-rdepends=1.3.0-10 \
+    netcat-openbsd=1.226-1ubuntu2 \
+    nmap=7.94+git20230807.3be01efb1+dfsg-3build2 \
+    fzf=0.44.1-1ubuntu0.2 \
+    bat=0.24.0-1build1
 
 RUN fc-cache -f
 
@@ -194,13 +199,3 @@ RUN chmod +x /workspace/scripts/devtools.sh && \
     bash /workspace/scripts/devtools.sh && \
     rm -rf /workspace/scripts && \
     chown --recursive vscode:vscode "${DEVTOOLS_HOME}"
-
-# Copy Taskfile and project configuration files
-COPY Taskfile.yml pyproject.toml poetry.toml package.json /workspace/
-
-# Install project dependencies
-RUN task \
-    --dir /workspace \
-    --taskfile /workspace/Taskfile.yml \
-    --yes \
-    setup

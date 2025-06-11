@@ -4,3 +4,8 @@ services:
     env_file:
       - .env.universal
       - .env.development
+
+  pgadmin:
+    env_file:
+      - .env.universal
+      - .env.development

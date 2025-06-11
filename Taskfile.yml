@@ -12,6 +12,7 @@ tasks:
     cmds:
       - pnpm install --frozen-lockfile
       - poetry install --no-root
+      - task hooks:install
     silent: true
 
   lint:
@@ -130,7 +131,7 @@ tasks:
           --file universal.development.yml \
           --env-file .env.universal \
           --env-file .env.development \
-          up database \
+          up database pgadmin \
           --build \
           --force-recreate \
           --detach \

@@ -4,7 +4,8 @@
     "service": "dev",
     "runServices": ["dev"],
     "workspaceFolder": "/workspace",
-    "postCreateCommand": "task hooks:install",
+    "forwardPorts": [8000, 5050, 80, 443],
+    "postCreateCommand": "task --dir /workspace --taskfile /workspace/Taskfile.yml --yes setup",
     "features": {
         "ghcr.io/devcontainers/features/docker-in-docker:2.12.2": {
             "version": "latest",

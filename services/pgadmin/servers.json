@@ -1,0 +1,14 @@
+{
+    "Servers": {
+        "1": {
+            "Name": "Universal Database",
+            "Group": "Servers",
+            "Host": "database",
+            "Port": 5432,
+            "MaintenanceDB": "universal",
+            "Username": "postgres",
+            "SavePassword": 1,
+            "ConnLimit": 100
+        }
+    }
+}
