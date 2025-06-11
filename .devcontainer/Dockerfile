@@ -1,9 +1,7 @@
 # syntax=docker/dockerfile:1.4
 
+# Pinned
 FROM mcr.microsoft.com/devcontainers/base@sha256:cdff177dd5755c0ba2afea60cdc0ab07d933c60d50c6c90dccbcc42b4b4ab76d
-
-# Proxy Environment Variables
-# https://docs.docker.com/reference/dockerfile/#predefined-args
 
 # Override the temporary directory if needed
 ARG TMPDIR=/tmp
@@ -17,9 +15,6 @@ ARG LC_ALL=en_US.UTF-8
 # Google Fonts
 ARG INSTALL_GOOGLE_FONTS=true
 ARG GOOGLE_FONTS_SHA=2b5bd4077bd9269cdf3114266603372af6c3222d
-
-# TeX Live
-ARG INSTALL_TEXLIVE=true
 
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive \
@@ -40,8 +35,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PIP_NO_CACHE_DIR=1 \
     PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" \
     GOOGLE_FONTS_SHA=${GOOGLE_FONTS_SHA} \
-    INSTALL_GOOGLE_FONTS=${INSTALL_GOOGLE_FONTS} \
-    INSTALL_TEXLIVE=${INSTALL_TEXLIVE}
+    INSTALL_GOOGLE_FONTS=${INSTALL_GOOGLE_FONTS}
 
 # Disable the automatic removal of downloaded packages
 RUN rm -f /etc/apt/apt.conf.d/docker-clean; \
@@ -64,6 +58,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-cache \
     clang-tidy=1:18.0-59~exp2 \
     clang=1:18.0-59~exp2 \
     cmake=3.28.3-1build7 \
+    cpanminus=1.7047-1 \
     curl=8.5.0-2ubuntu10.6 \
     debtree=1.1.2 \
     dnsutils=1:9.18.30-0ubuntu0.24.04.2 \
@@ -83,12 +78,14 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-cache \
     libbz2-dev=1.0.8-5.1build0.1 \
     libcurl4-openssl-dev=8.5.0-2ubuntu10.6 \
     libdb-dev=1:5.3.21ubuntu2 \
+    libev-dev=1:4.33-2.1build1 \
     libffi-dev=3.4.6-1build1 \
     libgdbm-dev=1.23-5.1build1 \
     liblz4-dev=1.9.4-1build1.1 \
     liblzma-dev=5.6.1+really5.4.5-1ubuntu0.2 \
     libncurses-dev=6.4+20240113-1ubuntu2 \
     libnss3-dev=2:3.98-1build1 \
+    libperl-dev=5.38.2-3.2ubuntu0.1 \
     libreadline-dev=8.2-4build1 \
     libsqlite3-dev=3.45.1-1ubuntu2.3 \
     libssl-dev=3.0.13-0ubuntu3.5 \
@@ -129,21 +126,14 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-cache \
     wget=1.21.4-1ubuntu4.1 \
     xz-utils=5.6.1+really5.4.5-1ubuntu0.2 \
     zlib1g-dev=1:1.3.dfsg-3.1ubuntu2.1 \
-    zsh=5.9-6ubuntu2
-
-# Conditionally install TeX Live full and fonts
-RUN if [ "${INSTALL_TEXLIVE}" = "true" ]; then \
-    apt-get update -qq && \
-    apt-get install --yes --no-install-recommends \
+    zsh=5.9-6ubuntu2 \
     texlive-full \
     fonts-noto \
     fonts-noto-cjk \
     fonts-noto-color-emoji \
-    fonts-lmodern && \
-    fc-cache -f; \
-    else \
-    echo "📁 Skipping TeX Live install"; \
-    fi
+    fonts-lmodern
+
+RUN fc-cache -f
 
 RUN echo "LC_ALL=en_US.UTF-8" >> /etc/environment \
     && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
@@ -153,6 +143,8 @@ RUN echo "LC_ALL=en_US.UTF-8" >> /etc/environment \
     && dpkg-reconfigure locales
 
 RUN dpkg-query -W -f='${Package}=${Version}\n' > apt-packages.lock
+
+RUN cpanm AnyEvent::AIO@1.1 IO::AIO@4.81 Perl::LanguageServer@2.6.2
 
 # Ensure SYS_UID_MAX and SYS_GID_MAX are set to high values, uncommented or inserted
 RUN sed -i '/^#\?SYS_UID_MAX/ d' /etc/login.defs && echo 'SYS_UID_MAX 99999' >> /etc/login.defs && \
@@ -169,6 +161,8 @@ RUN if [ "${INSTALL_GOOGLE_FONTS}" = "true" ]; then \
     else \
     echo "📁 Skipping Google Fonts install"; \
     fi
+
+RUN fc-list : family | sort -u > fonts.lock
 
 # Set devtools directory
 ENV DEVTOOLS_HOME=/opt/devtools

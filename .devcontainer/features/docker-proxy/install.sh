@@ -49,19 +49,4 @@ chmod 0644 "$CONFIG_ENV_FILE"
 
 cp "${PYTHON_SCRIPT}" /usr/local/share/docker-proxy-setup.py
 
-# # Execute Python logic directly during install
-# if [[ -f "${PYTHON_SCRIPT}" ]]; then
-#     echo "🐍 Running proxy setup via Python..."
-#     sudo /usr/bin/python3 "${PYTHON_SCRIPT}" \
-#         --http-proxy "${HTTP_PROXY}" \
-#         --https-proxy "${HTTPS_PROXY}" \
-#         --no-proxy "${NO_PROXY}" \
-#         --docker-dns "${DOCKER_DNS}" \
-#         --insecure-registries "${INSECURE_REGISTRIES}" \
-#         --log-file "${LOG_FILE}"
-# else
-#     echo "❌ Could not find script: ${PYTHON_SCRIPT}"
-#     exit 1
-# fi
-
 echo "✅ Docker proxy setup complete!"

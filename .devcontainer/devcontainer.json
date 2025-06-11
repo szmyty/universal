@@ -4,6 +4,7 @@
     "service": "dev",
     "runServices": ["dev"],
     "workspaceFolder": "/workspace",
+    "postCreateCommand": "task hooks:install",
     "features": {
         "ghcr.io/devcontainers/features/docker-in-docker:2.12.2": {
             "version": "latest",
