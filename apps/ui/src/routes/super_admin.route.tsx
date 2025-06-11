@@ -1,3 +1,4 @@
+// Route restricted to superadmin users.
 import { createRoute } from "@tanstack/react-router";
 import { rootRoute } from "./index";
 import { ComponentType, lazy, Suspense } from "react";

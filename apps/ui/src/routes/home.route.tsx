@@ -1,3 +1,4 @@
+// Route definition for the home page.
 import { createRoute } from "@tanstack/react-router";
 import { rootRoute } from "./index";
 import { ComponentType, lazy, Suspense } from "react";

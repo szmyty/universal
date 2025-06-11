@@ -1,3 +1,4 @@
+// Performs automatic sign-in on first visit when not using mock auth.
 import { useAutoSignin } from "react-oidc-context";
 
 export function AuthWrapper({ children }: { children: React.ReactNode }) {
