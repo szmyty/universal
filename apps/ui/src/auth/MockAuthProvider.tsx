@@ -1,3 +1,4 @@
+// Lightweight replacement for `react-oidc-context` used during local development.
 import { createContext, useContext } from "react";
 import type { UserProfile } from "@universal/models";
 

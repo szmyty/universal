@@ -1,3 +1,4 @@
+// Example page accessible only to the `superadmin` role.
 import { useAuth } from "../auth/useAuth";
 
 export default function SuperAdminPanel() {

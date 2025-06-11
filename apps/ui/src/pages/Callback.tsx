@@ -1,4 +1,5 @@
 import { useAuth } from "@universal/auth";
+// Handles the redirect after Keycloak sign-in.
 
 export default function Callback() {
   const { activeNavigator, isLoading } = useAuth();

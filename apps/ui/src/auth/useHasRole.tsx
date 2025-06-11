@@ -1,3 +1,4 @@
+// Utility hooks for checking user roles and groups.
 import { useAuth } from "./useAuth";
 
 /**

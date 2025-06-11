@@ -1,3 +1,4 @@
+// Central router configuration for the UI.
 import { createRootRoute, createRouter } from "@tanstack/react-router";
 import { RootLayout } from "./root.route";
 import { homeRoute } from "./home.route";

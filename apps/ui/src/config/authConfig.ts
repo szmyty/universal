@@ -1,3 +1,4 @@
+// Configuration passed to `react-oidc-context` for Keycloak.
 import { AuthProviderProps } from "react-oidc-context";
 
 export const oidcConfig: AuthProviderProps = {

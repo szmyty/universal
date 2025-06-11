@@ -1,3 +1,4 @@
+// Shared layout component used as the root of the router.
 import { Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import MockBanner from "@universal/components//MockBanner/MockBanner";

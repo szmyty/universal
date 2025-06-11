@@ -1,4 +1,4 @@
-// src/routes/Protected.tsx
+// Higher order component for protecting routes based on auth and roles.
 import { Navigate } from "@tanstack/react-router";
 import { useAuth } from "../auth/useAuth";
 

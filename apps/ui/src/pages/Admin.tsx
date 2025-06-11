@@ -1,3 +1,4 @@
+// Protected admin page showing user info and roles.
 import { useAuth } from "@universal/auth";
 
 export default function Admin() {
