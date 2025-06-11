@@ -6,6 +6,7 @@
         "github.vscode-github-actions",
         "task.vscode-task",
         "sanjulaganepola.github-local-actions",
-        "richterger.perl"
+        "richterger.perl",
+        "xyz.local-history"
     ]
 }

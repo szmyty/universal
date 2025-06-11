@@ -47,7 +47,8 @@
                 "esbenp.prettier-vscode",
                 "streetsidesoftware.code-spell-checker",
                 "mads-hartmann.bash-ide-vscode",
-                "richterger.perl"
+                "richterger.perl",
+                "xyz.local-history"
             ]
         }
     }
