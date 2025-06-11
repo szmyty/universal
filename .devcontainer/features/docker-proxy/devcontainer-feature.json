@@ -39,6 +39,18 @@
         "ghcr.io/devcontainers/features/common-utils",
         "ghcr.io/devcontainers/features/docker-in-docker"
     ],
+    "postCreateCommand": ". /etc/devcontainer/docker-proxy.env && sudo --preserve-env=HTTP_PROXY,HTTPS_PROXY,NO_PROXY,DOCKER_DNS,INSECURE_REGISTRIES,LOG_FILE python3 /usr/local/share/docker-proxy-setup.py --http-proxy \"$HTTP_PROXY\" --https-proxy \"$HTTPS_PROXY\" --no-proxy \"$NO_PROXY\" --docker-dns \"$DOCKER_DNS\" --insecure-registries \"$INSECURE_REGISTRIES\" --log-file \"$LOG_FILE\"",
+
+//     ""postCreateCommand": [
+//   "bash", "-c",
+//   "source /etc/devcontainer/docker-proxy.env && python3 /usr/local/share/docker-proxy-setup.py \
+//   --http-proxy \"$HTTP_PROXY\" \
+//   --https-proxy \"$HTTPS_PROXY\" \
+//   --no-proxy \"$NO_PROXY\" \
+//   --docker-dns \"$DOCKER_DNS\" \
+//   --insecure-registries \"$INSECURE_REGISTRIES\" \
+//   --log-file \"$LOG_FILE\""
+// ]",
     "customizations": {
         "vscode": {
             "settings": {
@@ -46,5 +58,5 @@
                 "github.copilot.chat.codeGeneration.instructions": "Use the Docker proxy setup feature to configure Docker to work behind a proxy."
             }
         }
-    },
+    }
 }

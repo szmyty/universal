@@ -186,7 +186,7 @@ def restart_docker_daemon() -> None:
         except subprocess.CalledProcessError:
             log("⚠️ 'containerd' was not running — skipping.")
         try:
-            run(["bash", str(DOCKER_INIT_SCRIPT)])
+            run(["sudo", "bash", str(DOCKER_INIT_SCRIPT)])
             log("✅ Docker restarted via docker-init script.")
             return
         except subprocess.CalledProcessError as e:
@@ -261,7 +261,7 @@ def main():
     setup_docker_config(args.http_proxy, args.https_proxy, args.no_proxy)
     setup_daemon_json(args.docker_dns, args.insecure_registries)
     setup_systemd_proxy(args.http_proxy, args.https_proxy, args.no_proxy)
-    reload_systemd()
+    # reload_systemd()
     restart_docker_daemon()
     verify_docker_connection()
     verify_proxy_settings()
