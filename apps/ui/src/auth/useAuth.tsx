@@ -1,3 +1,4 @@
+// Unified hook that returns either the real or mock auth context.
 import type { UserProfile } from "@universal/models";
 import { useMockAuth } from "./MockAuthProvider";
 

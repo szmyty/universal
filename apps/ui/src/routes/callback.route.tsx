@@ -1,3 +1,4 @@
+// Route used after completing the OIDC login flow.
 import { createRoute } from "@tanstack/react-router";
 import { rootRoute } from "./index";
 import { ComponentType, lazy, Suspense } from "react";

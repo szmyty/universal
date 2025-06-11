@@ -1,3 +1,4 @@
+// Re-export individual pages for easier imports.
 export * from "./About";
 export * from "./Home";
 export * from "./Admin";

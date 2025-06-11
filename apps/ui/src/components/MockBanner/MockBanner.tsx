@@ -1,3 +1,5 @@
+// Displays a warning banner when running in "fake" authentication mode.
+// Useful for local development when Keycloak is not available.
 export default function MockBanner() {
   if (import.meta.env.VITE_FAKE_AUTH !== "true") return null;
 

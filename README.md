@@ -28,3 +28,13 @@ For a preconfigured development environment using Docker, see
 [Dev Container Usage](docs/devcontainer.md).
 
 📁 [View Project Tree](https://szmyty.github.io/universal//tree.md)
+
+## Applications
+
+- `apps/ui` – React front-end application
+
+Start the UI in dev mode with:
+
+```bash
+pnpm --filter universal-ui dev
+```

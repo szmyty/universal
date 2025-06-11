@@ -1,3 +1,4 @@
+// Displayed when a user lacks sufficient permissions.
 import { useAuth } from "../auth/useAuth";
 import { AdminBadge } from "../auth/AdminBadge";
 
