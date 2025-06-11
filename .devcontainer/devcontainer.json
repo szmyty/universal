@@ -28,6 +28,8 @@
     ],
     "containerEnv": {},
     "remoteUser": "vscode",
+    "privileged": true,
+    "capAdd": ["SYS_ADMIN", "SYS_PTRACE"],
     "customizations": {
         "vscode": {
             "settings": {
@@ -43,7 +45,8 @@
                 "EditorConfig.EditorConfig",
                 "esbenp.prettier-vscode",
                 "streetsidesoftware.code-spell-checker",
-                "mads-hartmann.bash-ide-vscode"
+                "mads-hartmann.bash-ide-vscode",
+                "richterger.perl"
             ]
         }
     }

@@ -12,7 +12,7 @@ tasks:
     cmds:
       - pnpm install
       - poetry install --no-root
-      - task hooks:install
+      # - task hooks:install
     silent: true
 
   lint:

@@ -31,23 +31,20 @@
         },
         "log_file": {
             "type": "string",
-            "default": "$HOME/.devtools",
+            "default": "/var/log/.devtools/docker-proxy-setup.log",
             "description": "File path for docker-proxy setup logs"
         }
     },
-    "containerEnv": {
-        "HTTP_PROXY": "${HTTPPROXY}",
-        "HTTPS_PROXY": "${HTTPSPROXY}",
-        "NO_PROXY": "${NOPROXY}",
-        "http_proxy": "${HTTPPROXY}",
-        "https_proxy": "${HTTPSPROXY}",
-        "no_proxy": "${NOPROXY}",
-        "DOCKER_DNS": "${DOCKERDNS}",
-        "INSECURE_REGISTRIES": "${INSECUREREGISTRIES}",
-        "LOG_FILE": "${LOGFILE}"
-    },
     "installsAfter": [
         "ghcr.io/devcontainers/features/common-utils",
-        "ghcr.io/devcontainers/features/docker-in-docker",
-    ]
+        "ghcr.io/devcontainers/features/docker-in-docker"
+    ],
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "bash",
+                "github.copilot.chat.codeGeneration.instructions": "Use the Docker proxy setup feature to configure Docker to work behind a proxy."
+            }
+        }
+    },
 }

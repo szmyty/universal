@@ -100,7 +100,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-cache \
     llvm=1:18.0-59~exp2 \
     locales=2.39-0ubuntu8.4 \
     locales-all=2.39-0ubuntu8.4 \
-    logrotate==3.21.0-2build1 \
+    logrotate=3.21.0-2build1 \
     lsof=4.95.0-1build3 \
     make=4.3-4.1build2 \
     moreutils=0.69-1 \
@@ -135,11 +135,11 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-cache \
 RUN if [ "${INSTALL_TEXLIVE}" = "true" ]; then \
     apt-get update -qq && \
     apt-get install --yes --no-install-recommends \
-        texlive-full \
-        fonts-noto \
-        fonts-noto-cjk \
-        fonts-noto-color-emoji \
-        fonts-lmodern && \
+    texlive-full \
+    fonts-noto \
+    fonts-noto-cjk \
+    fonts-noto-color-emoji \
+    fonts-lmodern && \
     fc-cache -f; \
     else \
     echo "📁 Skipping TeX Live install"; \

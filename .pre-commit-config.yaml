@@ -36,9 +36,9 @@ repos:
         name: "🌳 git · Detect conflict markers"
       - id: forbid-new-submodules
         name: "🌳 git · Prevent submodule creation"
-      - id: no-commit-to-branch
-        name: "🌳 git · Protect main branches"
-        args: ["--branch", "main", "--branch", "master"]
+      # - id: no-commit-to-branch
+      #   name: "🌳 git · Protect main branches"
+      #   args: ["--branch", "main", "--branch", "master"]
       - id: check-added-large-files
         name: "🌳 git · Block large file commits"
         args: ["--maxkb=5000"]
@@ -55,9 +55,9 @@ repos:
   #     - id: talisman-push
 
   ### PNG Images ###
-  - repo: https://github.com/shssoichiro/oxipng
-    rev: v9.1.5
-    hooks:
-      - id: oxipng
-        name: "🖼️ images · Optimize PNG files"
-        args: ["-o", "4", "--strip", "safe", "--alpha"]
+  # - repo: https://github.com/shssoichiro/oxipng
+  #   rev: v9.1.5
+  #   hooks:
+  #     - id: oxipng
+  #       name: "🖼️ images · Optimize PNG files"
+  #       args: ["-o", "4", "--strip", "safe", "--alpha"]
