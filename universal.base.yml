@@ -37,9 +37,8 @@ networks:
     attachable: true
     # Custom options for bridge network driver
     driver_opts:
-      com.docker.network.bridge.name: ${COMPOSE_PROJECT_NAME:-universal}-bridge
-      com.docker.network.bridge.enable_icc: true
-      com.docker.network.bridge.enable_ip_masquerade: true
+      com.docker.network.bridge.enable_icc: "true"
+      com.docker.network.bridge.enable_ip_masquerade: "true"
 
 # Define named volumes for persistent storage
 volumes:
@@ -71,3 +70,18 @@ services:
       interval: 10s
       timeout: 10s
       retries: 10
+    platform: linux/amd64
+    <<: *settings
+
+  # pgAdmin service for managing the PostGIS database
+  # pgadmin:
+  #   image: dpage/pgadmin4@sha256:6b1c0db09695758c72abcd5160b7c4cc6d0847ab0c90a2403bdbf951f0defb5a
+  #   container_name: ${PGADMIN_CONTAINER_NAME:-pgadmin}
+  #   hostname: ${PGADMIN_HOSTNAME:-pgadmin}
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@universal.localhost}
+  #     PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-adminpassword}
+  #     PGADMIN_CONFIG_ALLOW_SPECIAL_EMAIL_DOMAINS: "['localhost']"
+  #     PGADMIN_LISTEN_PORT: ${PGADMIN_PORT:-5050}
+  #   ports:
+  #     - "${PGADMIN_EXPOSED_PORT:-5050}:${PGADMIN_PORT:-5050}"

@@ -121,18 +121,18 @@ tasks:
       - task --dir apps/ui --taskfile apps/ui/Taskfile.yml setup
     silent: true
 
-dev:database:
-  desc: Start the development database locally using Docker Compose
-  cmds:
-    - |
-      docker compose \
-        --file universal.base.yml \
-        --file universal.development.yml \
-        --env-file .env.universal \
-        --env-file .env.development \
-        up database \
-        --build \
-        --force-recreate \
-        --detach \
-        --always-recreate-deps
-  silent: true
+  dev:database:
+    desc: Start the development database locally using Docker Compose
+    cmds:
+      - |
+        docker compose \
+          --file universal.base.yml \
+          --file universal.development.yml \
+          --env-file .env.universal \
+          --env-file .env.development \
+          up database \
+          --build \
+          --force-recreate \
+          --detach \
+          --always-recreate-deps
+    silent: true
