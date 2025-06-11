@@ -153,3 +153,19 @@ tasks:
           --detach \
           --always-recreate-deps
     silent: true
+
+  dev:api:
+    desc: Start the API service locally using Docker Compose
+    cmds:
+      - |
+        docker compose \
+          --file universal.base.yml \
+          --file universal.development.yml \
+          --env-file .env.universal \
+          --env-file .env.development \
+          up api \
+          --build \
+          --force-recreate \
+          --detach \
+          --always-recreate-deps
+    silent: true

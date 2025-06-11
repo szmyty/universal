@@ -1,5 +1,10 @@
 # Docker Compose for development
 services:
+  api:
+    env_file:
+      - .env.universal
+      - .env.development
+
   database:
     env_file:
       - .env.universal
