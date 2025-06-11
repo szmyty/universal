@@ -37,6 +37,9 @@ ENV DEBIAN_FRONTEND=noninteractive \
     GOOGLE_FONTS_SHA=${GOOGLE_FONTS_SHA} \
     INSTALL_GOOGLE_FONTS=${INSTALL_GOOGLE_FONTS}
 
+# Set working directory
+WORKDIR /workspace
+
 # Disable the automatic removal of downloaded packages
 RUN rm -f /etc/apt/apt.conf.d/docker-clean; \
     echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
@@ -184,9 +187,6 @@ ENV ASDF_DATA_DIR="${ASDF_DIR}/data"
 ENV ASDF_SHIMS_DIR="${ASDF_DATA_DIR}/shims"
 
 ENV PATH="${TASKFILE_HOME_DIR}:${ASDF_DIR}/bin:${ASDF_SHIMS_DIR}:${PATH}"
-
-# Set working directory
-WORKDIR /workspace
 
 # Copy devtools scripts
 COPY scripts/devtools.sh /workspace/scripts/devtools.sh

@@ -1,0 +1,11 @@
+# Docker Compose for production
+services:
+  database:
+    env_file:
+      - .env.universal
+      - .env.production
+
+  pgadmin:
+    env_file:
+      - .env.universal
+      - .env.production

@@ -1,0 +1,11 @@
+# Docker Compose for demonstration purposes
+services:
+  database:
+    env_file:
+      - .env.universal
+      - .env.demo
+
+  pgadmin:
+    env_file:
+      - .env.universal
+      - .env.demo
