@@ -12,7 +12,6 @@ tasks:
     cmds:
       - pnpm install
       - poetry install --no-root
-      # - task hooks:install
     silent: true
 
   lint:
@@ -115,3 +114,9 @@ tasks:
     silent: true
     env:
       LATEXMK_DEBUG: "1"
+
+  apps:ui:install:
+    desc: Install UI apps
+    cmds:
+      - task --dir apps/ui --taskfile apps/ui/Taskfile.yml setup
+    silent: true

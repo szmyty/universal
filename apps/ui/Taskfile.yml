@@ -1,6 +1,11 @@
 version: "3"
 
 tasks:
+  setup:
+    desc: Install dependencies and set up the environment
+    cmds:
+      - pnpm install
+    silent: true
   dev:
     desc: Install dependencies and set up the environment
     cmds:
