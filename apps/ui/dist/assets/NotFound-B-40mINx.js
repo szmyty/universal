@@ -1,0 +1,1 @@
+import{j as t}from"./index-CjX7XuZp.js";import"./vendor-DJG_os-6.js";function r(){return t.jsx("h1",{className:"text-3xl font-bold text-gray-500",children:"404 - Page Not Found"})}export{r as default};

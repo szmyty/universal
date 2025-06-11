@@ -1,0 +1,1 @@
+import{u as n,j as i}from"./index-CjX7XuZp.js";import"./vendor-DJG_os-6.js";function a(){const{activeNavigator:t,isLoading:e}=n();return t==="signinRedirect"?i.jsx("div",{children:"Redirecting..."}):i.jsx("div",{children:e?"Loading auth...":"Signed in successfully."})}export{a as default};

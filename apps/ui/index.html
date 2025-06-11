@@ -4,6 +4,25 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Universal</title>
+        <meta
+            name="description"
+            content="Universal UI for the Universal project"
+        />
+
+        <!-- 🌐 Map style: load immediately to prevent FOUC on initial render -->
+        <link rel="stylesheet" href="/vendor/css/mapbox-gl.css" />
+        <link rel="stylesheet" href="/vendor/css/maplibre-gl.css" />
+
+        <!-- Preload font stylesheet non-blocking -->
+        <link
+            rel="preload"
+            href="/vendor/css/superfine.css"
+            as="style"
+            onload="this.onload=null;this.rel='stylesheet'"
+        />
+        <noscript>
+            <link rel="stylesheet" href="/vendor/css/superfine.css" />
+        </noscript>
     </head>
     <body>
         <div id="root"></div>
