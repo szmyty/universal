@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.4
 
-# Pinned
+# Pinned base image for consistency
 FROM mcr.microsoft.com/devcontainers/base@sha256:cdff177dd5755c0ba2afea60cdc0ab07d933c60d50c6c90dccbcc42b4b4ab76d
 
 # Override the temporary directory if needed
@@ -131,7 +131,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-cache \
     fonts-noto \
     fonts-noto-cjk \
     fonts-noto-color-emoji \
-    fonts-lmodern
+    fonts-lmodern \
+    pwgen=2.08-2build2
 
 RUN fc-cache -f
 

@@ -1,0 +1,73 @@
+# Define common labels for Docker objects
+x-labels: &labels
+  labels:
+    app.name: ${COMPOSE_PROJECT_NAME:-universal}
+
+# Shared settings for all services
+x-settings: &settings # Restart containers unless stopped manually
+  restart: unless-stopped
+  # Environment variables for all services
+  environment:
+    - COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME:-universal}
+    - APP_NAME=${APP_NAME:-universal}
+    - TZ=${TZ:-UTC}
+  # Allow access to the host machine from the container
+  extra_hosts:
+    - "host.docker.internal:host-gateway"
+  # Init system for graceful shutdown
+  init: true
+  # Pull policy for images
+  pull_policy: missing
+  # Attach the container to the project network
+  networks:
+    default:
+      aliases:
+        - ${COMPOSE_PROJECT_NAME:-universal}-network
+  # Apply the common labels to all services
+  <<: *labels
+
+# Define the Docker network for all services
+networks:
+  default:
+    # Name of the Docker network, based on the project name
+    name: ${COMPOSE_PROJECT_NAME:-universal}-network
+    # Use the bridge driver for the network (https://docs.docker.com/compose/networking/)
+    driver: bridge
+    # Allows containers to manually attach to this network
+    attachable: true
+    # Custom options for bridge network driver
+    driver_opts:
+      com.docker.network.bridge.name: ${COMPOSE_PROJECT_NAME:-universal}-bridge
+      com.docker.network.bridge.enable_icc: true
+      com.docker.network.bridge.enable_ip_masquerade: true
+
+# Define named volumes for persistent storage
+volumes:
+  database:
+    # Name of the volume for database storage
+    name: database
+    # Driver for the volume, using local storage
+    driver: local
+
+# Define the base services in the Docker Compose file
+services:
+  # PostGIS database service
+  database:
+    image: postgis/postgis@sha256:495a314df49c5a7a420ee076042b6f91e30f195a0ce0901d2c2369f5bf67c8e7
+    container_name: ${DATABASE_CONTAINER_NAME:-database}
+    hostname: ${DATABASE_HOSTNAME:-database}
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME:-universal}
+      POSTGRES_USER: ${DATABASE_USER:-postgres}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-postgres}
+    volumes:
+      - database:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready --username $DATABASE_USER --dbname $DATABASE_NAME --port $DATABASE_PORT || exit 1",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 10

@@ -13,6 +13,7 @@ import { VitePWA } from "vite-plugin-pwa";
 import pkg from "./package.json";
 import fixReactVirtualized from "esbuild-plugin-react-virtualized";
 import { visualizer } from "rollup-plugin-visualizer";
+import wasm from "vite-plugin-wasm";
 
 // Resolve __dirname since we're in ES module context
 const __filename = fileURLToPath(import.meta.url);
@@ -43,20 +44,21 @@ export default defineConfig({
         tailwindcss(),
         visualizer({
             filename: "stats.html",
-            open: true, // auto-opens browser after build
+            open: false,
             gzipSize: true,
             brotliSize: true,
             emitFile: true,
         }),
+        wasm(),
     ],
     server: {
         port: Number(process.env.UI_PORT) || 5173,
-        proxy: {
-            "/api": {
-                target: `http://localhost:${process.env.API_PORT || 8000}`,
-                changeOrigin: true,
-            },
-        },
+        // proxy: {
+        //     "/api": {
+        //         target: `http://localhost:${process.env.API_PORT || 8000}`,
+        //         changeOrigin: true,
+        //     },
+        // },
         host: true,
         strictPort: true,
         cors: true,
@@ -70,12 +72,23 @@ export default defineConfig({
         },
     },
     build: {
+        outDir: "dist",
+        sourcemap: true,
+        minify: true,
         rollupOptions: {
+            input: {
+                main: path.resolve(__dirname, "index.html"),
+            },
             output: {
                 manualChunks: {
                     vendor: ["react", "react-dom"], // Separate React into its own chunk
                 },
             },
+        },
+        target: "esnext",
+        commonjsOptions: {
+            include: [/node_modules/],
+            transformMixedEsModules: true, // Allow mixing ESM and CommonJS
         },
     },
 });

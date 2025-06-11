@@ -1,0 +1,6 @@
+# Docker Compose for development
+services:
+  database:
+    env_file:
+      - .env.universal
+      - .env.development
