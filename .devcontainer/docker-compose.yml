@@ -1,3 +1,10 @@
+######################################################################
+# docker-compose configuration for the devcontainer
+#
+# The dev service builds the image defined in Dockerfile and mounts the
+# repository into /workspace. The container is kept running with a
+# "sleep infinity" command so that VS Code can attach to it.
+######################################################################
 services:
   dev:
     container_name: ${COMPOSE_PROJECT_NAME:-devcontainer}-dev
@@ -6,13 +13,16 @@ services:
       context: ..
       dockerfile: .devcontainer/Dockerfile
     volumes:
+      # Mount the repository so that changes on the host are reflected
+      # inside the container
       - ..:/workspace:cached
     command: sleep infinity
-    privileged: true
+    privileged: true  # required for docker-in-docker
     user: vscode
     networks:
       - devnet
 
 networks:
   devnet:
+    # Simple bridge network for development containers
     driver: bridge

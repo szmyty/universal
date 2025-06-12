@@ -24,6 +24,20 @@ automatically runs a post-create script to finalize Docker proxy configuration.
 - Optional proxy configuration via the custom `docker-proxy` feature.
 - Development tools installed through `Taskfile.yml`.
 
+## Configuration Files
+
+The development environment is defined by two main files in the
+`.devcontainer` directory:
+
+- **Dockerfile** – builds the image used for development. It pins the
+  base image, installs system packages and sets up optional extras such
+  as Google Fonts and language runtimes.
+- **docker-compose.yml** – starts the `dev` service using that image and
+  mounts the repository into `/workspace`.
+
+These files can be customised if additional packages or services are
+required.
+
 ## Troubleshooting
 
 If Docker commands fail after the container starts, run the proxy setup

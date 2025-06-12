@@ -1,22 +1,34 @@
 # syntax=docker/dockerfile:1.4
 
-# Pinned base image for consistency
+######################################################################
+# Development container image
+#
+# This Dockerfile builds the image used by the VS Code devcontainer.
+# It extends the official devcontainers base image and installs a
+# collection of common build tools, language runtimes and utilities.
+#
+# The image is pinned to a specific digest so that builds are
+# reproducible.  Feel free to add or remove packages to suit your
+# project's needs.
+######################################################################
 FROM mcr.microsoft.com/devcontainers/base@sha256:cdff177dd5755c0ba2afea60cdc0ab07d933c60d50c6c90dccbcc42b4b4ab76d
 
-# Override the temporary directory if needed
+# Override the default temporary directory if needed. Useful when
+# working on filesystems where /tmp has limited space.
 ARG TMPDIR=/tmp
 
-# Locale and timezone settings
+# Locale and timezone settings used during build and at runtime
 ARG LANG=en_US.UTF-8
 ARG LANGUAGE=en_US:en
 ARG TZ=UTC
 ARG LC_ALL=en_US.UTF-8
 
-# Google Fonts
+# Optional Google Fonts installation
 ARG INSTALL_GOOGLE_FONTS=true
 ARG GOOGLE_FONTS_SHA=2b5bd4077bd9269cdf3114266603372af6c3222d
 
-# Set environment variables
+# Core environment variables for non-interactive apt operations and
+# consistent Python behaviour.
 ENV DEBIAN_FRONTEND=noninteractive \
     DEBCONF_NONINTERACTIVE_SEEN=true \
     DEBIAN_PRIORITY=critical \
@@ -49,7 +61,9 @@ RUN rm -f /etc/apt/apt.conf.d/docker-clean; \
 # See https://github.com/debuerreotype/docker-debian-artifacts/issues/24#issuecomment-360870939
 RUN mkdir --parents /usr/share/man/man1
 
-# Install system dependencies required for building Python + Python packages
+# Install build tools and common utilities. The package list is
+# intentionally explicit so that version locks in apt-packages.lock
+# reflect exactly what was installed.
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-cache \
     --mount=type=cache,target=/var/lib/apt,sharing=locked,id=apt-lib \
     apt-get update -qq && \
@@ -142,6 +156,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-cache \
     fzf=0.44.1-1ubuntu0.2 \
     bat=0.24.0-1build1
 
+# Rebuild the font cache after installing fonts
 RUN fc-cache -f
 
 RUN echo "LC_ALL=en_US.UTF-8" >> /etc/environment \
@@ -171,30 +186,34 @@ RUN if [ "${INSTALL_GOOGLE_FONTS}" = "true" ]; then \
     echo "📁 Skipping Google Fonts install"; \
     fi
 
+# Record installed font families for reference
 RUN fc-list : family | sort -u > fonts.lock
 
-# Set devtools directory
+# Location where additional development utilities are installed
 ENV DEVTOOLS_HOME=/opt/devtools
 
-# Create devtools directory
+# Create the directory in advance so ownership can be adjusted later
 RUN mkdir -p "${DEVTOOLS_HOME}"
 
 ENV TASKFILE_HOME_DIR="${DEVTOOLS_HOME}/.task"
 
-# Set up ASDF version manager
+# Configure the ASDF version manager which provides language runtimes
+# such as Node.js, Python, etc.
 ENV ASDF_DIR="${DEVTOOLS_HOME}/.asdf"
 ENV ASDF_DATA_DIR="${ASDF_DIR}/data"
 ENV ASDF_SHIMS_DIR="${ASDF_DATA_DIR}/shims"
 
+# Prepend devtool locations to the PATH for easy access
 ENV PATH="${TASKFILE_HOME_DIR}:${ASDF_DIR}/bin:${ASDF_SHIMS_DIR}:${PATH}"
 
-# Copy devtools scripts
+# Helper script that installs asdf plugins and other tooling
 COPY scripts/devtools.sh /workspace/scripts/devtools.sh
 
 # Copy .tool-versions file
 COPY .tool-versions /workspace/.tool-versions
 
-# Install devtools
+# Run the helper script and change ownership so the vscode user can
+# manage the installed tools.
 RUN chmod +x /workspace/scripts/devtools.sh && \
     bash /workspace/scripts/devtools.sh && \
     rm -rf /workspace/scripts && \
