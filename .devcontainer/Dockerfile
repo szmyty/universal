@@ -154,7 +154,15 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-cache \
     netcat-openbsd=1.226-1ubuntu2 \
     nmap=7.94+git20230807.3be01efb1+dfsg-3build2 \
     fzf=0.44.1-1ubuntu0.2 \
-    bat=0.24.0-1build1
+    bat=0.24.0-1build1 \
+    gdal-bin \
+    libgdal-dev \
+    proj-bin \
+    libproj-dev \
+    libgeos-dev \
+    libspatialindex-dev \
+    pdal \
+    pdal-tools
 
 # Rebuild the font cache after installing fonts
 RUN fc-cache -f
