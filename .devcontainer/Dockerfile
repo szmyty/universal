@@ -155,14 +155,15 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-cache \
     nmap=7.94+git20230807.3be01efb1+dfsg-3build2 \
     fzf=0.44.1-1ubuntu0.2 \
     bat=0.24.0-1build1 \
-    gdal-bin \
-    libgdal-dev \
-    proj-bin \
-    libproj-dev \
-    libgeos-dev \
-    libspatialindex-dev \
-    pdal \
-    pdal-tools
+    gdal-bin=3.8.4+dfsg-3ubuntu3 \
+    libgdal-dev=3.8.4+dfsg-3ubuntu3 \
+    proj-bin=9.4.0-1build2 \
+    libproj-dev=9.4.0-1build2 \
+    libgeos-dev=3.12.1-3build1 \
+    libspatialindex-dev=1.9.3-3build1 \
+    liblcms2-dev=2.14-2build1
+# pdal \
+# pdal-tools
 
 # Rebuild the font cache after installing fonts
 RUN fc-cache -f
