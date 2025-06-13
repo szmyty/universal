@@ -80,6 +80,30 @@ services:
     <<: *settings
 
   # Keycloak / Identity and Access Management Database service
+  keycloak-db:
+    image: postgis/postgis@sha256:495a314df49c5a7a420ee076042b6f91e30f195a0ce0901d2c2369f5bf67c8e7
+    container_name: ${KEYCLOAK_DB_CONTAINER_NAME:-keycloak-db}
+    hostname: ${KEYCLOAK_DB_HOSTNAME:-keycloak-db}
+    environment:
+      POSTGRES_DB: ${KEYCLOAK_DB_NAME:-keycloak}
+      POSTGRES_USER: ${KEYCLOAK_DB_USER:-keycloak}
+      POSTGRES_PASSWORD: ${KEYCLOAK_DB_PASSWORD:-OM3vj4pav6P7Hw5z0JVJoLGmOk8Rit2n}
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready --username $KEYCLOAK_DB_USER --dbname $KEYCLOAK_DB_NAME --port $KEYCLOAK_DB_PORT || exit 1",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  # Keycloak service for Identity and Access Management
+  # keycloak:
+  #   image: keycloak
+  #   container_name: ${KEYCLOAK_CONTAINER_NAME:-keycloak}
+  #   hostname: ${KEYCLOAK_HOSTNAME:-keycloak}
+  #   environment:
 
   # PostGIS database service
   database:
