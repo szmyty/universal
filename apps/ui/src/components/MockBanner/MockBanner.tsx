@@ -1,5 +1,8 @@
-// Displays a warning banner when running in "fake" authentication mode.
-// Useful for local development when Keycloak is not available.
+// MockBanner displays a persistent banner whenever the application is running
+// in "fake" authentication mode.  This is primarily useful during local
+// development when Keycloak or another OIDC provider is not available.
+//
+// The component renders nothing when real authentication is enabled.
 export default function MockBanner() {
   if (import.meta.env.VITE_FAKE_AUTH !== "true") return null;
 
