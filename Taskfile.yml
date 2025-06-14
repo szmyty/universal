@@ -23,6 +23,14 @@ tasks:
     desc: Run MegaLinter without auto-fix
     cmds: ["pnpm run lint:check"]
 
+  lint:mypy:
+    desc: Run MegaLinter with mypy
+    cmds: ["pnpm run lint:mypy"]
+
+  lint:actionlint:
+    desc: Run MegaLinter with actionlint
+    cmds: ["pnpm run lint:actionlint"]
+
   secrets:
     desc: Scan for secrets using gitleaks
     cmds:
@@ -169,3 +177,8 @@ tasks:
           --detach \
           --always-recreate-deps
     silent: true
+
+  linter:
+    desc: Run MegaLinter via Docker
+    cmds:
+      - docker compose --file .devcontainer/docker-compose.yml run --rm megalinter

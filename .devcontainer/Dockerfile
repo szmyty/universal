@@ -161,7 +161,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-cache \
     libproj-dev=9.4.0-1build2 \
     libgeos-dev=3.12.1-3build1 \
     libspatialindex-dev=1.9.3-3build1 \
-    liblcms2-dev=2.14-2build1
+    liblcms2-dev=2.14-2build1 \
+    inkscape=1.2.2-2ubuntu12
 # pdal \
 # pdal-tools
 

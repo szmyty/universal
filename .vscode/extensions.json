@@ -7,6 +7,7 @@
         "task.vscode-task",
         "sanjulaganepola.github-local-actions",
         "richterger.perl",
-        "xyz.local-history"
+        "xyz.local-history",
+        "tamasfe.even-better-toml"
     ]
 }

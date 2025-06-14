@@ -49,7 +49,8 @@
                 "streetsidesoftware.code-spell-checker",
                 "mads-hartmann.bash-ide-vscode",
                 "richterger.perl",
-                "xyz.local-history"
+                "xyz.local-history",
+                "tamasfe.even-better-toml"
             ]
         }
     }

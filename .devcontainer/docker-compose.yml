@@ -22,6 +22,48 @@ services:
     networks:
       - devnet
 
+  codetotal:
+    image: ghcr.io/oxsecurity/codetotal@sha256:350b78b86cdfad1c509cf70c4aed5d3c26dce4c70508aae4b8786e06561e0918
+    container_name: ${COMPOSE_PROJECT_NAME:-devcontainer}-codetotal
+    hostname: ${CODETOTAL_HOSTNAME:-codetotal}
+    depends_on:
+      dev:
+        condition: service_healthy
+    volumes:
+      - ..:/workspace:cached
+    working_dir: /workspace
+    ports:
+      - "${CODETOTAL_PORT:-3001}:3000"
+    networks:
+      - devnet
+
+  megalinter:
+    image: oxsecurity/megalinter@sha256:c9de62bce677cfb57c7168b774e388e04e8a85db4782d4dabd002f4274ea0116
+    container_name: ${COMPOSE_PROJECT_NAME:-devcontainer}-megalinter
+    depends_on:
+      dev:
+        condition: service_healthy
+
+    volumes:
+      - ..:/workspace:cached
+    working_dir: /workspace
+    command:
+      - bash
+      - -c
+      - |
+        mega-linter-runner \
+          --install-dependencies \
+          --log-level INFO \
+          --codetotal \
+          --codetotal-url http://localhost:${CODETOTAL_PORT:-3001} \
+          --enable-all \
+          --remove-mounts
+    networks:
+      - devnet
+    environment:
+      - GITHUB_TOKEN=${GITHUB_TOKEN:-}
+      - CODETOTAL_PORT=${CODETOTAL_PORT:-3001}
+
 networks:
   devnet:
     # Simple bridge network for development containers

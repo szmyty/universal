@@ -4,7 +4,7 @@ import sys
 import json
 import subprocess
 import argparse
-from typing import Dict, List
+from typing import Dict, List, Any
 from pathlib import Path
 
 # === Constants ===
@@ -21,9 +21,14 @@ DOCKER_INIT_SCRIPT = Path("/usr/local/share/docker-init.sh")
 LOG_FILE_PATH = None
 LOG_FILE_HANDLE = None
 
-def parse_args():
-    parser = argparse.ArgumentParser(description="Docker Proxy Setup")
+def resolve_arg(args: argparse.Namespace, key: str, env_key: str, default: str | None = None) -> str:
+    val = getattr(args, key)
+    if val == "none":
+        return ""
+    return val or os.getenv(env_key, default or "")
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Docker Proxy Setup")
     parser.add_argument("--http-proxy", default=None)
     parser.add_argument("--https-proxy", default=None)
     parser.add_argument("--no-proxy", default=None)
@@ -33,18 +38,12 @@ def parse_args():
 
     args = parser.parse_args()
 
-    def resolve(key, env_key, default=None):
-        val = getattr(args, key)
-        if val == "none":
-            return ""
-        return val or os.getenv(env_key, default or "")
-
-    args.http_proxy = resolve("http_proxy", "HTTP_PROXY")
-    args.https_proxy = resolve("https_proxy", "HTTPS_PROXY")
-    args.no_proxy = resolve("no_proxy", "NO_PROXY")
-    args.docker_dns = resolve("docker_dns", "DOCKER_DNS", "8.8.8.8")
-    args.insecure_registries = resolve("insecure_registries", "INSECURE_REGISTRIES")
-    args.log_file = resolve("log_file", "LOG_FILE", "/var/log/.devtools/docker-proxy.log")
+    args.http_proxy = resolve_arg(args, "http_proxy", "HTTP_PROXY")
+    args.https_proxy = resolve_arg(args, "https_proxy", "HTTPS_PROXY")
+    args.no_proxy = resolve_arg(args, "no_proxy", "NO_PROXY")
+    args.docker_dns = resolve_arg(args, "docker_dns", "DOCKER_DNS", "8.8.8.8")
+    args.insecure_registries = resolve_arg(args, "insecure_registries", "INSECURE_REGISTRIES")
+    args.log_file = resolve_arg(args, "log_file", "LOG_FILE", "/var/log/.devtools/docker-proxy.log")
 
     return args
 
@@ -66,7 +65,7 @@ def log(msg: str) -> None:
         except Exception:
             pass
 
-def run(cmd: List[str], **kwargs) -> None:
+def run(cmd: List[str], **kwargs: Any) -> None:
     subprocess.run(cmd, check=True, **kwargs)
 
 def run_as_root_write(path: Path, content: str) -> None:
@@ -97,7 +96,7 @@ def setup_ssh() -> None:
     safe_chown(SSH_DIR, "vscode", "vscode")
     SSH_DIR.chmod(0o700)
 
-def setup_docker_config(http, https, no) -> None:
+def setup_docker_config(http: str, https: str, no: str) -> None:
     safe_mkdir(DOCKER_CONFIG_DIR)
     if not DOCKER_CONFIG_JSON.exists():
         DOCKER_CONFIG_JSON.write_text("{}\n")
@@ -120,7 +119,7 @@ def setup_docker_config(http, https, no) -> None:
 
     write_json_if_changed(DOCKER_CONFIG_JSON, cfg)
 
-def setup_daemon_json(dns_val, registries) -> None:
+def setup_daemon_json(dns_val: str, registries: str) -> None:
     safe_mkdir_root(DAEMON_JSON.parent)
     if not DAEMON_JSON.exists():
         run_as_root_write(DAEMON_JSON, "{}\n")
@@ -143,7 +142,7 @@ def setup_daemon_json(dns_val, registries) -> None:
     if updated:
         write_json_if_changed(DAEMON_JSON, data)
 
-def setup_systemd_proxy(http, https, no) -> None:
+def setup_systemd_proxy(http: str, https: str, no: str) -> None:
     safe_mkdir_root(SYSTEMD_DIR)
     if SYSTEMD_PROXY_FILE.exists():
         return
@@ -250,7 +249,7 @@ def verify_proxy_settings() -> None:
     pretty_print_file(DOCKER_CONFIG_JSON)
     pretty_print_file(SYSTEMD_PROXY_FILE)
 
-def main():
+def main() -> None:
     args = parse_args()
     global LOG_FILE_PATH
     LOG_FILE_PATH = Path(args.log_file)

@@ -1,0 +1,25 @@
+[build-system]
+requires = ["poetry-core>=2.1.2"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "api"
+version = "0.1.0"
+description = "API for the universal project"
+authors = ["Alan Szmyt <szmyty@gmail.com"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/szmyty/universal"
+repository = "https://github.com/szmyty/universal"
+documentation = "https://github.com/szmyty/universal"
+keywords = ["api", "universal", "project"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+packages = [{ include = "api" }]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.115.12"

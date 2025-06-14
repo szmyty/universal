@@ -7,9 +7,11 @@
         "format": "prettier --config .prettier.config.mjs --write .",
         "format:check": "prettier --config .prettier.config.mjs --check .",
         "lint:spellcheck": "cspell --config .cspell.config.mjs",
-        "lint": "mega-linter-runner --fix --path .",
-        "lint:check": "mega-linter-runner --path .",
-        "lint:copypaste": "jscpd --config .jscpd.json"
+        "lint": "mega-linter-runner --container-name megalinter --flavor all --platform linux/amd64 --fix --path .",
+        "lint:check": "mega-linter-runner --container-name megalinter --flavor all --platform linux/amd64 --path .",
+        "lint:copypaste": "jscpd --config .jscpd.json",
+        "lint:mypy": "mega-linter-runner --container-name megalinter --flavor all --platform linux/amd64 --path . --env ENABLE_LINTERS=PYTHON_MYPY",
+        "lint:actionlint": "mega-linter-runner --container-name megalinter --flavor all --platform linux/amd64 --path . --env ENABLE_LINTERS=ACTION_ACTIONLINT"
     },
     "devDependencies": {
         "cspell": "^9.0.2",
