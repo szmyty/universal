@@ -8,6 +8,7 @@
         "sanjulaganepola.github-local-actions",
         "richterger.perl",
         "xyz.local-history",
-        "tamasfe.even-better-toml"
+        "tamasfe.even-better-toml",
+        "redhat.ansible"
     ]
 }

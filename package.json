@@ -11,7 +11,8 @@
         "lint:check": "mega-linter-runner --container-name megalinter --flavor all --platform linux/amd64 --path .",
         "lint:copypaste": "jscpd --config .jscpd.json",
         "lint:mypy": "mega-linter-runner --container-name megalinter --flavor all --platform linux/amd64 --path . --env ENABLE_LINTERS=PYTHON_MYPY",
-        "lint:actionlint": "mega-linter-runner --container-name megalinter --flavor all --platform linux/amd64 --path . --env ENABLE_LINTERS=ACTION_ACTIONLINT"
+        "lint:actionlint": "mega-linter-runner --container-name megalinter --flavor all --platform linux/amd64 --path . --env ENABLE_LINTERS=ACTION_ACTIONLINT",
+        "lint:ansible": "mega-linter-runner --container-name megalinter --flavor all --platform linux/amd64 --path . --env ENABLE_LINTERS=ANSIBLE_ANSIBLE_LINT"
     },
     "devDependencies": {
         "cspell": "^9.0.2",

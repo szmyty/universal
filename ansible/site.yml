@@ -1,0 +1,15 @@
+---
+- name: DevContainer Ansible Taskfile Test
+  hosts: localhost
+  become: true
+  tasks:
+    - name: Ping localhost
+      ansible.builtin.ping:
+
+    - name: Show whoami
+      ansible.builtin.command: whoami
+      register: whoami_result
+
+    - name: Print user
+      ansible.builtin.debug:
+        var: whoami_result.stdout

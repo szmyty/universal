@@ -31,6 +31,10 @@ tasks:
     desc: Run MegaLinter with actionlint
     cmds: ["pnpm run lint:actionlint"]
 
+  lint:ansible:
+    desc: Run MegaLinter with ansible-lint
+    cmds: ["pnpm run lint:ansible"]
+
   secrets:
     desc: Scan for secrets using gitleaks
     cmds:
@@ -177,6 +181,14 @@ tasks:
           --detach \
           --always-recreate-deps
     silent: true
+
+  ansible:test:
+    desc: Run local Ansible test playbook
+    dir: ansible
+    env:
+      ANSIBLE_CONFIG: "./.ansible.cfg"
+    cmds:
+      - ansible-playbook site.yml
 
   linter:
     desc: Run MegaLinter via Docker

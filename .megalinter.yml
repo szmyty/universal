@@ -75,3 +75,4 @@ DISABLE_ERRORS: false
 
 PYTHON_MYPY_CONFIG_FILE: config/.mypy.ini
 ACTION_ACTIONLINT_CONFIG_FILE: .github/actionlint.yaml
+ANSIBLE_ANSIBLE_LINT_CONFIG_FILE: config/.ansible-lint
