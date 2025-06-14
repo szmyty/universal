@@ -1,3 +1,7 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+# Taskfile for managing development tasks in a multi-platform environment
+
 version: "3"
 
 vars:

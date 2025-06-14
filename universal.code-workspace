@@ -34,6 +34,7 @@
         ],
         "yaml.schemas": {
             "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible-lint-config.json": "**/.ansible-lint",
+            "https://taskfile.dev/schema.json": "**/Taskfile.yml",
         },
         "local-history.path": "${workspaceFolder}/.cache/vscode",
     },

@@ -25,7 +25,8 @@ ARG LC_ALL=en_US.UTF-8
 
 # Optional Google Fonts installation
 ARG INSTALL_GOOGLE_FONTS=true
-ARG GOOGLE_FONTS_SHA=2b5bd4077bd9269cdf3114266603372af6c3222d
+ARG GOOGLE_FONTS_SHA_COMMIT=2b5bd4077bd9269cdf3114266603372af6c3222d
+ARG GOOGLE_FONTS_SHA256=e413e29c18fa727ff4d509280fd432fc0ecb1f6117eb29f2c0a87918d30fe3ad
 
 # Core environment variables for non-interactive apt operations and
 # consistent Python behaviour.
@@ -46,20 +47,27 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONHASHSEED=random \
     PIP_NO_CACHE_DIR=1 \
     PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" \
-    GOOGLE_FONTS_SHA=${GOOGLE_FONTS_SHA} \
+    GOOGLE_FONTS_SHA_COMMIT=${GOOGLE_FONTS_SHA_COMMIT} \
+    GOOGLE_FONTS_SHA256=${GOOGLE_FONTS_SHA256} \
     INSTALL_GOOGLE_FONTS=${INSTALL_GOOGLE_FONTS}
 
 # Set working directory
 WORKDIR /workspace
 
 # Disable the automatic removal of downloaded packages
-RUN rm -f /etc/apt/apt.conf.d/docker-clean; \
-    echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
+RUN rm -f /etc/apt/apt.conf.d/docker-clean
 
 # Fix for update-alternatives: error:
 # 'error creating symbolic link '/usr/share/man/man1/rmid.1.gz.dpkg-tmp': No such file or directory'
 # See https://github.com/debuerreotype/docker-debian-artifacts/issues/24#issuecomment-360870939
 RUN mkdir --parents /usr/share/man/man1
+
+# Copy configuration files for apt and dpkg
+COPY configs/dpkg/*.conf /etc/dpkg/dpkg.cfg.d/
+COPY configs/apt/*.conf /etc/apt/apt.conf.d/
+
+RUN apt-config dump > /workspace/_apt-config.dump
+RUN grep -r . /etc/dpkg/dpkg.cfg.d/ > /workspace/_dpkg-config.dump
 
 # Install build tools and common utilities. The package list is
 # intentionally explicit so that version locks in apt-packages.lock
@@ -168,7 +176,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-cache \
 # pdal-tools
 
 # Rebuild the font cache after installing fonts
-RUN fc-cache -f
+RUN fc-cache -f -v
 
 RUN echo "LC_ALL=en_US.UTF-8" >> /etc/environment \
     && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
@@ -188,11 +196,10 @@ RUN sed -i '/^#\?SYS_UID_MAX/ d' /etc/login.defs && echo 'SYS_UID_MAX 99999' >> 
 # Copy install-google-fonts script
 COPY scripts/install-google-fonts.sh /workspace/scripts/install-google-fonts.sh
 
-# Conditionally run the installer if the flag is true
-RUN if [ "${INSTALL_GOOGLE_FONTS}" = "true" ]; then \
+RUN --mount=type=cache,target=/var/cache/fonts,sharing=locked,id=google-fonts \
+    if [ "${INSTALL_GOOGLE_FONTS}" = "true" ]; then \
     chmod +x /workspace/scripts/install-google-fonts.sh && \
-    bash /workspace/scripts/install-google-fonts.sh "${GOOGLE_FONTS_SHA}" && \
-    rm -rf /workspace/scripts; \
+    bash /workspace/scripts/install-google-fonts.sh "/usr/local/share/fonts/google"; \
     else \
     echo "📁 Skipping Google Fonts install"; \
     fi
