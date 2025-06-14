@@ -9,6 +9,7 @@
     - name: Show whoami
       ansible.builtin.command: whoami
       register: whoami_result
+      changed_when: false
 
     - name: Print user
       ansible.builtin.debug:

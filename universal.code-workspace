@@ -32,6 +32,9 @@
             "**/dist/**",
             "**/Notes/**",
         ],
+        "yaml.schemas": {
+            "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible-lint-config.json": "**/.ansible-lint",
+        },
         "local-history.path": "${workspaceFolder}/.cache/vscode",
     },
 }

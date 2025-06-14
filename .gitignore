@@ -35,7 +35,7 @@
 **/.venv
 **/venv
 **/.pnpm-store
-
+**/.ruff_cache
 
 # Added by cargo
 
