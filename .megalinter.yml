@@ -33,13 +33,6 @@ SPELL_CSPELL_CONFIG_FILE: cspell.config.mjs
 
 IGNORE_GITIGNORED_FILES: true
 
-JAVASCRIPT_PRETTIER_CONFIG_FILE: .prettier.config.mjs
-JSON_PRETTIER_CONFIG_FILE: .prettier.config.mjs
-TYPESCRIPT_PRETTIER_CONFIG_FILE: .prettier.config.mjs
-YAML_PRETTIER_CONFIG_FILE: .prettier.config.mjs
-
-REPOSITORY_KICS_CONFIG_FILE: .kics.config.json
-
 DISABLE_LINTERS:
   - REPOSITORY_DEVSKIM
 
@@ -73,6 +66,15 @@ FLAVOR_SUGGESTIONS: false
 FAIL_IF_MISSING_LINTER_IN_FLAVOR: true
 DISABLE_ERRORS: false
 
+ERROR_ON_MISSING_EXEC_BIT: true
+
 PYTHON_MYPY_CONFIG_FILE: config/.mypy.ini
 ACTION_ACTIONLINT_CONFIG_FILE: .github/actionlint.yaml
 ANSIBLE_ANSIBLE_LINT_CONFIG_FILE: config/.ansible-lint
+API_SPECTRAL_CONFIG_FILE: config/.spectral.yaml
+JAVASCRIPT_PRETTIER_CONFIG_FILE: .prettier.config.mjs
+JSON_PRETTIER_CONFIG_FILE: .prettier.config.mjs
+TYPESCRIPT_PRETTIER_CONFIG_FILE: .prettier.config.mjs
+YAML_PRETTIER_CONFIG_FILE: .prettier.config.mjs
+REPOSITORY_KICS_CONFIG_FILE: config/.kics.config.json
+ARM_ARM_TTK_CONFIG_FILE: config/.arm-ttk.psd1

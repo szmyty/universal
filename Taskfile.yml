@@ -39,6 +39,18 @@ tasks:
     desc: Run MegaLinter with ansible-lint
     cmds: ["pnpm run lint:ansible"]
 
+  lint:spectral:
+    desc: Run MegaLinter with spectral
+    cmds: ["pnpm run lint:spectral"]
+
+  lint:arm-ttk:
+    desc: Run MegaLinter with arm-ttk
+    cmds: ["pnpm run lint:arm-ttk"]
+
+  lint:bash_exec:
+    desc: Run MegaLinter with bash-exec
+    cmds: ["pnpm run lint:bash_exec"]
+
   secrets:
     desc: Scan for secrets using gitleaks
     cmds:

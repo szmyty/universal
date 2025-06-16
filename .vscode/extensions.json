@@ -9,6 +9,7 @@
         "richterger.perl",
         "xyz.local-history",
         "tamasfe.even-better-toml",
-        "redhat.ansible"
+        "redhat.ansible",
+        "stoplight.spectral"
     ]
 }
