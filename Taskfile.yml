@@ -51,6 +51,14 @@ tasks:
     desc: Run MegaLinter with bash-exec
     cmds: ["pnpm run lint:bash_exec"]
 
+  lint:bash_shellcheck:
+    desc: Run MegaLinter with shellcheck
+    cmds: ["pnpm run lint:bash_shellcheck"]
+
+  lint:bash_shfmt:
+    desc: Run MegaLinter with shfmt
+    cmds: ["pnpm run lint:bash_shfmt"]
+
   secrets:
     desc: Scan for secrets using gitleaks
     cmds:

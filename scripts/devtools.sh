@@ -26,7 +26,7 @@ rust rustc https://github.com/code-lever/asdf-rust.git
 EOF
 )
 
-mapfile -t ASDF_PLUGIN_TABLE <<< "$ASDF_PLUGIN_DATA"
+mapfile -t ASDF_PLUGIN_TABLE <<< "${ASDF_PLUGIN_DATA}"
 
 # -----------------------------------------------------------------------------
 # Function: get_plugin_command
@@ -48,9 +48,9 @@ get_plugin_command() {
   local plugin="$1"
   for entry in "${ASDF_PLUGIN_TABLE[@]}"; do
     local plugin_name command_name url
-    read -r plugin_name command_name url <<< "$entry"
-    if [[ "$plugin" == "$plugin_name" ]]; then
-      echo "$command_name"
+    read -r plugin_name command_name url <<< "${entry}"
+    if [[ "${plugin}" == "${plugin_name}" ]]; then
+      echo "${command_name}"
       return
     fi
   done
@@ -76,9 +76,9 @@ get_plugin_url() {
   local plugin="$1"
   for entry in "${ASDF_PLUGIN_TABLE[@]}"; do
     local plugin_name command_name url
-    read -r plugin_name command_name url <<< "$entry"
-    if [[ "$plugin" == "$plugin_name" ]]; then
-      echo "$url"
+    read -r plugin_name command_name url <<< "${entry}"
+    if [[ "${plugin}" == "${plugin_name}" ]]; then
+      echo "${url}"
       return
     fi
   done
@@ -121,12 +121,23 @@ cmd::exists() {
 # -----------------------------------------------------------------------------
 realpath() {
     local path="$1"
+
+    # Call cmd::exists in its own statement to preserve 'set -e' behavior
+    # shellcheck disable=SC2310
     if cmd::exists realpath; then
-        command realpath "$path"
-    else
-        # Fallback for POSIX systems (no symlink resolution)
-        (cd "$(dirname "$path")" && printf "%s/%s\n" "$(pwd -P)" "$(basename "$path")")
+        command realpath "${path}"
+        return
     fi
+
+    # Fallback without masking subshell failure
+    local dir
+    dir=$(dirname "${path}") || return 1
+    local base
+    base=$(basename "${path}") || return 1
+
+    local dirpath
+    dirpath=$(cd "${dir}" && pwd -P) || return 1
+    printf "%s/%s\n" "${dirpath}" "${base}"
 }
 
 # -----------------------------------------------------------------------------
@@ -148,8 +159,8 @@ realpath() {
 trap::on_error() {
   local exit_code=$?
   local line_no=$1
-  printf "❌ Error on line %s. Exit code: %d\n" "$line_no" "$exit_code" >&2
-  exit "$exit_code"
+  printf "❌ Error on line %s. Exit code: %d\n" "${line_no}" "${exit_code}" >&2
+  exit "${exit_code}"
 }
 
 # -----------------------------------------------------------------------------
@@ -170,7 +181,7 @@ trap::on_error() {
 # -----------------------------------------------------------------------------
 trap::on_exit() {
   local exit_code=$?
-  printf "📤 Script exited with code %d\n" "$exit_code" >&2
+  printf "📤 Script exited with code %d\n" "${exit_code}" >&2
 }
 
 # -----------------------------------------------------------------------------
@@ -407,26 +418,29 @@ log::__print() {
   timestamp="$(date '+%Y-%m-%d %H:%M:%S')"
 
   local upper_level
-  upper_level="$(printf "%s" "$level" | tr '[:lower:]' '[:upper:]')"
+  upper_level="$(printf "%s" "${level}" | tr '[:lower:]' '[:upper:]')"
 
   local prefix="${emoji} ${upper_level}:"
 
   local log_line_console log_line_file
 
+  # shellcheck disable=SC2310
   if terminal::is_term; then
+    local reset_color
+    reset_color="$(color::reset)" || reset_color=""
     log_line_console=$(printf "%s %b%-12s%b %s" \
-      "$timestamp" \
-      "$color" "$prefix" "$(color::reset)" \
-      "$message")
+      "${timestamp}" \
+      "${color}" "${prefix}" "${reset_color}" \
+      "${message}")
   else
-    log_line_console=$(printf "%s %-12s %s" "$timestamp" "$prefix" "$message")
+    log_line_console=$(printf "%s %-12s %s" "${timestamp}" "${prefix}" "${message}")
   fi
 
-  log_line_file=$(printf "%s %-12s %s" "$timestamp" "$prefix" "$message")
+  log_line_file=$(printf "%s %-12s %s" "${timestamp}" "${prefix}" "${message}")
 
-  printf "%s\n" "$log_line_console" >&2
+  printf "%s\n" "${log_line_console}" >&2
   if [[ -n "${LOG_FILE:-}" && -n "${LOG_FILE// }" ]]; then
-    printf "%s\n" "$log_line_file" >> "$LOG_FILE"
+    printf "%s\n" "${log_line_file}" >> "${LOG_FILE}"
   fi
 }
 
@@ -461,7 +475,12 @@ log::emoji_for() {
 # Description: Logs an informational message (blue).
 # -----------------------------------------------------------------------------
 log::info() {
-  log::__print "info" "$(log::emoji_for info)" "$(color::blue)" "$@"
+  local emoji
+  emoji="$(log::emoji_for info)"
+  local blue
+  blue="$(color::blue)"
+
+  log::__print "info" "${emoji}" "${blue}" "$@"
 }
 
 # -----------------------------------------------------------------------------
@@ -469,7 +488,11 @@ log::info() {
 # Description: Logs a warning message (yellow).
 # -----------------------------------------------------------------------------
 log::warn() {
-  log::__print "warn" "$(log::emoji_for warn)" "$(color::yellow)" "$@"
+  local emoji
+  emoji="$(log::emoji_for warn)"
+  local yellow
+  yellow="$(color::yellow)"
+  log::__print "warn" "${emoji}" "${yellow}" "$@"
 }
 
 # -----------------------------------------------------------------------------
@@ -477,7 +500,11 @@ log::warn() {
 # Description: Logs an error message (red).
 # -----------------------------------------------------------------------------
 log::error() {
-  log::__print "error" "$(log::emoji_for error)" "$(color::red)" "$@"
+  local emoji
+  emoji="$(log::emoji_for error)"
+  local red
+  red="$(color::red)"
+  log::__print "error" "${emoji}" "${red}" "$@"
 }
 
 # -----------------------------------------------------------------------------
@@ -485,7 +512,11 @@ log::error() {
 # Description: Logs a success message (green).
 # -----------------------------------------------------------------------------
 log::success() {
-  log::__print "success" "$(log::emoji_for success)" "$(color::green)" "$@"
+  local emoji
+  emoji="$(log::emoji_for success)"
+  local green
+  green="$(color::green)"
+  log::__print "success" "${emoji}" "${green}" "$@"
 }
 
 # -----------------------------------------------------------------------------
@@ -493,7 +524,11 @@ log::success() {
 # Description: Logs a debug message (gray).
 # -----------------------------------------------------------------------------
 log::debug() {
-  log::__print "debug" "$(log::emoji_for debug)" "$(color::gray)" "$@"
+  local emoji
+  emoji="$(log::emoji_for debug)"
+  local gray
+  gray="$(color::gray)"
+  log::__print "debug" "${emoji}" "${gray}" "$@"
 }
 
 # -----------------------------------------------------------------------------
@@ -570,7 +605,9 @@ os::operating_system() {
 #   Exit code 0 if Linux, non-zero otherwise.
 # -----------------------------------------------------------------------------
 os::is_linux() {
-  [[ "$(os::operating_system)" == "linux" ]]
+  local os
+  os="$(os::operating_system)"
+  [[ "${os}" == "linux" ]]
 }
 
 # -----------------------------------------------------------------------------
@@ -589,7 +626,9 @@ os::is_linux() {
 #   Exit code 0 if macOS, non-zero otherwise.
 # -----------------------------------------------------------------------------
 os::is_macos() {
-  [[ "$(os::operating_system)" == "darwin" ]]
+  local os
+  os="$(os::operating_system)"
+  [[ "${os}" == "darwin" ]]
 }
 
 # -----------------------------------------------------------------------------
@@ -1142,8 +1181,8 @@ logger::init() {
 
     local timestamp
     timestamp=$(date::now)
-    LOG_FILE="$(cd "$logs_dir" && pwd)/devtools-${timestamp}.log"
-    log "📁 Logs will be written to $LOG_FILE"
+    LOG_FILE="$(cd "${logs_dir}" && pwd)/devtools-${timestamp}.log"
+    log "📁 Logs will be written to ${LOG_FILE}"
 }
 
 # -----------------------------------------------------------------------------
@@ -1179,7 +1218,7 @@ asdf::version() {
 #   Prints the installation directory path.
 # -----------------------------------------------------------------------------
 asdf::home() {
-    echo "${ASDF_DIR:-"$HOME/.asdf"}"
+    echo "${ASDF_DIR:-"${HOME}/.asdf"}"
 }
 
 # -----------------------------------------------------------------------------
@@ -1221,10 +1260,10 @@ asdf::verify() {
         binary_path="$(asdf::home)/bin/asdf"
     fi
 
-    if [[ -n "$binary_path" && -x "$binary_path" ]]; then
+    if [[ -n "${binary_path}" && -x "${binary_path}" ]]; then
         local version
-        version="$("$binary_path" --version 2>/dev/null || echo "Version info not available")"
-        log::success "✅ ASDF available at $binary_path: $version"
+        version="$("${binary_path}" --version 2>/dev/null || echo "Version info not available")"
+        log::success "✅ ASDF available at ${binary_path}: ${version}"
     else
         log::error "❌ ASDF not found"
         return 1
@@ -1252,14 +1291,14 @@ asdf::install() {
     mkdir -p "$(asdf::home)" "$(asdf::data_dir)"
     chown vscode:vscode "$(asdf::home)" "$(asdf::data_dir)"
 
-    if [[ "$version" == "latest" ]]; then
+    if [[ "${version}" == "latest" ]]; then
         log::info "🔍 Fetching latest ASDF version..."
         version="$(curl --fail --silent --show-error --location -o /dev/null -w '%{url_effective}' "${repo_url}/releases/latest" | sed 's#.*/tag/##')"
     fi
 
-    if [[ -x "$binary_path" ]]; then
-        if "$binary_path" --version &>/dev/null; then
-            log::success "✅ ASDF already installed at $binary_path"
+    if [[ -x "${binary_path}" ]]; then
+        if "${binary_path}" --version &>/dev/null; then
+            log::success "✅ ASDF already installed at ${binary_path}"
             return
         else
             log::warn "⚠️ Detected existing ASDF, but it failed to execute. Reinstalling..."
@@ -1267,18 +1306,18 @@ asdf::install() {
         fi
     fi
 
-    log::info "📥 Downloading asdf $version..."
+    log::info "📥 Downloading asdf ${version}..."
     curl --fail --silent --show-error --location \
         "${repo_url}/releases/download/${version}/asdf-${version}-${OS}-${ARCH}.tar.gz" \
         --output asdf.tar.gz
 
     tar -xzf asdf.tar.gz
-    mkdir -p "$(dirname "$binary_path")"
+    mkdir -p "$(dirname "${binary_path}")"
     chmod +x asdf
-    mv asdf "$binary_path"
+    mv asdf "${binary_path}"
     rm -f asdf.tar.gz
 
-    log::success "✅ ASDF installed to $binary_path"
+    log::success "✅ ASDF installed to ${binary_path}"
     asdf::verify
 }
 
@@ -1289,25 +1328,25 @@ has_asdf_plugin() {
 install_asdf_plugin() {
     local plugin_name=$1
 
-    if ! has_asdf_plugin "$plugin_name"; then
-        log "📥 Adding plugin: $plugin_name"
+    if ! has_asdf_plugin "${plugin_name}"; then
+        log "📥 Adding plugin: ${plugin_name}"
 
         local plugin_url
-        plugin_url="$(get_plugin_url "$plugin_name")"
+        plugin_url="$(get_plugin_url "${plugin_name}")"
 
         if [[ -n "$plugin_url" ]]; then
-            asdf plugin add "$plugin_name" "$plugin_url"
+            asdf plugin add "${plugin_name}" "${plugin_url}"
         else
-            asdf plugin add "$plugin_name"
+            asdf plugin add "${plugin_name}"
         fi
 
-        if ! asdf plugin add "$plugin_name"; then
-            log "❌ Failed to add plugin: $plugin_name"
+        if ! asdf plugin add "${plugin_name}"; then
+            log "❌ Failed to add plugin: ${plugin_name}"
             return 1
         fi
-        log "✅ Plugin added: $plugin_name"
+        log "✅ Plugin added: ${plugin_name}"
     else
-        log "🔁 Plugin already exists: $plugin_name"
+        log "🔁 Plugin already exists: ${plugin_name}"
     fi
 }
 
@@ -1318,7 +1357,7 @@ sort_plugins_by_known_plugins() {
     # First: install all plugins from KNOWN_PLUGINS in order of declaration
     for plugin in "${!KNOWN_PLUGINS[@]}"; do
         for i in "${!input_plugins[@]}"; do
-            if [[ "${input_plugins[$i]}" == "$plugin" ]]; then
+            if [[ "${input_plugins[$i]}" == "${plugin}" ]]; then
                 sorted_plugins+=("${input_plugins[$i]}")
                 unset 'input_plugins[i]'
             fi
@@ -1327,7 +1366,7 @@ sort_plugins_by_known_plugins() {
 
     # Then: install remaining unknown plugins (alphabetically)
     for plugin in "${input_plugins[@]}"; do
-        sorted_plugins+=("$plugin")
+        sorted_plugins+=("${plugin}")
     done
 
     input_plugins=("${sorted_plugins[@]}")
@@ -1356,49 +1395,49 @@ install_asdf_plugins() {
     log "📁 Found ${#tool_files[@]} .tool-versions files."
 
     for file in "${tool_files[@]}"; do
-        log "📄 Processing .tool-versions file: $file"
+        log "📄 Processing .tool-versions file: ${file}"
 
         local dir
-        dir="$(dirname "$file")"
+        dir="$(dirname "${file}")"
 
         pushd "$dir" >/dev/null
-        log "📍 Moved into: $(pwd) to install dependencies from $file"
+        log "📍 Moved into: $(pwd) to install dependencies from ${file}"
 
         local all_plugins=()
         local seen=()
 
-        while IFS= read -r line || [[ -n "$line" ]]; do
-            [[ "$line" =~ ^#.*$ || -z "$line" ]] && continue
+        while IFS= read -r line || [[ -n "${line}" ]]; do
+            [[ "${line}" =~ ^#.*$ || -z "${line}" ]] && continue
 
             local plugin
-            plugin=$(awk '{print $1}' <<<"$line")
+            plugin=$(awk '{print $1}' <<<"${line}")
 
-            if [[ ! " ${seen[*]} " =~ " $plugin " ]]; then
-                seen+=("$plugin")
-                all_plugins+=("$plugin")
+            if [[ ! " ${seen[*]} " =~ " ${plugin} " ]]; then
+                seen+=("${plugin}")
+                all_plugins+=("${plugin}")
             fi
-        done <"$file"
+        done <"${file}"
         log "🔧 Found plugins: ${all_plugins[*]}"
 
         sort_plugins_by_known_plugins all_plugins
         log "🔧 Sorted plugins: ${all_plugins[*]}"
 
         for plugin in "${all_plugins[@]}"; do
-            install_asdf_plugin "$plugin"
+            install_asdf_plugin "${plugin}"
         done
 
-        log "✅ All plugins installed from $file"
+        log "✅ All plugins installed from ${file}"
 
         # Install dependencies now that plugins are installed
         for plugin in "${all_plugins[@]}"; do
             local version
-            version=$(awk -v plugin="$plugin" '$1 == plugin {print $2}' "$file")
+            version=$(awk -v plugin="${plugin}" '$1 == plugin {print $2}' "${file}")
             if [[ -n "$version" ]]; then
-                log "📦 Installing $plugin version: $version"
-                asdf install "$plugin" "$version"
-                log "✅ Installed $plugin version: $version"
+                log "📦 Installing ${plugin} version: ${version}"
+                asdf install "${plugin}" "${version}"
+                log "✅ Installed $plugin version: ${version}"
             else
-                log "⚠️ No version specified for $plugin in $file"
+                log "⚠️ No version specified for ${plugin} in ${file}"
             fi
         done
 
@@ -1439,7 +1478,7 @@ taskfile::version() {
 #   Prints the installation directory path.
 # -----------------------------------------------------------------------------
 taskfile::home() {
-    echo "${TASKFILE_HOME_DIR:-"$HOME/.taskfile"}"
+    echo "${TASKFILE_HOME_DIR:-"${HOME}/.taskfile"}"
 }
 
 # -----------------------------------------------------------------------------
@@ -1458,15 +1497,15 @@ taskfile::home() {
 taskfile::verify() {
     local binary_path
     binary_path="$(taskfile::home)/task"
-    if [[ -x "$binary_path" ]]; then
+    if [[ -x "${binary_path}" ]]; then
         local version
-        version="$("$binary_path" --version 2>/dev/null || "$binary_path" -v 2>/dev/null || echo "Version info not available")"
-        log::success "✅ Taskfile installed at $binary_path: $version"
+        version="$("${binary_path}" --version 2>/dev/null || "${binary_path}" -v 2>/dev/null || echo "Version info not available")"
+        log::success "✅ Taskfile installed at ${binary_path}: ${version}"
     elif command -v task >/dev/null 2>&1; then
         binary_path="$(command -v task)"
         local version
-        version="$("$binary_path" --version 2>/dev/null || "$binary_path" -v 2>/dev/null || echo "Version info not available")"
-        log::success "✅ Taskfile available at $binary_path: $version"
+        version="$("${binary_path}" --version 2>/dev/null || "${binary_path}" -v 2>/dev/null || echo "Version info not available")"
+        log::success "✅ Taskfile available at ${binary_path}: ${version}"
     else
         log::error "❌ Taskfile not found"
         return 1
@@ -1503,14 +1542,16 @@ install::taskfile() {
     home_dir="$(taskfile::home)"
     local binary_path="${home_dir}/task"
 
-    if [[ -x "$binary_path" ]]; then
-        log::success "✅ Taskfile already installed at $binary_path"
+    if [[ -x "${binary_path}" ]]; then
+        log::success "✅ Taskfile already installed at ${binary_path}"
         return
     fi
 
-    log "📥 Installing Taskfile '$(taskfile::version)' to $home_dir..."
-    mkdir -p "$home_dir"
-    curl --fail --silent --show-error https://taskfile.dev/install.sh | sh -s -- -d -b "$home_dir"
+    local taskfile_version
+    taskfile_version="$(taskfile::version)"
+    log "📥 Installing Taskfile '${taskfile_version}' to ${home_dir}..."
+    mkdir -p "${home_dir}"
+    curl --fail --silent --show-error https://taskfile.dev/install.sh | sh -s -- -d -b "${home_dir}"
 
     taskfile::verify
 }
@@ -1558,9 +1599,10 @@ preflight::check() {
         readlink dirname basename printf
         command
     )
+    # shellcheck disable=SC2310
     for cmd in "${required_tools[@]}"; do
-        if ! cmd::exists "$cmd"; then
-            missing+=("$cmd")
+        if ! cmd::exists "${cmd}"; then
+            missing+=("${cmd}")
         fi
     done
 

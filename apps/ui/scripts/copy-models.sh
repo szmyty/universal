@@ -21,24 +21,24 @@ abort() {
 }
 
 ensure_source_exists() {
-  if [[ ! -f "$SOURCE" ]]; then
-    abort "Source file not found: $SOURCE"
+  if [[ ! -f "${SOURCE}" ]]; then
+    abort "Source file not found: ${SOURCE}"
   fi
 }
 
 skip_if_already_exists() {
-  if [[ -f "$DEST_FILE" ]]; then
-    log "Skipping copy — destination already exists: $DEST_FILE"
+  if [[ -f "${DEST_FILE}" ]]; then
+    log "Skipping copy — destination already exists: ${DEST_FILE}"
     exit 0
   fi
 }
 
 ensure_dest_dir_exists() {
-  mkdir -p "$DEST_DIR"
+  mkdir -p "${DEST_DIR}"
 }
 
 copy_file() {
-  cp "$SOURCE" "$DEST_FILE"
+  cp "${SOURCE}" "${DEST_FILE}"
   log "Copied models.json → ${DEST_FILE}"
 }
 

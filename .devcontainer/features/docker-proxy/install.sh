@@ -3,40 +3,37 @@ set -euo pipefail
 
 # -----------------------------------------------------------------------------
 # Dev Container Feature: Docker Proxy Setup
-#
-# This script is executed at build time. It prepares the environment by
-# invoking the Python script that applies proxy, DNS, and insecure registry
-# configuration for Docker and the dev container.
 # -----------------------------------------------------------------------------
 
 # Constants
 FEATURE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPT_NAME="post_create.py"
 PYTHON_SCRIPT="${FEATURE_DIR}/${SCRIPT_NAME}"
-
-# Resolve feature options passed as containerEnv or default values
-HTTP_PROXY="${HTTPPROXY:-""}"
-HTTPS_PROXY="${HTTPSPROXY:-""}"
-NO_PROXY="${NOPROXY:-""}"
-DOCKER_DNS="${DOCKERDNS:-"8.8.8.8"}"
-INSECURE_REGISTRIES="${INSECUREREGISTRIES:-""}"
-LOG_FILE="${LOGFILE:-"/var/log/.devtools/docker-proxy-setup.log"}"
-
-# Logging
-echo "🚀 Starting Docker proxy feature install..."
-echo "🔧 HTTP_PROXY=${HTTP_PROXY}"
-echo "🔧 HTTPS_PROXY=${HTTPS_PROXY}"
-echo "🔧 NO_PROXY=${NO_PROXY}"
-echo "🔧 DOCKER_DNS=${DOCKER_DNS}"
-echo "🔧 INSECURE_REGISTRIES=${INSECURE_REGISTRIES}"
-echo "📝 LOG_FILE=${LOG_FILE}"
-
-# Path to where the env config will be saved for postCreate usage
 CONFIG_ENV_FILE="/etc/devcontainer/docker-proxy.env"
 
-mkdir -p "$(dirname "$CONFIG_ENV_FILE")"
+# Resolve feature options passed as containerEnv or default values
+resolve_env_vars() {
+    HTTP_PROXY="${HTTPPROXY:-""}"
+    HTTPS_PROXY="${HTTPSPROXY:-""}"
+    NO_PROXY="${NOPROXY:-""}"
+    DOCKER_DNS="${DOCKERDNS:-"8.8.8.8"}"
+    INSECURE_REGISTRIES="${INSECUREREGISTRIES:-""}"
+    LOG_FILE="${LOGFILE:-"/var/log/.devtools/docker-proxy-setup.log"}"
+}
 
-cat <<EOF | sudo tee "$CONFIG_ENV_FILE" >/dev/null
+log_config() {
+    echo "🚀 Starting Docker proxy feature install..."
+    echo "🔧 HTTP_PROXY=${HTTP_PROXY}"
+    echo "🔧 HTTPS_PROXY=${HTTPS_PROXY}"
+    echo "🔧 NO_PROXY=${NO_PROXY}"
+    echo "🔧 DOCKER_DNS=${DOCKER_DNS}"
+    echo "🔧 INSECURE_REGISTRIES=${INSECURE_REGISTRIES}"
+    echo "📝 LOG_FILE=${LOG_FILE}"
+}
+
+write_env_file() {
+    mkdir -p "$(dirname "${CONFIG_ENV_FILE}")"
+    cat <<EOF | sudo tee "${CONFIG_ENV_FILE}" >/dev/null
 HTTP_PROXY="${HTTP_PROXY:-}"
 HTTPS_PROXY="${HTTPS_PROXY:-}"
 NO_PROXY="${NO_PROXY:-}"
@@ -44,9 +41,19 @@ DOCKER_DNS="${DOCKER_DNS:-8.8.8.8}"
 INSECURE_REGISTRIES="${INSECURE_REGISTRIES:-}"
 LOG_FILE="${LOG_FILE:-/home/vscode/.devtools/docker-proxy.log}"
 EOF
+    chmod 0644 "${CONFIG_ENV_FILE}"
+}
 
-chmod 0644 "$CONFIG_ENV_FILE"
+copy_python_script() {
+    cp "${PYTHON_SCRIPT}" /usr/local/share/docker-proxy-setup.py
+}
 
-cp "${PYTHON_SCRIPT}" /usr/local/share/docker-proxy-setup.py
+main() {
+    resolve_env_vars
+    log_config
+    write_env_file
+    copy_python_script
+    echo "✅ Docker proxy setup complete!"
+}
 
-echo "✅ Docker proxy setup complete!"
+main "$@"

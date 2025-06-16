@@ -14,6 +14,8 @@
         "lint:spectral": "npm run lint:base -- --env ENABLE_LINTERS=API_SPECTRAL",
         "lint:arm-ttk": "npm run lint:base -- --env ENABLE_LINTERS=ARM_ARM_TTK",
         "lint:bash_exec": "npm run lint:base -- --env ENABLE_LINTERS=BASH_EXEC",
+        "lint:bash_shellcheck": "npm run lint:base -- --env ENABLE_LINTERS=BASH_SHELLCHECK",
+        "lint:bash_shfmt": "npm run lint:base -- --env ENABLE_LINTERS=BASH_SHFMT",
         "lint:copypaste": "jscpd --config .jscpd.json"
     },
     "devDependencies": {

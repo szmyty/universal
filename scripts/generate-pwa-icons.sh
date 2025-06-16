@@ -11,7 +11,7 @@ OUT_DIR="icons"
 FAVICON_SIZES=(16 32 48 64 128 256)
 ALL_SIZES=(16 32 48 64 128 192 256 384 512)
 
-mkdir -p "$OUT_DIR"
+mkdir -p "${OUT_DIR}"
 
 log() {
   echo "🔹 $1"
@@ -29,18 +29,18 @@ check_imagemagick_installed() {
 }
 
 check_source_exists() {
-  if [[ ! -f "$SOURCE" ]]; then
-    abort "Source image not found: $SOURCE"
+  if [[ ! -f "${SOURCE}" ]]; then
+    abort "Source image not found: ${SOURCE}"
   fi
 }
 
 generate_png_icons() {
   log "Generating PNG icons (32-bit RGBA)..."
   for size in "${ALL_SIZES[@]}"; do
-    convert "$SOURCE" \
+    convert "${SOURCE}" \
       -resize "${size}x${size}" \
       -define png:color-type=6 -depth 8 \
-      "$OUT_DIR/icon-${size}x${size}.png"
+      "${OUT_DIR}/icon-${size}x${size}.png"
   done
 }
 
@@ -60,7 +60,7 @@ main() {
   check_source_exists
   generate_png_icons
   generate_favicon
-  log "✅ All icons and favicon.ico generated in: $OUT_DIR"
+  log "✅ All icons and favicon.ico generated in: ${OUT_DIR}"
 }
 
 main "$@"

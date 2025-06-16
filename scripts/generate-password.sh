@@ -15,7 +15,7 @@ generate_password() {
 main() {
   if command -v openssl &> /dev/null; then
     password=$(generate_password)
-    echo "Generated password: $password"
+    echo "Generated password: ${password}"
   else
     echo "Error: openssl command not found. Please install OpenSSL to generate a password."
     exit 1
