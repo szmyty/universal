@@ -171,7 +171,9 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-cache \
     libspatialindex-dev=1.9.3-3build1 \
     liblcms2-dev=2.14-2build1 \
     inkscape=1.2.2-2ubuntu12 \
-    ansible=9.2.0+dfsg-0ubuntu5
+    ansible=9.2.0+dfsg-0ubuntu5 \
+    chktex=1.7.8-1
+
 # pdal \
 # pdal-tools
 
