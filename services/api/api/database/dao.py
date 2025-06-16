@@ -5,7 +5,7 @@ import structlog
 
 log = structlog.get_logger(__name__)
 
-from .models import User, Message, MapState
+from ..models import User, Message, MapState
 
 
 class BaseDAO:
