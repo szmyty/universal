@@ -5,8 +5,9 @@ from functools import lru_cache
 from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+
 class Settings(BaseSettings):
-    """Configuration settings for the application."""
+    """Application configuration."""
 
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -24,6 +25,27 @@ class Settings(BaseSettings):
     LOG_FILE: str = Field("logs/app.log", description="Path to the log file")
     LOG_JSON: bool = Field(False, description="Enable JSON logging")
 
-    OIDC_ISSUER: str = Field(..., description="OIDC issuer URL")
-    OIDC_CLIENT_ID: str = Field(..., description="OIDC client ID")
-    OIDC_CLIENT_SECRET: SecretStr = Field(..., description="OIDC client secret")
+    # OIDC settings are optional for local development
+    OIDC_ISSUER: str | None = Field(None, description="OIDC issuer URL")
+    OIDC_CLIENT_ID: str | None = Field(None, description="OIDC client ID")
+    OIDC_CLIENT_SECRET: SecretStr | None = Field(None, description="OIDC client secret")
+
+    DB_HOST: str = Field("localhost", description="Database host")
+    DB_PORT: int = Field(5432, description="Database port")
+    DB_USER: str = Field("postgres", description="Database user")
+    DB_PASSWORD: str = Field("postgres", description="Database password")
+    DB_NAME: str = Field("universal", description="Database name")
+
+    @property
+    def DATABASE_URL(self) -> str:  # pragma: no cover - simple property
+        """Return the SQLAlchemy database URL."""
+        return (
+            f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASSWORD}@"
+            f"{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+        )
+
+
+@lru_cache()
+def get_config() -> Settings:
+    """Return a cached ``Settings`` instance."""
+    return Settings()
