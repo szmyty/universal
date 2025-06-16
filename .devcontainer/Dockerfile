@@ -176,9 +176,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-cache \
     libtool=2.4.7-7build1 \
     potrace=1.16-2build1
 
-# pdal \
-# pdal-tools
-
 # Rebuild the font cache after installing fonts
 RUN fc-cache -f -v
 

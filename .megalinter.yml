@@ -78,3 +78,4 @@ TYPESCRIPT_PRETTIER_CONFIG_FILE: .prettier.config.mjs
 YAML_PRETTIER_CONFIG_FILE: .prettier.config.mjs
 REPOSITORY_KICS_CONFIG_FILE: config/.kics.config.json
 ARM_ARM_TTK_CONFIG_FILE: config/.arm-ttk.psd1
+LATEX_CHKTEX_CONFIG_FILE: config/.chktexrc

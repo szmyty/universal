@@ -1,0 +1,42 @@
+QuoteStyle = Logical
+TabSize = 4
+
+CmdLine {
+  --nowarn=13    # Suppress: Missing ~ before references
+  --nowarn=46    # Suppress: Dumb quotes
+  --nowarn=8     # Suppress: Tab characters
+  --nowarn=47    # Suppress: Dots spacing (false positives)
+}
+
+Linker {
+  \ref \vref \pageref \eqref \cite
+}
+
+Silent {
+  \emph \textbf \textit \textsf \texttt \url \href \cite \footnote
+}
+
+MathEnvir {
+  math displaymath equation align alignat flalign gather multline eqnarray
+}
+
+MathCmd {
+  \ensuremath
+}
+
+TextCmd {
+  \text \mbox \intertext
+}
+
+VerbEnvir {
+  verbatim minted lstlisting tikzpicture
+}
+
+WipeArg {
+  \cite:{} \label:{} \ref:{} \url:{} \href:{}{} \include:{} \input:{}
+}
+
+UserWarnRegex {
+  (?!#Use! \toprule,! \midrule,! or! \bottomrule)\\hline
+  (?!#Avoid! vertical! rules! in! tables)\\begin\{(array|tabularx?\*?)\}(\[.*\])?\{.*\|.*\}
+}

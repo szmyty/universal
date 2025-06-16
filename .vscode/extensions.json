@@ -10,6 +10,7 @@
         "xyz.local-history",
         "tamasfe.even-better-toml",
         "redhat.ansible",
-        "stoplight.spectral"
+        "stoplight.spectral",
+        "james-yu.latex-workshop"
     ]
 }

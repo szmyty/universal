@@ -63,6 +63,10 @@ tasks:
     desc: Run MegaLinter with bicep
     cmds: ["pnpm run lint:bicep"]
 
+  lint:chktex:
+    desc: Run MegaLinter with chktex
+    cmds: ["pnpm run lint:chktex"]
+
   secrets:
     desc: Scan for secrets using gitleaks
     cmds:
