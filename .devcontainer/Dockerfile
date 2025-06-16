@@ -76,9 +76,13 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-cache \
     --mount=type=cache,target=/var/lib/apt,sharing=locked,id=apt-lib \
     apt-get update -qq && \
     apt-get install --yes --no-install-recommends \
+    ansible=9.2.0+dfsg-0ubuntu5 \
+    apt-rdepends=1.3.0-10 \
+    bat=0.24.0-1build1 \
     build-essential=12.10ubuntu1 \
     ca-certificates=20240203 \
     ccache=4.9.1-1 \
+    chktex=1.7.8-1 \
     clang-format=1:18.0-59~exp2 \
     clang-tidy=1:18.0-59~exp2 \
     clang=1:18.0-59~exp2 \
@@ -89,12 +93,19 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-cache \
     dnsutils=1:9.18.30-0ubuntu0.24.04.2 \
     dos2unix=7.5.1-1 \
     ffmpeg=7:6.1.1-3ubuntu5 \
+    fonts-lmodern=2.005-1 \
+    fonts-noto-cjk=1:20230817+repack1-3 \
+    fonts-noto-color-emoji=2.047-0ubuntu0.24.04.1 \
+    fonts-noto=20201225-2 \
+    fzf=0.44.1-1ubuntu0.2 \
+    gdal-bin=3.8.4+dfsg-3ubuntu3 \
     gettext=0.21-14ubuntu2 \
     ghostscript=10.02.1~dfsg1-0ubuntu7.6 \
     git=1:2.43.0-1ubuntu7.2 \
     gnupg=2.4.4-2ubuntu17.2 \
     graphviz=2.42.2-9ubuntu0.1 \
     htop=3.3.0-4build1 \
+    inkscape=1.2.2-2ubuntu12 \
     iputils-ping=3:20240117-1build1 \
     jq=1.7.1-3build1 \
     less=590-2ubuntu2.1 \
@@ -105,13 +116,18 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-cache \
     libdb-dev=1:5.3.21ubuntu2 \
     libev-dev=1:4.33-2.1build1 \
     libffi-dev=3.4.6-1build1 \
+    libgdal-dev=3.8.4+dfsg-3ubuntu3 \
     libgdbm-dev=1.23-5.1build1 \
+    libgeos-dev=3.12.1-3build1 \
+    liblcms2-dev=2.14-2build1 \
     liblz4-dev=1.9.4-1build1.1 \
     liblzma-dev=5.6.1+really5.4.5-1ubuntu0.2 \
     libncurses-dev=6.4+20240113-1ubuntu2 \
     libnss3-dev=2:3.98-1build1 \
     libperl-dev=5.38.2-3.2ubuntu0.1 \
+    libproj-dev=9.4.0-1build2 \
     libreadline-dev=8.2-4build1 \
+    libspatialindex-dev=1.9.3-3build1 \
     libsqlite3-dev=3.45.1-1ubuntu2.3 \
     libssl-dev=3.0.13-0ubuntu3.5 \
     libxi-dev=2:1.8.1-1build1 \
@@ -120,18 +136,22 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-cache \
     libxslt1-dev=1.1.39-0exp1ubuntu0.24.04.2 \
     libzstd-dev=1.5.5+dfsg2-2build1.1 \
     llvm=1:18.0-59~exp2 \
-    locales=2.39-0ubuntu8.4 \
     locales-all=2.39-0ubuntu8.4 \
+    locales=2.39-0ubuntu8.4 \
     logrotate=3.21.0-2build1 \
     lsof=4.95.0-1build3 \
     make=4.3-4.1build2 \
     moreutils=0.69-1 \
     nano=7.2-2ubuntu0.1 \
     net-tools=2.10-0.1ubuntu4.4 \
+    netcat-openbsd=1.226-1ubuntu2 \
     ninja-build=1.11.1-2 \
+    nmap=7.94+git20230807.3be01efb1+dfsg-3build2 \
     openssh-client=1:9.6p1-3ubuntu13.12 \
     pandoc=3.1.3+ds-2 \
     pkg-config=1.8.1-2build1 \
+    proj-bin=9.4.0-1build2 \
+    pwgen=2.08-2build2 \
     python3-dev=3.12.3-0ubuntu2 \
     python3-pip=24.0+dfsg-1ubuntu1.1 \
     python3-venv=3.12.3-0ubuntu2 \
@@ -143,6 +163,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-cache \
     sysstat=12.6.1-2 \
     tar=1.35+dfsg-3build1 \
     tcpdump=4.99.4-3ubuntu4 \
+    texlive-full=2023.20240207-1 \
     tk-dev=8.6.14build1 \
     tzdata=2025b-0ubuntu0.24.04.1 \
     unzip=6.0-28ubuntu4.1 \
@@ -152,27 +173,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-cache \
     xz-utils=5.6.1+really5.4.5-1ubuntu0.2 \
     zlib1g-dev=1:1.3.dfsg-3.1ubuntu2.1 \
     zsh=5.9-6ubuntu2 \
-    texlive-full=2023.20240207-1 \
-    fonts-noto=20201225-2 \
-    fonts-noto-cjk=1:20230817+repack1-3 \
-    fonts-noto-color-emoji=2.047-0ubuntu0.24.04.1 \
-    fonts-lmodern=2.005-1 \
-    pwgen=2.08-2build2 \
-    apt-rdepends=1.3.0-10 \
-    netcat-openbsd=1.226-1ubuntu2 \
-    nmap=7.94+git20230807.3be01efb1+dfsg-3build2 \
-    fzf=0.44.1-1ubuntu0.2 \
-    bat=0.24.0-1build1 \
-    gdal-bin=3.8.4+dfsg-3ubuntu3 \
-    libgdal-dev=3.8.4+dfsg-3ubuntu3 \
-    proj-bin=9.4.0-1build2 \
-    libproj-dev=9.4.0-1build2 \
-    libgeos-dev=3.12.1-3build1 \
-    libspatialindex-dev=1.9.3-3build1 \
-    liblcms2-dev=2.14-2build1 \
-    inkscape=1.2.2-2ubuntu12 \
-    ansible=9.2.0+dfsg-0ubuntu5 \
-    chktex=1.7.8-1
+    libtool=2.4.7-7build1 \
+    potrace=1.16-2build1
 
 # pdal \
 # pdal-tools
