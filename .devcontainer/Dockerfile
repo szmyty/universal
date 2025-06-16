@@ -11,7 +11,7 @@
 # reproducible.  Feel free to add or remove packages to suit your
 # project's needs.
 ######################################################################
-FROM mcr.microsoft.com/devcontainers/base@sha256:cdff177dd5755c0ba2afea60cdc0ab07d933c60d50c6c90dccbcc42b4b4ab76d
+FROM mcr.microsoft.com/devcontainers/base@sha256:cdff177dd5755c0ba2afea60cdc0ab07d933c60d50c6c90dccbcc42b4b4ab76d AS deps
 
 # Override the default temporary directory if needed. Useful when
 # working on filesystems where /tmp has limited space.
@@ -240,3 +240,23 @@ RUN chmod +x /workspace/scripts/devtools.sh && \
     bash /workspace/scripts/devtools.sh && \
     rm -rf /workspace/scripts && \
     chown --recursive vscode:vscode "${DEVTOOLS_HOME}"
+
+######################################################################
+# PDAL build stage
+######################################################################
+FROM deps AS pdal-build
+
+# Commit to build and its SHA256 checksum
+ARG PDAL_SHA=bba54fc27c4476d1571318dd43259c59e86cdc84
+ARG PDAL_SHA256=14bc6b06eb1c0c2bea865913741916a9f54e29b7e6da26c7c0e2f9d19d1ba3a4
+
+COPY scripts/install_pdal.sh /workspace/scripts/install_pdal.sh
+RUN chmod +x /workspace/scripts/install_pdal.sh && \
+    bash /workspace/scripts/install_pdal.sh "${PDAL_SHA}" "${PDAL_SHA256}" && \
+    rm /workspace/scripts/install_pdal.sh
+
+######################################################################
+# Final image with PDAL installed
+######################################################################
+FROM deps
+COPY --from=pdal-build /usr/local/ /usr/local/
