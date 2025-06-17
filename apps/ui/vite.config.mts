@@ -66,9 +66,58 @@ export default defineConfig({
             "Access-Control-Allow-Origin": "*",
         },
     },
+    define: {
+        global: "globalThis",
+        "process.env": {
+            NODE_ENV: JSON.stringify(process.env.NODE_ENV || "production"),
+            NODE_DEBUG: JSON.stringify(process.env.NODE_DEBUG || false),
+            VERSION: JSON.stringify(pkg.version),
+            BUILD_TIME: JSON.stringify(new Date().toISOString()),
+            MapboxAccessToken: JSON.stringify(
+                process.env.MapboxAccessToken || "",
+            ),
+            MapboxExportToken: JSON.stringify(
+                process.env.MapboxExportToken || "",
+            ),
+            DropboxClientId: JSON.stringify(process.env.DropboxClientId || ""),
+            CartoClientId: JSON.stringify(process.env.CartoClientId || ""),
+            FoursquareClientId: JSON.stringify(
+                process.env.FoursquareClientId || "",
+            ),
+            FoursquareDomain: JSON.stringify(
+                process.env.FoursquareDomain || "",
+            ),
+            FoursquareAPIURL: JSON.stringify(
+                process.env.FoursquareAPIURL || "https://api.foursquare.com/v2",
+            ),
+            FoursquareUserMapsURL: JSON.stringify(
+                process.env.FoursquareUserMapsURL || "",
+            ),
+            OpenAIToken: JSON.stringify(process.env.OpenAIToken || ""),
+        },
+    },
     optimizeDeps: {
         esbuildOptions: {
             plugins: [fixReactVirtualized],
+            define: {
+                global: "globalThis",
+            },
+        },
+        include: [
+            "react",
+            "react-dom",
+            "react-router-dom",
+            "react-query",
+            "zustand",
+            "@tanstack/react-query",
+            "@tanstack/react-router",
+        ],
+        exclude: ["@vitejs/plugin-react-refresh"],
+    },
+    resolve: {
+        dedupe: ["react", "react-dom", "styled-components"],
+        alias: {
+            "@": path.resolve(__dirname, "src"),
         },
     },
     build: {

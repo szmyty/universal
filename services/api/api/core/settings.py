@@ -34,25 +34,17 @@ class Settings(BaseSettings):
     DATABASE_HOSTNAME: str = Field(..., env="DATABASE_HOSTNAME", description="Postgres hostname")
     DATABASE_PORT: int = Field(5432, env="DATABASE_PORT", description="Postgres port")
     DATABASE_USER: str = Field("postgres", env="POSTGRES_USER", description="Postgres user")
-
+    DATABASE_PASSWORD: SecretStr = Field(
+        ..., env="POSTGRES_PASSWORD", description="Postgres password"
+    )
+    DATABASE_NAME: str = Field(..., env="POSTGRES_DB", description="Postgres database name")
 
     LOG_LEVEL: str = Field("INFO", description="Logging level")
     LOG_FILE: str = Field("logs/app.log", description="Path to the log file")
     LOG_JSON: bool = Field(False, description="Enable JSON logging")
 
-    # OIDC settings are optional for local development
-    OIDC_ISSUER: str | None = Field(None, description="OIDC issuer URL")
-    OIDC_CLIENT_ID: str | None = Field(None, description="OIDC client ID")
-    OIDC_CLIENT_SECRET: SecretStr | None = Field(None, description="OIDC client secret")
-
-    DB_HOST: str = Field("localhost", description="Database host")
-    DB_PORT: int = Field(5432, description="Database port")
-    DB_USER: str = Field("postgres", description="Database user")
-    DB_PASSWORD: str = Field("postgres", description="Database password")
-    DB_NAME: str = Field("universal", description="Database name")
-
     @property
-    def DATABASE_URL(self) -> str:  # pragma: no cover - simple property
+    def database_url(self) -> str:
         """Return the SQLAlchemy database URL."""
         return (
             f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASSWORD}@"
@@ -66,6 +58,6 @@ class Settings(BaseSettings):
 
 
 @lru_cache()
-def get_config() -> Settings:
+def get_settings() -> Settings:
     """Return a cached ``Settings`` instance."""
     return Settings()
