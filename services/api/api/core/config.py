@@ -20,6 +20,21 @@ class Settings(BaseSettings):
         "A universal API for various services", description="Description of the project"
     )
     VERSION: str = Field("0.1.0", description="Version of the project")
+    DEBUG: bool = Field(False, description="Enable debug mode")
+
+    # Keycloak settings
+    KEYCLOAK_HOSTNAME: str = Field("keycloak", env="KEYCLOAK_HOSTNAME", description="Keycloak hostname")
+    KEYCLOAK_HTTP_PORT: int = Field(8080, env="KEYCLOAK_HTTP_PORT", description="Keycloak HTTP port")
+    KEYCLOAK_HTTPS_PORT: int = Field(8443, env="KEYCLOAK_HTTPS_PORT", description="Keycloak HTTPS port")
+    KEYCLOAK_REALM: str = Field("universal", env="KEYCLOAK_REALM", description="Keycloak realm name")
+    KEYCLOAK_HTTP_RELATIVE_PATH: str = Field(
+        "/auth", description="Relative path for Keycloak HTTP access")
+
+    # Postgres settings
+    DATABASE_HOSTNAME: str = Field(..., env="DATABASE_HOSTNAME", description="Postgres hostname")
+    DATABASE_PORT: int = Field(5432, env="DATABASE_PORT", description="Postgres port")
+    DATABASE_USER: str = Field("postgres", env="POSTGRES_USER", description="Postgres user")
+
 
     LOG_LEVEL: str = Field("INFO", description="Logging level")
     LOG_FILE: str = Field("logs/app.log", description="Path to the log file")
@@ -43,6 +58,11 @@ class Settings(BaseSettings):
             f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASSWORD}@"
             f"{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
         )
+
+    @property
+    def keycloak_url(self: Settings) -> str:
+        """Return the Keycloak URL."""
+        pass
 
 
 @lru_cache()
