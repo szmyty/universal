@@ -1,6 +1,5 @@
 import path from "path";
 import process from "node:process";
-import { fileURLToPath } from "url";
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import svgr from "vite-plugin-svgr";
@@ -14,10 +13,6 @@ import pkg from "./package.json";
 import fixReactVirtualized from "esbuild-plugin-react-virtualized";
 import { visualizer } from "rollup-plugin-visualizer";
 import wasm from "vite-plugin-wasm";
-
-// Resolve __dirname since we're in ES module context
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // Define constants
 const ESLINT_CONFIG_PATH = path.resolve(__dirname, ".eslint.config.mjs");

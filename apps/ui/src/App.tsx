@@ -2,7 +2,7 @@
 // It wires up the TanStack router and catches rendering errors.
 import { RouterProvider } from "@tanstack/react-router";
 import { ErrorBoundary } from "react-error-boundary";
-import { router } from "./routes";
+import { router } from "@universal/routes";
 
 export default function App() {
   // The router handles all page rendering. If a rendering error occurs

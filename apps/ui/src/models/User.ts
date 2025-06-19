@@ -1,4 +1,3 @@
-// Minimal representation of a Keycloak user.
 export type UserProfile = {
     sub: string; // subject (user id)
     name?: string;

@@ -1,4 +1,5 @@
-// This file is used to configure PostCSS plugins for a React project using Vite.
+// postcss.config.mjs
+// PostCSS configuration for Vite + TailwindCSS v3.4+
 import tailwindcss from "@tailwindcss/postcss";
 import autoprefixer from "autoprefixer";
 
