@@ -31,6 +31,13 @@ tasks:
       - pnpm install --prefer-offline --ignore-workspace --frozen-lockfile
     silent: true
 
+  pnpm:sync:
+    desc: Synchronize pnpm workspace dependencies
+    cmds:
+      - pnpm install --prefer-offline --ignore-workspace --lockfile-only
+      - task install:pnpm
+    silent: true
+
   changeset:init:
     desc: Initialize changesets for versioning
     cmds:
