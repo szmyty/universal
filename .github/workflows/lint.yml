@@ -1,4 +1,4 @@
-name: Mega Linter
+name: 🧹 Mega Linter
 
 on:
   push:
@@ -15,21 +15,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: 📥 Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: 🧰 Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
 
-      - name: Install PNPM
+      - name: 📦 Install PNPM
         run: npm install --global pnpm
 
-      - name: Install dependencies
+      - name: 📥 Install dependencies
         run: pnpm install
 
-      - name: Run MegaLinter
+      - name: 🧪 Run MegaLinter
         run: npx mega-linter-runner --path .
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

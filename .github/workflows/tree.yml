@@ -1,20 +1,20 @@
-name: Deploy Project Tree to Pages
+name: 🌳 Deploy Project Tree to Pages
 
 on:
-  # Trigger on pushes to main/master
+  # 🚀 Trigger on pushes to main/master
   push:
     branches: ["main", "master"]
 
-  # Allow manual execution from the Actions tab
+  # 👇 Allow manual execution from the Actions tab
   workflow_dispatch:
 
-# GitHub Pages requires specific permissions
+# 📜 GitHub Pages requires specific permissions
 permissions:
-  contents: read # to checkout the code
-  pages: write # to deploy to Pages
-  id-token: write # to authenticate deployment
+  contents: read       # 📦 to checkout the code
+  pages: write         # 🚀 to deploy to Pages
+  id-token: write      # 🔐 to authenticate deployment
 
-# Avoid concurrency issues — only one Pages deploy at a time
+# 🚦 Avoid concurrency issues — only one Pages deploy at a time
 concurrency:
   group: "pages"
   cancel-in-progress: false
@@ -28,22 +28,22 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      - name: Checkout repository
+      - name: 📥 Checkout repository
         uses: actions/checkout@v4
 
-      - name: Generate docs/tree.md
+      - name: 🛠️ Generate docs/tree.md
         run: |
           chmod +x ./scripts/generate-tree.sh
           ./scripts/generate-tree.sh
 
-      - name: Setup GitHub Pages
+      - name: ⚙️ Setup GitHub Pages
         uses: actions/configure-pages@v5
 
-      - name: Upload tree.md as artifact
+      - name: 📦 Upload tree.md as artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: docs
 
-      - name: Deploy to GitHub Pages
+      - name: 🚀 Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

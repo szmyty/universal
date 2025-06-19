@@ -1,4 +1,4 @@
-name: CI Sanity Check
+name: 🧠 CI Sanity Check
 
 on:
   push:
@@ -9,8 +9,8 @@ permissions: {}
 
 jobs:
   sanity-check:
-    name: Sanity Check
+    name: 🧪 Sanity Check
     runs-on: ubuntu-latest
     steps:
-      - name: Print sanity message
+      - name: 🧾 Print sanity message
         run: echo "✅ GitHub Actions is working!"
