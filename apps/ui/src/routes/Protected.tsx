@@ -1,26 +1,30 @@
-// Higher order component for protecting routes based on auth and roles.
+// A wrapper component that protects child routes based on auth and roles.
+import React from "react";
 import { Navigate } from "@tanstack/react-router";
-import { useAuth } from "../auth/useAuth";
+import { useAuth } from "@universal/auth";
+import type { UserRole } from "@universal/models";
 
 export type ProtectedProps = {
-  roles?: string[];
+  roles?: UserRole[] | string[];
   unauthorizedFallback?: React.ReactNode;
+  redirectTo?: string;
   children: React.ReactNode;
-}
+};
 
 export default function Protected({
   roles,
+  redirectTo = "/",
   unauthorizedFallback = <div className="text-red-500">Access Denied</div>,
   children,
 }: ProtectedProps) {
   const { isAuthenticated, roles: userRoles } = useAuth();
 
-  // Must be logged in
+  // User must be authenticated
   if (!isAuthenticated) {
-    return <Navigate to="/" />;
+    return <Navigate to={redirectTo} />;
   }
 
-  // Must match at least one role if roles are specified
+  // If specific roles are required, user must have at least one
   if (roles?.length && !roles.some((role) => userRoles.includes(role))) {
     return <>{unauthorizedFallback}</>;
   }

@@ -1,6 +1,5 @@
 // Displayed when a user lacks sufficient permissions.
-import { useAuth } from "../auth/useAuth";
-import { AdminBadge } from "../auth/AdminBadge";
+import { useAuth, AdminBadge } from "@universal/auth";
 
 export default function NoAccess() {
   const { user, isAuthenticated, roles } = useAuth();

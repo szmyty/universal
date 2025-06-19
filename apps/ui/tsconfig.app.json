@@ -1,31 +1,9 @@
 {
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "extends": "./tsconfig.base.json",
     "compilerOptions": {
-        "target": "ESNext",
-        "module": "ESNext",
-        "moduleResolution": "bundler",
-        "lib": ["DOM", "DOM.Iterable", "ESNext"],
-        "jsx": "react-jsx",
-
-        "baseUrl": "./",
-        "paths": {
-            "@universal/*": ["src/*"]
-        },
-
-        "allowJs": false,
-        "resolveJsonModule": true,
-        "isolatedModules": true,
-        "noEmit": true,
-
-        "strict": true,
-        "useDefineForClassFields": true,
-        "forceConsistentCasingInFileNames": true,
-        "skipLibCheck": true,
-
-        "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true,
-
         "types": ["vite/client", "vitest/globals"]
     },
-    "include": ["src/**/*"],
+    "include": ["src"],
     "references": [{ "path": "./tsconfig.node.json" }]
 }

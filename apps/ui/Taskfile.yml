@@ -1,13 +1,71 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+# Taskfile for managing development tasks in a multi-platform environment
+
 version: "3"
 
+env:
+  NODE_ENV: development
+
 tasks:
-  setup:
-    desc: Install dependencies and set up the environment
-    cmds:
-      - pnpm install --frozen-lockfile
-    silent: true
+  # ─────────────────────────────────────────────────────────────
+  # Core Developer Workflows
+  # ─────────────────────────────────────────────────────────────
+
   dev:
-    desc: Install dependencies and set up the environment
+    desc: "Start Vite development server"
     cmds:
       - pnpm dev
-    silent: true
+
+  build:
+    desc: "Build the production frontend"
+    cmds:
+      - pnpm build
+
+  preview:
+    desc: "Preview the production build"
+    cmds:
+      - pnpm preview
+
+  typecheck:
+    desc: "Run full type checking using tsconfig.typecheck.json"
+    cmds:
+      - pnpm typecheck
+
+  lint:
+    desc: "Run ESLint across the codebase"
+    cmds:
+      - pnpm lint
+
+  format:
+    desc: "Format code with Prettier"
+    cmds:
+      - pnpm format
+
+  # ─────────────────────────────────────────────────────────────
+  # Dependency Management
+  # ─────────────────────────────────────────────────────────────
+
+  install:
+    desc: "Install dependencies using a frozen lockfile (CI-safe)"
+    cmds:
+      - pnpm install --frozen-lockfile
+
+  lock:
+    desc: "Update the lockfile only (without installing)"
+    cmds:
+      - pnpm install --lockfile-only
+
+  verify-lockfile:
+    desc: "Dry-run to verify lockfile and package.json are in sync"
+    cmds:
+      - pnpm install --frozen-lockfile
+
+  # ─────────────────────────────────────────────────────────────
+  # Misc
+  # ─────────────────────────────────────────────────────────────
+
+  hello:
+    desc: "Prints a hello world message"
+    cmds:
+      - echo "Hello, World!"

@@ -1,5 +1,7 @@
-// Convenience barrel file for auth related utilities.
-export * from "./useAuth";
+export * from "./UniversalAuthProvider";
 export * from "./AuthProvider";
-export * from "./AuthWrapper";
 export * from "./MockAuthProvider";
+export * from "./useAuth";
+export * from "./useHasRole";
+export * from "./AdminBadge";
+export * from "./config";

@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "universal-react"
+version = "0.1.0"
+description = "Python development tools for the universal-react library."
+authors = ["Alan Szmyt <szmyty@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^4.2.0"
+pre-commit-hooks = "^5.0.0"
+
+[build-system]
+requires = ["poetry-core>=1.5"]
+build-backend = "poetry.core.masonry.api"

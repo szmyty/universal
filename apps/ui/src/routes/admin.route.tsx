@@ -1,12 +1,14 @@
 // Protected route for the admin page.
 import { createRoute } from "@tanstack/react-router";
 import { rootRoute } from "./index";
-import { ComponentType, lazy, Suspense } from "react";
+import type { ComponentType } from "react";
+import { lazy, Suspense } from "react";
 import Protected from "./Protected";
-import PageLoader from "@universal/components/PageLoader";
+import { PageLoader } from "@universal/components";
+import type { FC } from "react";
 
 const LazyAdmin = lazy(() =>
-  import("../pages/Admin.js").then((mod) => mod as unknown as { default: ComponentType<any> })
+  import("../pages/Admin.js").then((mod) => mod as unknown as { default: ComponentType<FC> })
 );
 
 export const adminRoute = createRoute({

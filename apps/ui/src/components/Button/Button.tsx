@@ -1,4 +1,3 @@
-import type { ButtonHTMLAttributes } from 'react';
 import clsx from 'clsx';
 import type { ButtonProps } from './Button.types';
 

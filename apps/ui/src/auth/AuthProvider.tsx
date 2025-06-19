@@ -1,6 +1,6 @@
-// Wrapper around `react-oidc-context` configured with Keycloak settings.
+import React from "react";
 import { AuthProvider as OIDCProvider } from "react-oidc-context";
-import { oidcConfig } from "@universal/config";
+import { oidcConfig } from "@universal/auth";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   return <OIDCProvider {...oidcConfig}>{children}</OIDCProvider>;

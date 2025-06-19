@@ -40,7 +40,6 @@ module.exports = {
             .trim();
 
           const match = RE_CONVENTIONAL_COMMIT.exec(clean);
-          console.log(match?.slice(1));
           return [!!match, 'Expected format: <type>(<scope>): <emoji> <subject>'];
         }
       }

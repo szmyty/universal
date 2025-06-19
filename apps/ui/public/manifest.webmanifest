@@ -4,9 +4,9 @@
     "short_name": "Universal",
     "description": "Universal web application template",
     "start_url": "/",
+    "scope": "/",
     "display": "standalone",
     "lang": "en",
-    "scope": "/",
     "icons": [
         {
             "src": "/assets/icons/icon-16x16.png",

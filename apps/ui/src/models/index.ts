@@ -1,2 +1,2 @@
-// Re-export model types.
-export * from "./User";
+export * from "./user";
+export * from "./user.mock";

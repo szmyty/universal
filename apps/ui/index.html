@@ -1,31 +1,58 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
     <head>
+        <!-- Basic Meta -->
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Universal</title>
-        <meta name="generator" content="Vite" />
         <meta
             name="description"
             content="Universal UI for the Universal project"
         />
-        <meta name="author" content="Universal" />
+        <meta name="author" content="Alan Szmyt" />
         <meta
             name="keywords"
-            content="universal, vite, react, your, app, keywords"
+            content="universal, vite, react, typescript, UI, tailwind"
         />
+        <meta name="generator" content="Vite" />
+        <meta name="robots" content="index, follow" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="referrer" content="strict-origin-when-cross-origin" />
 
-        <!-- Favicon -->
+        <!-- PWA & Mobile -->
+        <link rel="manifest" href="/manifest.webmanifest" />
+        <meta name="theme-color" content="#0f172a" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <link rel="apple-touch-icon" href="/universal.png" />
+
+        <!-- Open Graph (Facebook, Discord, LinkedIn, etc.) -->
+        <meta property="og:title" content="Universal UI" />
+        <meta
+            property="og:description"
+            content="Universal UI for the Universal project"
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="/universal.png" />
+        <meta property="og:url" content="https://yourdomain.com" />
+
+        <!-- Twitter Cards -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Universal UI" />
+        <meta
+            name="twitter:description"
+            content="Universal UI for the Universal project"
+        />
+        <meta name="twitter:image" content="/universal.png" />
+
+        <!-- Icons -->
         <link rel="icon" href="/favicon.ico" type="image/x-icon" />
 
-        <!-- Web App Manifest -->
-        <link rel="manifest" href="/manifest.webmanifest" />
-
-        <!-- 🌐 Map style: load immediately to prevent FOUC on initial render -->
+        <!-- Stylesheets -->
         <link rel="stylesheet" href="/vendor/css/mapbox-gl.css" />
         <link rel="stylesheet" href="/vendor/css/maplibre-gl.css" />
 
-        <!-- Preload font stylesheet non-blocking -->
+        <!-- Fonts (non-blocking preload) -->
         <link
             rel="preload"
             href="/vendor/css/superfine.css"
@@ -35,7 +62,12 @@
         <noscript>
             <link rel="stylesheet" href="/vendor/css/superfine.css" />
         </noscript>
-    </head>
+
+        <!-- Analytics Stub (optional) -->
+        <!--
+    <script defer data-domain="yourdomain.com" src="https://plausible.io/js/plausible.js"></script>
+    --></head>
+
     <body>
         <div id="root"></div>
         <script type="module" src="/src/main.tsx"></script>

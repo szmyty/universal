@@ -1,19 +1,20 @@
-// Central router configuration for the UI.
 import { createRootRoute, createRouter } from "@tanstack/react-router";
 import { RootLayout } from "./root.route";
 import { homeRoute } from "./home.route";
 import { aboutRoute } from "./about.route";
 import { adminRoute } from "./admin.route";
 import { callbackRoute } from "./callback.route";
+import { superAdminRoute } from "./superadmin.route";
+
 import { lazy, Suspense } from "react";
 import type { ComponentType } from "react";
 import { PageLoader } from "@universal/components";
-import { superAdminRoute } from "./super_admin.route";
+import type { FC } from "react";
 
-// ✅ Safely lazy-load NotFound with correct type casting
+// ✅ Lazy-load NotFound with fallback loader
 const LazyNotFound = lazy(() =>
   import("../pages/NotFound.js").then(
-    (mod) => mod as unknown as { default: ComponentType<any> }
+    (mod) => mod as unknown as { default: ComponentType<FC> }
   )
 );
 
@@ -25,7 +26,6 @@ function NotFoundComponent() {
   );
 }
 
-// ✅ Root route uses layout + suspense-wrapped notFoundComponent
 export const rootRoute = createRootRoute({
   component: RootLayout,
   notFoundComponent: NotFoundComponent,
@@ -36,7 +36,7 @@ export const routeTree = rootRoute.addChildren([
   aboutRoute,
   adminRoute,
   superAdminRoute,
-  callbackRoute
+  callbackRoute,
 ]);
 
 export const router = createRouter({ routeTree });

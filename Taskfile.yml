@@ -252,3 +252,9 @@ tasks:
     desc: Run MegaLinter via Docker
     cmds:
       - docker compose --file .devcontainer/docker-compose.yml run --rm megalinter
+
+  tree:ui:
+    desc: Generate UI tree structure
+    cmds:
+      - tree apps/ui -L 3 -I "node_modules"
+    silent: true

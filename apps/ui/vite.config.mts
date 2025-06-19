@@ -7,36 +7,50 @@ import envCompatible from "vite-plugin-env-compatible";
 import eslint from "vite-plugin-eslint";
 import tsconfigPaths from "vite-tsconfig-paths";
 import checker from "vite-plugin-checker";
-import tailwindcss from "@tailwindcss/vite";
 import { VitePWA } from "vite-plugin-pwa";
-import pkg from "./package.json";
-import fixReactVirtualized from "esbuild-plugin-react-virtualized";
 import { visualizer } from "rollup-plugin-visualizer";
 import wasm from "vite-plugin-wasm";
+import fixReactVirtualized from "esbuild-plugin-react-virtualized";
+import pkg from "./package.json";
+import postcss from "./postcss.config.mjs";
 
-// Define constants
-const ESLINT_CONFIG_PATH = path.resolve(__dirname, ".eslint.config.mjs");
+// Inject selected environment variables
+const env = {
+    NODE_ENV: process.env.NODE_ENV || "production",
+    NODE_DEBUG: process.env.NODE_DEBUG || "false",
+    VERSION: pkg.version,
+    BUILD_TIME: new Date().toISOString(),
+    MapboxAccessToken: process.env.MapboxAccessToken || "",
+    MapboxExportToken: process.env.MapboxExportToken || "",
+    DropboxClientId: process.env.DropboxClientId || "",
+    CartoClientId: process.env.CartoClientId || "",
+    FoursquareClientId: process.env.FoursquareClientId || "",
+    FoursquareDomain: process.env.FoursquareDomain || "",
+    FoursquareAPIURL:
+        process.env.FoursquareAPIURL || "https://api.foursquare.com/v2",
+    FoursquareUserMapsURL: process.env.FoursquareUserMapsURL || "",
+    OpenAIToken: process.env.OpenAIToken || "",
+};
 
 export default defineConfig({
+    css: {
+        postcss,
+    },
     plugins: [
-        react({
-            jsxRuntime: "automatic",
-        }),
+        react({ jsxRuntime: "automatic" }),
+        tsconfigPaths(),
         svgr(),
         envCompatible(),
         eslint({
-            overrideConfigFile: ESLINT_CONFIG_PATH,
+            overrideConfigFile: path.resolve(__dirname, "eslint.config.mjs"),
             include: ["src/**/*.ts", "src/**/*.tsx"],
             cacheLocation: "node_modules/.cache/eslint",
             cache: true,
-            exclude: ["/virtual:/**", "node_modules/**"],
+            exclude: ["node_modules/**", "/virtual:/**"],
         }),
-        tsconfigPaths(),
-        checker({
-            typescript: true,
-        }),
+        checker({ typescript: true }),
         VitePWA(),
-        tailwindcss(),
+        wasm(),
         visualizer({
             filename: "stats.html",
             open: false,
@@ -44,53 +58,38 @@ export default defineConfig({
             brotliSize: true,
             emitFile: true,
         }),
-        wasm(),
     ],
+
+    resolve: {
+        alias: {
+            "@": path.resolve(__dirname, "src"),
+        },
+        dedupe: ["react", "react-dom", "styled-components"],
+    },
+
     server: {
         port: Number(process.env.UI_PORT) || 5173,
-        // proxy: {
-        //     "/api": {
-        //         target: `http://localhost:${process.env.API_PORT || 8000}`,
-        //         changeOrigin: true,
-        //     },
-        // },
         host: true,
         strictPort: true,
         cors: true,
         headers: {
             "Access-Control-Allow-Origin": "*",
         },
+        // proxy: {
+        //     "/api": {
+        //         target: `http://localhost:${process.env.API_PORT || 8000}`,
+        //         changeOrigin: true,
+        //     },
+        // },
     },
+
     define: {
         global: "globalThis",
-        "process.env": {
-            NODE_ENV: JSON.stringify(process.env.NODE_ENV || "production"),
-            NODE_DEBUG: JSON.stringify(process.env.NODE_DEBUG || false),
-            VERSION: JSON.stringify(pkg.version),
-            BUILD_TIME: JSON.stringify(new Date().toISOString()),
-            MapboxAccessToken: JSON.stringify(
-                process.env.MapboxAccessToken || "",
-            ),
-            MapboxExportToken: JSON.stringify(
-                process.env.MapboxExportToken || "",
-            ),
-            DropboxClientId: JSON.stringify(process.env.DropboxClientId || ""),
-            CartoClientId: JSON.stringify(process.env.CartoClientId || ""),
-            FoursquareClientId: JSON.stringify(
-                process.env.FoursquareClientId || "",
-            ),
-            FoursquareDomain: JSON.stringify(
-                process.env.FoursquareDomain || "",
-            ),
-            FoursquareAPIURL: JSON.stringify(
-                process.env.FoursquareAPIURL || "https://api.foursquare.com/v2",
-            ),
-            FoursquareUserMapsURL: JSON.stringify(
-                process.env.FoursquareUserMapsURL || "",
-            ),
-            OpenAIToken: JSON.stringify(process.env.OpenAIToken || ""),
-        },
+        "process.env": Object.fromEntries(
+            Object.entries(env).map(([key, val]) => [key, JSON.stringify(val)])
+        ),
     },
+
     optimizeDeps: {
         esbuildOptions: {
             plugins: [fixReactVirtualized],
@@ -102,37 +101,32 @@ export default defineConfig({
             "react",
             "react-dom",
             "react-router-dom",
-            "react-query",
             "zustand",
+            "react-query",
             "@tanstack/react-query",
             "@tanstack/react-router",
         ],
         exclude: ["@vitejs/plugin-react-refresh"],
     },
-    resolve: {
-        dedupe: ["react", "react-dom", "styled-components"],
-        alias: {
-            "@": path.resolve(__dirname, "src"),
-        },
-    },
+
     build: {
         outDir: "dist",
+        target: "esnext",
         sourcemap: true,
         minify: true,
+        commonjsOptions: {
+            include: [/node_modules/],
+            transformMixedEsModules: true,
+        },
         rollupOptions: {
             input: {
                 main: path.resolve(__dirname, "index.html"),
             },
             output: {
                 manualChunks: {
-                    vendor: ["react", "react-dom"], // Separate React into its own chunk
+                    vendor: ["react", "react-dom"],
                 },
             },
-        },
-        target: "esnext",
-        commonjsOptions: {
-            include: [/node_modules/],
-            transformMixedEsModules: true, // Allow mixing ESM and CommonJS
         },
     },
 });

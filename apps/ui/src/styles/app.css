@@ -12,5 +12,12 @@
 body {
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  overflow-x: hidden; /* Allow vertical scrolling but prevent horizontal */
+  min-height: 100vh;
+}
+
+html,
+body,
+#root {
+  height: 100%;
 }

@@ -1,5 +1,5 @@
 // Landing page displayed at the root URL.
-import Button from "@universal/components/Button";
+import { Button } from "@universal/components";
 
 // The Home page is a minimal landing screen.  It showcases use of the shared
 // `Button` component as an example.

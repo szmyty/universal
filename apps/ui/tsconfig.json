@@ -1,4 +1,6 @@
 {
+    "$schema": "https://json.schemastore.org/tsconfig",
+    // Root project references for multi-target setup
     "files": [],
     "references": [
         { "path": "./tsconfig.app.json" },
