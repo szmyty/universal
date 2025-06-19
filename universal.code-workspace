@@ -8,8 +8,62 @@
         "git.ignoreLimitWarning": true,
         "cSpell.logFile": ".cache/cspell/cspell.log",
         "cSpell.trustedWorkspace": true,
+        "cSpell.enabled": true,
+        "cSpell.language": "en",
+        "cSpell.allowCompoundWords": false,
+        "cSpell.caseSensitive": false,
+        "cSpell.words": ["cspell"],
+        "cSpell.ignorePaths": [
+            ".vscode/dictionaries/**/*.dictionary",
+            "**/node_modules/**",
+            "**/dist/**",
+            "**/build/**",
+            "**/.next/**",
+            "**/.vercel/**",
+            "**/.turbo/**",
+            "**/coverage/**",
+            "**/out/**",
+            "**/tmp/**",
+            "**/temp/**",
+            "**/logs/**",
+            "**/log/**",
+            "**/vendor/**",
+            "**/bower_components/**",
+            "**/pnpm-lock.yaml",
+            "**/yarn.lock",
+            "**/package-lock.json",
+            "**/.cache/**",
+            "**/reports/**",
+            "**/.vscode/**",
+            "**/.git/**",
+            "**/package.json",
+            "**/.spectral.yaml"
+        ],
         "cSpell.customDictionaries": {
-
+            "project-words": {
+                "path": "./.vscode/dictionaries/project-words.dictionary",
+                "addWords": true
+            },
+            "backend-terms": {
+                "path": "./.vscode/dictionaries/backend-terms.dictionary",
+                "addWords": false
+            },
+            "devops-cloud-terms": {
+                "path": "./.vscode/dictionaries/devops-cloud-terms.dictionary",
+                "addWords": false
+            },
+            "frontend-terms": {
+                "path": "./.vscode/dictionaries/frontend-terms.dictionary",
+                "addWords": false
+            },
+            "programming-terms": {
+                "path": "./.vscode/dictionaries/programming-terms.dictionary",
+                "addWords": false
+            },
+            "software-terms": {
+                "path": "./.vscode/dictionaries/software-terms.dictionary",
+                "addWords": false
+            }
         },
         "telemetry.feedback.enabled": false,
         "emojisense.emojiDecoratorsEnabled": true,

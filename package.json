@@ -6,7 +6,8 @@
     "scripts": {
         "format": "prettier --config .prettier.config.mjs --write .",
         "format:check": "prettier --config .prettier.config.mjs --check .",
-        "changeset:init": "pnpx changeset init",
+        "changeset:init": "changeset init",
+        "changeset": "changeset",
         "lint:spellcheck": "cspell --config .cspell.config.mjs",
         "lint:base": "mega-linter-runner --container-name megalinter --platform linux/amd64 --path . --image ghcr.io/oxsecurity/megalinter@sha256:930b3dbfcfd6814db7e8462f335ebeae8dc1715aeaebb19b0414692ed9930145",
         "lint:mypy": "npm run lint:base -- --env ENABLE_LINTERS=PYTHON_MYPY",
