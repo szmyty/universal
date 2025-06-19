@@ -14,9 +14,27 @@ tasks:
   setup:
     desc: Install dependencies and set up the environment
     cmds:
-      - pnpm install --frozen-lockfile
-      - poetry install --no-root
+      - task install:pnpm
+      - task install:poetry
       - task hooks:install
+    silent: true
+
+  install:poetry:
+    desc: Install Python dependencies using Poetry
+    cmds:
+      - poetry install --no-interaction --no-root
+    silent: true
+
+  install:pnpm:
+    desc: Install Node.js dependencies using pnpm
+    cmds:
+      - pnpm install --prefer-offline --ignore-workspace --frozen-lockfile
+    silent: true
+
+  changeset:init:
+    desc: Initialize changesets for versioning
+    cmds:
+      - pnpm run changeset:init
     silent: true
 
   lint:

@@ -1,0 +1,287 @@
+{
+    "issues": [
+        {
+            "text": "healthcheck",
+            "offset": 2196,
+            "line": {
+                "text": "    healthcheck:\n",
+                "offset": 2192
+            },
+            "length": 11,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 71,
+            "col": 5,
+            "uri": "file:///workspace/universal.base.yml",
+            "context": {
+                "text": "    healthcheck:\n",
+                "offset": 2192
+            }
+        },
+        {
+            "text": "postgis",
+            "offset": 2506,
+            "line": {
+                "text": "    image: postgis/postgis@sha256:495a314df49c5a7a420ee076042b6f91e30f195a0ce0901d2c2369f5bf67c8e7\n",
+                "offset": 2495
+            },
+            "length": 7,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 84,
+            "col": 12,
+            "uri": "file:///workspace/universal.base.yml",
+            "context": {
+                "text": "    image: postgis/postgis@sha256:495a314df49c5a7a420ee076042b6f91e30f195a0ce0901d2c2369f5bf67c8e7\n",
+                "offset": 2495
+            }
+        },
+        {
+            "text": "postgis",
+            "offset": 2514,
+            "line": {
+                "text": "    image: postgis/postgis@sha256:495a314df49c5a7a420ee076042b6f91e30f195a0ce0901d2c2369f5bf67c8e7\n",
+                "offset": 2495
+            },
+            "length": 7,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 84,
+            "col": 20,
+            "uri": "file:///workspace/universal.base.yml",
+            "context": {
+                "text": "    image: postgis/postgis@sha256:495a314df49c5a7a420ee076042b6f91e30f195a0ce0901d2c2369f5bf67c8e7\n",
+                "offset": 2495
+            }
+        },
+        {
+            "text": "healthcheck",
+            "offset": 2912,
+            "line": {
+                "text": "    healthcheck:\n",
+                "offset": 2908
+            },
+            "length": 11,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 91,
+            "col": 5,
+            "uri": "file:///workspace/universal.base.yml",
+            "context": {
+                "text": "    healthcheck:\n",
+                "offset": 2908
+            }
+        },
+        {
+            "text": "isready",
+            "offset": 2984,
+            "line": {
+                "text": "          \"pg_isready --username $KEYCLOAK_DB_USER --dbname $KEYCLOAK_DB_NAME --port $KEYCLOAK_DB_PORT || exit 1\",\n",
+                "offset": 2970
+            },
+            "length": 7,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 95,
+            "col": 15,
+            "uri": "file:///workspace/universal.base.yml",
+            "context": {
+                "text": "          \"pg_isready --username $KEYCLOAK_DB_USER --dbname $KEYCLOAK_DB_NAME --port $KEYCLOAK_DB_PORT || exit 1\",\n",
+                "offset": 2970
+            }
+        },
+        {
+            "text": "dbname",
+            "offset": 3023,
+            "line": {
+                "text": "          \"pg_isready --username $KEYCLOAK_DB_USER --dbname $KEYCLOAK_DB_NAME --port $KEYCLOAK_DB_PORT || exit 1\",\n",
+                "offset": 2970
+            },
+            "length": 6,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 95,
+            "col": 54,
+            "uri": "file:///workspace/universal.base.yml",
+            "context": {
+                "text": "          \"pg_isready --username $KEYCLOAK_DB_USER --dbname $KEYCLOAK_DB_NAME --port $KEYCLOAK_DB_PORT || exit 1\",\n",
+                "offset": 2970
+            }
+        },
+        {
+            "text": "postgis",
+            "offset": 3423,
+            "line": {
+                "text": "    image: postgis/postgis@sha256:495a314df49c5a7a420ee076042b6f91e30f195a0ce0901d2c2369f5bf67c8e7\n",
+                "offset": 3412
+            },
+            "length": 7,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 110,
+            "col": 12,
+            "uri": "file:///workspace/universal.base.yml",
+            "context": {
+                "text": "    image: postgis/postgis@sha256:495a314df49c5a7a420ee076042b6f91e30f195a0ce0901d2c2369f5bf67c8e7\n",
+                "offset": 3412
+            }
+        },
+        {
+            "text": "postgis",
+            "offset": 3431,
+            "line": {
+                "text": "    image: postgis/postgis@sha256:495a314df49c5a7a420ee076042b6f91e30f195a0ce0901d2c2369f5bf67c8e7\n",
+                "offset": 3412
+            },
+            "length": 7,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 110,
+            "col": 20,
+            "uri": "file:///workspace/universal.base.yml",
+            "context": {
+                "text": "    image: postgis/postgis@sha256:495a314df49c5a7a420ee076042b6f91e30f195a0ce0901d2c2369f5bf67c8e7\n",
+                "offset": 3412
+            }
+        },
+        {
+            "text": "healthcheck",
+            "offset": 3840,
+            "line": {
+                "text": "    healthcheck:\n",
+                "offset": 3836
+            },
+            "length": 11,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 119,
+            "col": 5,
+            "uri": "file:///workspace/universal.base.yml",
+            "context": {
+                "text": "    healthcheck:\n",
+                "offset": 3836
+            }
+        },
+        {
+            "text": "isready",
+            "offset": 3912,
+            "line": {
+                "text": "          \"pg_isready --username $DATABASE_USER --dbname $DATABASE_NAME --port $DATABASE_PORT || exit 1\",\n",
+                "offset": 3898
+            },
+            "length": 7,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 123,
+            "col": 15,
+            "uri": "file:///workspace/universal.base.yml",
+            "context": {
+                "text": "          \"pg_isready --username $DATABASE_USER --dbname $DATABASE_NAME --port $DATABASE_PORT || exit 1\",\n",
+                "offset": 3898
+            }
+        },
+        {
+            "text": "dbname",
+            "offset": 3948,
+            "line": {
+                "text": "          \"pg_isready --username $DATABASE_USER --dbname $DATABASE_NAME --port $DATABASE_PORT || exit 1\",\n",
+                "offset": 3898
+            },
+            "length": 6,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 123,
+            "col": 51,
+            "uri": "file:///workspace/universal.base.yml",
+            "context": {
+                "text": "          \"pg_isready --username $DATABASE_USER --dbname $DATABASE_NAME --port $DATABASE_PORT || exit 1\",\n",
+                "offset": 3898
+            }
+        },
+        {
+            "text": "dpage",
+            "offset": 4192,
+            "line": {
+                "text": "    image: dpage/pgadmin4@sha256:6b1c0db09695758c72abcd5160b7c4cc6d0847ab0c90a2403bdbf951f0defb5a\n",
+                "offset": 4181
+            },
+            "length": 5,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 133,
+            "col": 12,
+            "uri": "file:///workspace/universal.base.yml",
+            "context": {
+                "text": "    image: dpage/pgadmin4@sha256:6b1c0db09695758c72abcd5160b7c4cc6d0847ab0c90a2403bdbf951f0defb5a\n",
+                "offset": 4181
+            }
+        },
+        {
+            "text": "adminpassword",
+            "offset": 4535,
+            "line": {
+                "text": "      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-adminpassword}\n",
+                "offset": 4475
+            },
+            "length": 13,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 138,
+            "col": 61,
+            "uri": "file:///workspace/universal.base.yml",
+            "context": {
+                "text": "      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-adminpassword}\n",
+                "offset": 4475
+            }
+        },
+        {
+            "text": "healthcheck",
+            "offset": 4949,
+            "line": {
+                "text": "      - ./services/pgadmin/healthcheck.py:/pgadmin4/healthcheck.py:ro\n",
+                "offset": 4922
+            },
+            "length": 11,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 147,
+            "col": 28,
+            "uri": "file:///workspace/universal.base.yml",
+            "context": {
+                "text": "      - ./services/pgadmin/healthcheck.py:/pgadmin4/healthcheck.py:ro\n",
+                "offset": 4922
+            }
+        },
+        {
+            "text": "healthcheck",
+            "offset": 4974,
+            "line": {
+                "text": "      - ./services/pgadmin/healthcheck.py:/pgadmin4/healthcheck.py:ro\n",
+                "offset": 4922
+            },
+            "length": 11,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 147,
+            "col": 53,
+            "uri": "file:///workspace/universal.base.yml",
+            "context": {
+                "text": "      - ./services/pgadmin/healthcheck.py:/pgadmin4/healthcheck.py:ro\n",
+                "offset": 4922
+            }
+        }
+    ],
+    "info": [],
+    "debug": [],
+    "error": [],
+    "progress": [],
+    "result": {
+        "files": 43,
+        "filesWithIssues": [
+            "universal.base.yml"
+        ],
+        "issues": 15,
+        "errors": 0,
+        "cachedFiles": 0
+    }
+}

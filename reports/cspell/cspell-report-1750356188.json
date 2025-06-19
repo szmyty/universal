@@ -1,0 +1,35 @@
+{
+    "issues": [
+        {
+            "text": "customised",
+            "offset": 1527,
+            "line": {
+                "text": "These files can be customised if additional packages or services are\n",
+                "offset": 1508
+            },
+            "length": 10,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 38,
+            "col": 20,
+            "uri": "file:///workspace/docs/devcontainer.md",
+            "context": {
+                "text": "These files can be customised if additional packages or services are\n",
+                "offset": 1508
+            }
+        }
+    ],
+    "info": [],
+    "debug": [],
+    "error": [],
+    "progress": [],
+    "result": {
+        "files": 25,
+        "filesWithIssues": [
+            "docs/devcontainer.md"
+        ],
+        "issues": 1,
+        "errors": 0,
+        "cachedFiles": 0
+    }
+}

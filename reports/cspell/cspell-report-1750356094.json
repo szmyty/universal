@@ -1,0 +1,35 @@
+{
+    "issues": [
+        {
+            "text": "FOUC",
+            "offset": 773,
+            "line": {
+                "text": "        <!-- 🌐 Map style: load immediately to prevent FOUC on initial render -->\n",
+                "offset": 718
+            },
+            "length": 4,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 24,
+            "col": 56,
+            "uri": "file:///workspace/apps/ui/index.html",
+            "context": {
+                "text": "        <!-- 🌐 Map style: load immediately to prevent FOUC on initial render -->\n",
+                "offset": 718
+            }
+        }
+    ],
+    "info": [],
+    "debug": [],
+    "error": [],
+    "progress": [],
+    "result": {
+        "files": 13,
+        "filesWithIssues": [
+            "apps/ui/index.html"
+        ],
+        "issues": 1,
+        "errors": 0,
+        "cachedFiles": 0
+    }
+}

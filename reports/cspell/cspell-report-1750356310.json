@@ -1,0 +1,233 @@
+{
+    "issues": [
+        {
+            "text": "pdal",
+            "offset": 137,
+            "line": {
+                "text": "# Script: install-pdal.sh\n",
+                "offset": 119
+            },
+            "length": 4,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 5,
+            "col": 19,
+            "uri": "file:///workspace/scripts/install_pdal.sh",
+            "context": {
+                "text": "# Script: install-pdal.sh\n",
+                "offset": 119
+            }
+        },
+        {
+            "text": "PDAL",
+            "offset": 180,
+            "line": {
+                "text": "# Description: Builds and installs PDAL from a specific commit with optional\n",
+                "offset": 145
+            },
+            "length": 4,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 6,
+            "col": 36,
+            "uri": "file:///workspace/scripts/install_pdal.sh",
+            "context": {
+                "text": "# Description: Builds and installs PDAL from a specific commit with optional\n",
+                "offset": 145
+            }
+        },
+        {
+            "text": "pdal",
+            "offset": 434,
+            "line": {
+                "text": "download_pdal() {\n",
+                "offset": 425
+            },
+            "length": 4,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 13,
+            "col": 10,
+            "uri": "file:///workspace/scripts/install_pdal.sh",
+            "context": {
+                "text": "download_pdal() {\n",
+                "offset": 425
+            }
+        },
+        {
+            "text": "PDAL",
+            "offset": 465,
+            "line": {
+                "text": "  log \"📥 Downloading PDAL source from ${URL}\"\n",
+                "offset": 443
+            },
+            "length": 4,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 14,
+            "col": 23,
+            "uri": "file:///workspace/scripts/install_pdal.sh",
+            "context": {
+                "text": "  log \"📥 Downloading PDAL source from ${URL}\"\n",
+                "offset": 443
+            }
+        },
+        {
+            "text": "PDAL",
+            "offset": 804,
+            "line": {
+                "text": "  SRC_DIR=\"$(find \"${WORK_DIR}\" -maxdepth 1 -type d -name 'PDAL-*' | head -n 1)\"\n",
+                "offset": 745
+            },
+            "length": 4,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 26,
+            "col": 60,
+            "uri": "file:///workspace/scripts/install_pdal.sh",
+            "context": {
+                "text": "  SRC_DIR=\"$(find \"${WORK_DIR}\" -maxdepth 1 -type d -name 'PDAL-*' | head -n 1)\"\n",
+                "offset": 745
+            }
+        },
+        {
+            "text": "pdal",
+            "offset": 835,
+            "line": {
+                "text": "build_pdal() {\n",
+                "offset": 829
+            },
+            "length": 4,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 29,
+            "col": 7,
+            "uri": "file:///workspace/scripts/install_pdal.sh",
+            "context": {
+                "text": "build_pdal() {\n",
+                "offset": 829
+            }
+        },
+        {
+            "text": "DCMAKE",
+            "offset": 939,
+            "line": {
+                "text": "  cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=\"${PREFIX}\"\n",
+                "offset": 927
+            },
+            "length": 6,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 33,
+            "col": 13,
+            "uri": "file:///workspace/scripts/install_pdal.sh",
+            "context": {
+                "text": "  cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=\"${PREFIX}\"\n",
+                "offset": 927
+            }
+        },
+        {
+            "text": "DCMAKE",
+            "offset": 966,
+            "line": {
+                "text": "  cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=\"${PREFIX}\"\n",
+                "offset": 927
+            },
+            "length": 6,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 33,
+            "col": 40,
+            "uri": "file:///workspace/scripts/install_pdal.sh",
+            "context": {
+                "text": "  cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=\"${PREFIX}\"\n",
+                "offset": 927
+            }
+        },
+        {
+            "text": "PDAL",
+            "offset": 1019,
+            "line": {
+                "text": "  log \"🚀 Building PDAL\"\n",
+                "offset": 1000
+            },
+            "length": 4,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 34,
+            "col": 20,
+            "uri": "file:///workspace/scripts/install_pdal.sh",
+            "context": {
+                "text": "  log \"🚀 Building PDAL\"\n",
+                "offset": 1000
+            }
+        },
+        {
+            "text": "pdal",
+            "offset": 1127,
+            "line": {
+                "text": "install_pdal() {\n",
+                "offset": 1119
+            },
+            "length": 4,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 40,
+            "col": 9,
+            "uri": "file:///workspace/scripts/install_pdal.sh",
+            "context": {
+                "text": "install_pdal() {\n",
+                "offset": 1119
+            }
+        },
+        {
+            "text": "PDAL",
+            "offset": 1292,
+            "line": {
+                "text": "  [[ -z \"${SHA}\" ]] && error \"PDAL commit SHA required\"\n",
+                "offset": 1262
+            },
+            "length": 4,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 50,
+            "col": 31,
+            "uri": "file:///workspace/scripts/install_pdal.sh",
+            "context": {
+                "text": "  [[ -z \"${SHA}\" ]] && error \"PDAL commit SHA required\"\n",
+                "offset": 1262
+            }
+        },
+        {
+            "text": "pdal",
+            "offset": 1402,
+            "line": {
+                "text": "  ARCHIVE=\"${WORK_DIR}/pdal.tar.gz\"\n",
+                "offset": 1379
+            },
+            "length": 4,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 55,
+            "col": 24,
+            "uri": "file:///workspace/scripts/install_pdal.sh",
+            "context": {
+                "text": "  ARCHIVE=\"${WORK_DIR}/pdal.tar.gz\"\n",
+                "offset": 1379
+            }
+        }
+    ],
+    "info": [],
+    "debug": [],
+    "error": [],
+    "progress": [],
+    "result": {
+        "files": 34,
+        "filesWithIssues": [
+            "scripts/install_pdal.sh"
+        ],
+        "issues": 12,
+        "errors": 0,
+        "cachedFiles": 0
+    }
+}

@@ -1,0 +1,233 @@
+{
+    "issues": [
+        {
+            "text": "DEVSKIM",
+            "offset": 797,
+            "line": {
+                "text": "  - REPOSITORY_DEVSKIM\n",
+                "offset": 782
+            },
+            "length": 7,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 37,
+            "col": 16,
+            "uri": "file:///workspace/.megalinter.yml",
+            "context": {
+                "text": "  - REPOSITORY_DEVSKIM\n",
+                "offset": 782
+            }
+        },
+        {
+            "text": "vercel",
+            "offset": 966,
+            "line": {
+                "text": "  - .vercel\n",
+                "offset": 961
+            },
+            "length": 6,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 52,
+            "col": 6,
+            "uri": "file:///workspace/.megalinter.yml",
+            "context": {
+                "text": "  - .vercel\n",
+                "offset": 961
+            }
+        },
+        {
+            "text": "venv",
+            "offset": 989,
+            "line": {
+                "text": "  - venv\n",
+                "offset": 985
+            },
+            "length": 4,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 54,
+            "col": 5,
+            "uri": "file:///workspace/.megalinter.yml",
+            "context": {
+                "text": "  - venv\n",
+                "offset": 985
+            }
+        },
+        {
+            "text": "venv",
+            "offset": 999,
+            "line": {
+                "text": "  - .venv\n",
+                "offset": 994
+            },
+            "length": 4,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 55,
+            "col": 6,
+            "uri": "file:///workspace/.megalinter.yml",
+            "context": {
+                "text": "  - .venv\n",
+                "offset": 994
+            }
+        },
+        {
+            "text": "pytest",
+            "offset": 1022,
+            "line": {
+                "text": "  - .pytest_cache\n",
+                "offset": 1017
+            },
+            "length": 6,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 57,
+            "col": 6,
+            "uri": "file:///workspace/.megalinter.yml",
+            "context": {
+                "text": "  - .pytest_cache\n",
+                "offset": 1017
+            }
+        },
+        {
+            "text": "mypy",
+            "offset": 1040,
+            "line": {
+                "text": "  - .mypy_cache\n",
+                "offset": 1035
+            },
+            "length": 4,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 58,
+            "col": 6,
+            "uri": "file:///workspace/.megalinter.yml",
+            "context": {
+                "text": "  - .mypy_cache\n",
+                "offset": 1035
+            }
+        },
+        {
+            "text": "MYPY",
+            "offset": 1289,
+            "line": {
+                "text": "PYTHON_MYPY_CONFIG_FILE: config/.mypy.ini\n",
+                "offset": 1282
+            },
+            "length": 4,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 71,
+            "col": 8,
+            "uri": "file:///workspace/.megalinter.yml",
+            "context": {
+                "text": "PYTHON_MYPY_CONFIG_FILE: config/.mypy.ini\n",
+                "offset": 1282
+            }
+        },
+        {
+            "text": "mypy",
+            "offset": 1315,
+            "line": {
+                "text": "PYTHON_MYPY_CONFIG_FILE: config/.mypy.ini\n",
+                "offset": 1282
+            },
+            "length": 4,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 71,
+            "col": 34,
+            "uri": "file:///workspace/.megalinter.yml",
+            "context": {
+                "text": "PYTHON_MYPY_CONFIG_FILE: config/.mypy.ini\n",
+                "offset": 1282
+            }
+        },
+        {
+            "text": "KICS",
+            "offset": 1697,
+            "line": {
+                "text": "REPOSITORY_KICS_CONFIG_FILE: config/.kics.config.json\n",
+                "offset": 1686
+            },
+            "length": 4,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 79,
+            "col": 12,
+            "uri": "file:///workspace/.megalinter.yml",
+            "context": {
+                "text": "REPOSITORY_KICS_CONFIG_FILE: config/.kics.config.json\n",
+                "offset": 1686
+            }
+        },
+        {
+            "text": "kics",
+            "offset": 1723,
+            "line": {
+                "text": "REPOSITORY_KICS_CONFIG_FILE: config/.kics.config.json\n",
+                "offset": 1686
+            },
+            "length": 4,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 79,
+            "col": 38,
+            "uri": "file:///workspace/.megalinter.yml",
+            "context": {
+                "text": "REPOSITORY_KICS_CONFIG_FILE: config/.kics.config.json\n",
+                "offset": 1686
+            }
+        },
+        {
+            "text": "CHKTEX",
+            "offset": 1792,
+            "line": {
+                "text": "LATEX_CHKTEX_CONFIG_FILE: config/.chktexrc\n",
+                "offset": 1786
+            },
+            "length": 6,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 81,
+            "col": 7,
+            "uri": "file:///workspace/.megalinter.yml",
+            "context": {
+                "text": "LATEX_CHKTEX_CONFIG_FILE: config/.chktexrc\n",
+                "offset": 1786
+            }
+        },
+        {
+            "text": "chktexrc",
+            "offset": 1820,
+            "line": {
+                "text": "LATEX_CHKTEX_CONFIG_FILE: config/.chktexrc\n",
+                "offset": 1786
+            },
+            "length": 8,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 81,
+            "col": 35,
+            "uri": "file:///workspace/.megalinter.yml",
+            "context": {
+                "text": "LATEX_CHKTEX_CONFIG_FILE: config/.chktexrc\n",
+                "offset": 1786
+            }
+        }
+    ],
+    "info": [],
+    "debug": [],
+    "error": [],
+    "progress": [],
+    "result": {
+        "files": 9,
+        "filesWithIssues": [
+            ".megalinter.yml"
+        ],
+        "issues": 12,
+        "errors": 0,
+        "cachedFiles": 0
+    }
+}

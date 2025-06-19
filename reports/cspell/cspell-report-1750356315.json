@@ -1,0 +1,35 @@
+{
+    "issues": [
+        {
+            "text": "showformat",
+            "offset": 599,
+            "line": {
+                "text": "    packages=$(dpkg-query --show --showformat='${Package}=${Version}\\n')\n",
+                "offset": 564
+            },
+            "length": 10,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 22,
+            "col": 36,
+            "uri": "file:///workspace/scripts/list_package_versions.sh",
+            "context": {
+                "text": "    packages=$(dpkg-query --show --showformat='${Package}=${Version}\\n')\n",
+                "offset": 564
+            }
+        }
+    ],
+    "info": [],
+    "debug": [],
+    "error": [],
+    "progress": [],
+    "result": {
+        "files": 36,
+        "filesWithIssues": [
+            "scripts/list_package_versions.sh"
+        ],
+        "issues": 1,
+        "errors": 0,
+        "cachedFiles": 0
+    }
+}

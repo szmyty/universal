@@ -1,0 +1,53 @@
+{
+    "issues": [
+        {
+            "text": "sandboxing",
+            "offset": 862,
+            "line": {
+                "text": "| `00-global.conf`      | Basic defaults like colored output and root sandboxing                              |\n",
+                "offset": 792
+            },
+            "length": 10,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 21,
+            "col": 71,
+            "uri": "file:///workspace/config/apt/README.md",
+            "context": {
+                "text": "| `00-global.conf`      | Basic defaults like colored output and root sandboxing                              |\n",
+                "offset": 792
+            }
+        },
+        {
+            "text": "timestamping",
+            "offset": 1159,
+            "line": {
+                "text": "| `03-cleanup.conf`     | Adds timestamping and purges APT cache after installs and updates                   |\n",
+                "offset": 1128
+            },
+            "length": 12,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 24,
+            "col": 32,
+            "uri": "file:///workspace/config/apt/README.md",
+            "context": {
+                "text": "| `03-cleanup.conf`     | Adds timestamping and purges APT cache after installs and updates                   |\n",
+                "offset": 1128
+            }
+        }
+    ],
+    "info": [],
+    "debug": [],
+    "error": [],
+    "progress": [],
+    "result": {
+        "files": 23,
+        "filesWithIssues": [
+            "config/apt/README.md"
+        ],
+        "issues": 2,
+        "errors": 0,
+        "cachedFiles": 0
+    }
+}

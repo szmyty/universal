@@ -1,0 +1,53 @@
+{
+    "issues": [
+        {
+            "text": "asyncapi",
+            "offset": 40,
+            "line": {
+                "text": "extends: [\"spectral:oas\", \"spectral:asyncapi\", \"spectral:arazzo\"]\n",
+                "offset": 4
+            },
+            "length": 8,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 2,
+            "col": 37,
+            "uri": "file:///workspace/config/.spectral.yaml",
+            "context": {
+                "text": "extends: [\"spectral:oas\", \"spectral:asyncapi\", \"spectral:arazzo\"]\n",
+                "offset": 4
+            }
+        },
+        {
+            "text": "arazzo",
+            "offset": 61,
+            "line": {
+                "text": "extends: [\"spectral:oas\", \"spectral:asyncapi\", \"spectral:arazzo\"]\n",
+                "offset": 4
+            },
+            "length": 6,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 2,
+            "col": 58,
+            "uri": "file:///workspace/config/.spectral.yaml",
+            "context": {
+                "text": "extends: [\"spectral:oas\", \"spectral:asyncapi\", \"spectral:arazzo\"]\n",
+                "offset": 4
+            }
+        }
+    ],
+    "info": [],
+    "debug": [],
+    "error": [],
+    "progress": [],
+    "result": {
+        "files": 23,
+        "filesWithIssues": [
+            "config/.spectral.yaml"
+        ],
+        "issues": 2,
+        "errors": 0,
+        "cachedFiles": 0
+    }
+}

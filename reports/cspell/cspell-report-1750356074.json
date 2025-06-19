@@ -1,0 +1,71 @@
+{
+    "issues": [
+        {
+            "text": "cookiecutter",
+            "offset": 71,
+            "line": {
+                "text": "      .*\\{\\{.*\\}\\}.*|     # Exclude any files with cookiecutter variables\n",
+                "offset": 20
+            },
+            "length": 12,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 3,
+            "col": 52,
+            "uri": "file:///workspace/.pre-commit-config.yaml",
+            "context": {
+                "text": "      .*\\{\\{.*\\}\\}.*|     # Exclude any files with cookiecutter variables\n",
+                "offset": 20
+            }
+        },
+        {
+            "text": "mkdocs",
+            "offset": 130,
+            "line": {
+                "text": "      docs/site/.*|       # Exclude mkdocs compiled files\n",
+                "offset": 94
+            },
+            "length": 6,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 4,
+            "col": 37,
+            "uri": "file:///workspace/.pre-commit-config.yaml",
+            "context": {
+                "text": "      docs/site/.*|       # Exclude mkdocs compiled files\n",
+                "offset": 94
+            }
+        },
+        {
+            "text": "oxipng",
+            "offset": 2290,
+            "line": {
+                "text": "  #     - id: oxipng\n",
+                "offset": 2276
+            },
+            "length": 6,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 61,
+            "col": 15,
+            "uri": "file:///workspace/.pre-commit-config.yaml",
+            "context": {
+                "text": "  #     - id: oxipng\n",
+                "offset": 2276
+            }
+        }
+    ],
+    "info": [],
+    "debug": [],
+    "error": [],
+    "progress": [],
+    "result": {
+        "files": 10,
+        "filesWithIssues": [
+            ".pre-commit-config.yaml"
+        ],
+        "issues": 3,
+        "errors": 0,
+        "cachedFiles": 0
+    }
+}

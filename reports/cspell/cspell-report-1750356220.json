@@ -1,0 +1,71 @@
+{
+    "issues": [
+        {
+            "text": "Dockerfiles",
+            "offset": 2654,
+            "line": {
+                "text": "- Trivy scans Dockerfiles, images, and Terraform for CVEs\n",
+                "offset": 2640
+            },
+            "length": 11,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 74,
+            "col": 15,
+            "uri": "file:///workspace/docs/dx_presentation.md",
+            "context": {
+                "text": "- Trivy scans Dockerfiles, images, and Terraform for CVEs\n",
+                "offset": 2640
+            }
+        },
+        {
+            "text": "autocompletions",
+            "offset": 3717,
+            "line": {
+                "text": "  - [`Continue.dev`](https://github.com/continuedev/continue) (chat + autocompletions)\n",
+                "offset": 3647
+            },
+            "length": 15,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 99,
+            "col": 71,
+            "uri": "file:///workspace/docs/dx_presentation.md",
+            "context": {
+                "text": "  - [`Continue.dev`](https://github.com/continuedev/continue) (chat + autocompletions)\n",
+                "offset": 3647
+            }
+        },
+        {
+            "text": "Ollama",
+            "offset": 4161,
+            "line": {
+                "text": "  Paired with local LLMs like **Code Llama**, **StarCoder**, or **WizardCoder** using **Ollama** or **LM Studio**.\n",
+                "offset": 4073
+            },
+            "length": 6,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 106,
+            "col": 89,
+            "uri": "file:///workspace/docs/dx_presentation.md",
+            "context": {
+                "text": "  Paired with local LLMs like **Code Llama**, **StarCoder**, or **WizardCoder** using **Ollama** or **LM Studio**.\n",
+                "offset": 4073
+            }
+        }
+    ],
+    "info": [],
+    "debug": [],
+    "error": [],
+    "progress": [],
+    "result": {
+        "files": 26,
+        "filesWithIssues": [
+            "docs/dx_presentation.md"
+        ],
+        "issues": 3,
+        "errors": 0,
+        "cachedFiles": 0
+    }
+}

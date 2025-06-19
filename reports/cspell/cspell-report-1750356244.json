@@ -1,0 +1,197 @@
+{
+    "issues": [
+        {
+            "text": "rustc",
+            "offset": 251,
+            "line": {
+                "text": "    [rust]=rustc\n",
+                "offset": 240
+            },
+            "length": 5,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 14,
+            "col": 12,
+            "uri": "file:///workspace/scripts/devtools.sh",
+            "context": {
+                "text": "    [rust]=rustc\n",
+                "offset": 240
+            }
+        },
+        {
+            "text": "rustc",
+            "offset": 680,
+            "line": {
+                "text": "rust rustc https://github.com/code-lever/asdf-rust.git\n",
+                "offset": 675
+            },
+            "length": 5,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 25,
+            "col": 6,
+            "uri": "file:///workspace/scripts/devtools.sh",
+            "context": {
+                "text": "rust rustc https://github.com/code-lever/asdf-rust.git\n",
+                "offset": 675
+            }
+        },
+        {
+            "text": "subshell",
+            "offset": 3592,
+            "line": {
+                "text": "    # Fallback without masking subshell failure\n",
+                "offset": 3561
+            },
+            "length": 8,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 132,
+            "col": 32,
+            "uri": "file:///workspace/scripts/devtools.sh",
+            "context": {
+                "text": "    # Fallback without masking subshell failure\n",
+                "offset": 3561
+            }
+        },
+        {
+            "text": "DISTRIB",
+            "offset": 18998,
+            "line": {
+                "text": "  [[ -f /etc/lsb-release ]] && grep -q \"DISTRIB_ID=Ubuntu\" /etc/lsb-release\n",
+                "offset": 18958
+            },
+            "length": 7,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 709,
+            "col": 41,
+            "uri": "file:///workspace/scripts/devtools.sh",
+            "context": {
+                "text": "  [[ -f /etc/lsb-release ]] && grep -q \"DISTRIB_ID=Ubuntu\" /etc/lsb-release\n",
+                "offset": 18958
+            }
+        },
+        {
+            "text": "distro",
+            "offset": 20297,
+            "line": {
+                "text": "# Function: os::distro\n",
+                "offset": 20281
+            },
+            "length": 6,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 756,
+            "col": 17,
+            "uri": "file:///workspace/scripts/devtools.sh",
+            "context": {
+                "text": "# Function: os::distro\n",
+                "offset": 20281
+            }
+        },
+        {
+            "text": "distro",
+            "offset": 20472,
+            "line": {
+                "text": "os::distro() {\n",
+                "offset": 20468
+            },
+            "length": 6,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 761,
+            "col": 5,
+            "uri": "file:///workspace/scripts/devtools.sh",
+            "context": {
+                "text": "os::distro() {\n",
+                "offset": 20468
+            }
+        },
+        {
+            "text": "DISTRO",
+            "offset": 23515,
+            "line": {
+                "text": "    OS_DISTRO=\"$(os::distro)\"\n",
+                "offset": 23508
+            },
+            "length": 6,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 875,
+            "col": 8,
+            "uri": "file:///workspace/scripts/devtools.sh",
+            "context": {
+                "text": "    OS_DISTRO=\"$(os::distro)\"\n",
+                "offset": 23508
+            }
+        },
+        {
+            "text": "distro",
+            "offset": 23529,
+            "line": {
+                "text": "    OS_DISTRO=\"$(os::distro)\"\n",
+                "offset": 23508
+            },
+            "length": 6,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 875,
+            "col": 22,
+            "uri": "file:///workspace/scripts/devtools.sh",
+            "context": {
+                "text": "    OS_DISTRO=\"$(os::distro)\"\n",
+                "offset": 23508
+            }
+        },
+        {
+            "text": "DISTRO",
+            "offset": 23569,
+            "line": {
+                "text": "    log \"📦 Distribution: ${OS_DISTRO:-unknown}\"\n",
+                "offset": 23538
+            },
+            "length": 6,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 876,
+            "col": 32,
+            "uri": "file:///workspace/scripts/devtools.sh",
+            "context": {
+                "text": "    log \"📦 Distribution: ${OS_DISTRO:-unknown}\"\n",
+                "offset": 23538
+            }
+        },
+        {
+            "text": "DISTRO",
+            "offset": 23903,
+            "line": {
+                "text": "    OPERATING_SYSTEM=\"${OS} ${OS_DISTRO}-${OS_VERSION} (${ARCH}), Kernel: ${OS_KERNEL}\"\n",
+                "offset": 23870
+            },
+            "length": 6,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 889,
+            "col": 34,
+            "uri": "file:///workspace/scripts/devtools.sh",
+            "context": {
+                "text": "    OPERATING_SYSTEM=\"${OS} ${OS_DISTRO}-${OS_VERSION} (${ARCH}), Kernel: ${OS_KERNEL}\"\n",
+                "offset": 23870
+            }
+        }
+    ],
+    "info": [],
+    "debug": [],
+    "error": [],
+    "progress": [],
+    "result": {
+        "files": 30,
+        "filesWithIssues": [
+            "scripts/devtools.sh"
+        ],
+        "issues": 10,
+        "errors": 0,
+        "cachedFiles": 0
+    }
+}

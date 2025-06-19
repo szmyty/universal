@@ -1,0 +1,233 @@
+{
+    "issues": [
+        {
+            "text": "shellcheck",
+            "offset": 1577,
+            "line": {
+                "text": "  lint:shellcheck:\n",
+                "offset": 1570
+            },
+            "length": 10,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 72,
+            "col": 8,
+            "uri": "file:///workspace/Taskfile.yml",
+            "context": {
+                "text": "  lint:shellcheck:\n",
+                "offset": 1570
+            }
+        },
+        {
+            "text": "shellcheck",
+            "offset": 1619,
+            "line": {
+                "text": "    desc: Run MegaLinter with shellcheck\n",
+                "offset": 1589
+            },
+            "length": 10,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 73,
+            "col": 31,
+            "uri": "file:///workspace/Taskfile.yml",
+            "context": {
+                "text": "    desc: Run MegaLinter with shellcheck\n",
+                "offset": 1589
+            }
+        },
+        {
+            "text": "shellcheck",
+            "offset": 1656,
+            "line": {
+                "text": "    cmds: [\"pnpm run lint:shellcheck\"]\n",
+                "offset": 1630
+            },
+            "length": 10,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 74,
+            "col": 27,
+            "uri": "file:///workspace/Taskfile.yml",
+            "context": {
+                "text": "    cmds: [\"pnpm run lint:shellcheck\"]\n",
+                "offset": 1630
+            }
+        },
+        {
+            "text": "shfmt",
+            "offset": 1677,
+            "line": {
+                "text": "  lint:shfmt:\n",
+                "offset": 1670
+            },
+            "length": 5,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 76,
+            "col": 8,
+            "uri": "file:///workspace/Taskfile.yml",
+            "context": {
+                "text": "  lint:shfmt:\n",
+                "offset": 1670
+            }
+        },
+        {
+            "text": "shfmt",
+            "offset": 1714,
+            "line": {
+                "text": "    desc: Run MegaLinter with shfmt\n",
+                "offset": 1684
+            },
+            "length": 5,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 77,
+            "col": 31,
+            "uri": "file:///workspace/Taskfile.yml",
+            "context": {
+                "text": "    desc: Run MegaLinter with shfmt\n",
+                "offset": 1684
+            }
+        },
+        {
+            "text": "shfmt",
+            "offset": 1746,
+            "line": {
+                "text": "    cmds: [\"pnpm run lint:shfmt\"]\n",
+                "offset": 1720
+            },
+            "length": 5,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 78,
+            "col": 27,
+            "uri": "file:///workspace/Taskfile.yml",
+            "context": {
+                "text": "    cmds: [\"pnpm run lint:shfmt\"]\n",
+                "offset": 1720
+            }
+        },
+        {
+            "text": "loglevel",
+            "offset": 3808,
+            "line": {
+                "text": "      - talisman --scan --loglevel warn --reportDirectory reports/talisman\n",
+                "offset": 3782
+            },
+            "length": 8,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 162,
+            "col": 27,
+            "uri": "file:///workspace/Taskfile.yml",
+            "context": {
+                "text": "      - talisman --scan --loglevel warn --reportDirectory reports/talisman\n",
+                "offset": 3782
+            }
+        },
+        {
+            "text": "latexmk",
+            "offset": 3972,
+            "line": {
+                "text": "      - latexmk -cd -pdf -pvc docs/scientific-paper/main.tex\n",
+                "offset": 3964
+            },
+            "length": 7,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 168,
+            "col": 9,
+            "uri": "file:///workspace/Taskfile.yml",
+            "context": {
+                "text": "      - latexmk -cd -pdf -pvc docs/scientific-paper/main.tex\n",
+                "offset": 3964
+            }
+        },
+        {
+            "text": "LATEXMK",
+            "offset": 4057,
+            "line": {
+                "text": "      LATEXMK_DEBUG: \"1\"\n",
+                "offset": 4051
+            },
+            "length": 7,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 171,
+            "col": 7,
+            "uri": "file:///workspace/Taskfile.yml",
+            "context": {
+                "text": "      LATEXMK_DEBUG: \"1\"\n",
+                "offset": 4051
+            }
+        },
+        {
+            "text": "latexmk",
+            "offset": 4169,
+            "line": {
+                "text": "      - latexmk -cd -pdf -pvc docs/proposal/main.tex -verbose\n",
+                "offset": 4161
+            },
+            "length": 7,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 176,
+            "col": 9,
+            "uri": "file:///workspace/Taskfile.yml",
+            "context": {
+                "text": "      - latexmk -cd -pdf -pvc docs/proposal/main.tex -verbose\n",
+                "offset": 4161
+            }
+        },
+        {
+            "text": "LATEXMK",
+            "offset": 4255,
+            "line": {
+                "text": "      LATEXMK_DEBUG: \"1\"\n",
+                "offset": 4249
+            },
+            "length": 7,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 179,
+            "col": 7,
+            "uri": "file:///workspace/Taskfile.yml",
+            "context": {
+                "text": "      LATEXMK_DEBUG: \"1\"\n",
+                "offset": 4249
+            }
+        },
+        {
+            "text": "pgadmin",
+            "offset": 5141,
+            "line": {
+                "text": "          up database pgadmin \\\n",
+                "offset": 5119
+            },
+            "length": 7,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 212,
+            "col": 23,
+            "uri": "file:///workspace/Taskfile.yml",
+            "context": {
+                "text": "          up database pgadmin \\\n",
+                "offset": 5119
+            }
+        }
+    ],
+    "info": [],
+    "debug": [],
+    "error": [],
+    "progress": [],
+    "result": {
+        "files": 41,
+        "filesWithIssues": [
+            "Taskfile.yml"
+        ],
+        "issues": 12,
+        "errors": 0,
+        "cachedFiles": 0
+    }
+}

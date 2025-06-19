@@ -1,0 +1,35 @@
+{
+    "issues": [
+        {
+            "text": "RGBA",
+            "offset": 842,
+            "line": {
+                "text": "  log \"Generating PNG icons (32-bit RGBA)...\"\n",
+                "offset": 806
+            },
+            "length": 4,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 38,
+            "col": 37,
+            "uri": "file:///workspace/scripts/generate-pwa-icons.sh",
+            "context": {
+                "text": "  log \"Generating PNG icons (32-bit RGBA)...\"\n",
+                "offset": 806
+            }
+        }
+    ],
+    "info": [],
+    "debug": [],
+    "error": [],
+    "progress": [],
+    "result": {
+        "files": 32,
+        "filesWithIssues": [
+            "scripts/generate-pwa-icons.sh"
+        ],
+        "issues": 1,
+        "errors": 0,
+        "cachedFiles": 0
+    }
+}

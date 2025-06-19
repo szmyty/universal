@@ -1,0 +1,35 @@
+{
+    "issues": [
+        {
+            "text": "fromfile",
+            "offset": 737,
+            "line": {
+                "text": "            tree --fromfile\n",
+                "offset": 718
+            },
+            "length": 8,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 25,
+            "col": 20,
+            "uri": "file:///workspace/scripts/generate-tree.sh",
+            "context": {
+                "text": "            tree --fromfile\n",
+                "offset": 718
+            }
+        }
+    ],
+    "info": [],
+    "debug": [],
+    "error": [],
+    "progress": [],
+    "result": {
+        "files": 33,
+        "filesWithIssues": [
+            "scripts/generate-tree.sh"
+        ],
+        "issues": 1,
+        "errors": 0,
+        "cachedFiles": 0
+    }
+}

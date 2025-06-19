@@ -2,10 +2,11 @@
     "name": "universal-devtools",
     "private": true,
     "version": "0.1.0",
-    "packageManager": "pnpm@9.15.4",
+    "packageManager": "pnpm@10.12.1",
     "scripts": {
         "format": "prettier --config .prettier.config.mjs --write .",
         "format:check": "prettier --config .prettier.config.mjs --check .",
+        "changeset:init": "pnpx changeset init",
         "lint:spellcheck": "cspell --config .cspell.config.mjs",
         "lint:base": "mega-linter-runner --container-name megalinter --platform linux/amd64 --path . --image ghcr.io/oxsecurity/megalinter@sha256:930b3dbfcfd6814db7e8462f335ebeae8dc1715aeaebb19b0414692ed9930145",
         "lint:mypy": "npm run lint:base -- --env ENABLE_LINTERS=PYTHON_MYPY",
@@ -144,12 +145,14 @@
         "lint:copypaste": "jscpd --config .jscpd.json"
     },
     "devDependencies": {
-        "@stoplight/spectral-cli": "^6.15.0",
-        "cspell": "^9.0.2",
-        "jscpd": "^4.0.5",
-        "mega-linter-runner": "^8.7.0",
-        "prettier": "^3.5.3",
-        "prettier-plugin-pkg": "^0.20.0",
-        "prettier-plugin-sh": "^0.17.4"
+        "@changesets/cli": "2.29.4",
+        "@cspell/cspell-json-reporter": "9.1.1",
+        "@stoplight/spectral-cli": "6.15.0",
+        "cspell": "9.1.1",
+        "jscpd": "4.0.5",
+        "mega-linter-runner": "8.8.0",
+        "prettier": "3.5.3",
+        "prettier-plugin-pkg": "0.21.1",
+        "prettier-plugin-sh": "0.17.4"
     }
 }

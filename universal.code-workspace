@@ -8,6 +8,9 @@
         "git.ignoreLimitWarning": true,
         "cSpell.logFile": ".cache/cspell/cspell.log",
         "cSpell.trustedWorkspace": true,
+        "cSpell.customDictionaries": {
+
+        },
         "telemetry.feedback.enabled": false,
         "emojisense.emojiDecoratorsEnabled": true,
         "remote.WSL.downloadInBackground": true,

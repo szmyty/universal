@@ -1,0 +1,89 @@
+{
+    "issues": [
+        {
+            "text": "keyval",
+            "offset": 692,
+            "line": {
+                "text": "        \"idb-keyval\": \"^6.2.2\",\n",
+                "offset": 679
+            },
+            "length": 6,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 23,
+            "col": 14,
+            "uri": "file:///workspace/apps/ui/package.json",
+            "context": {
+                "text": "        \"idb-keyval\": \"^6.2.2\",\n",
+                "offset": 679
+            }
+        },
+        {
+            "text": "keymirror",
+            "offset": 720,
+            "line": {
+                "text": "        \"keymirror\": \"^0.1.1\",\n",
+                "offset": 711
+            },
+            "length": 9,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 24,
+            "col": 10,
+            "uri": "file:///workspace/apps/ui/package.json",
+            "context": {
+                "text": "        \"keymirror\": \"^0.1.1\",\n",
+                "offset": 711
+            }
+        },
+        {
+            "text": "indexeddb",
+            "offset": 1421,
+            "line": {
+                "text": "        \"redux-persist-indexeddb-storage\": \"^1.0.4\",\n",
+                "offset": 1398
+            },
+            "length": 9,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 44,
+            "col": 24,
+            "uri": "file:///workspace/apps/ui/package.json",
+            "context": {
+                "text": "        \"redux-persist-indexeddb-storage\": \"^1.0.4\",\n",
+                "offset": 1398
+            }
+        },
+        {
+            "text": "usehooks",
+            "offset": 1555,
+            "line": {
+                "text": "        \"usehooks-ts\": \"^3.1.1\",\n",
+                "offset": 1546
+            },
+            "length": 8,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 48,
+            "col": 10,
+            "uri": "file:///workspace/apps/ui/package.json",
+            "context": {
+                "text": "        \"usehooks-ts\": \"^3.1.1\",\n",
+                "offset": 1546
+            }
+        }
+    ],
+    "info": [],
+    "debug": [],
+    "error": [],
+    "progress": [],
+    "result": {
+        "files": 14,
+        "filesWithIssues": [
+            "apps/ui/package.json"
+        ],
+        "issues": 4,
+        "errors": 0,
+        "cachedFiles": 0
+    }
+}

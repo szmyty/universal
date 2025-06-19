@@ -1,0 +1,89 @@
+{
+    "issues": [
+        {
+            "text": "Sanjula",
+            "offset": 1586,
+            "line": {
+                "text": "                \"SanjulaGanepola.github-local-actions\",\n",
+                "offset": 1569
+            },
+            "length": 7,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 44,
+            "col": 18,
+            "uri": "file:///workspace/.devcontainer/devcontainer.json",
+            "context": {
+                "text": "                \"SanjulaGanepola.github-local-actions\",\n",
+                "offset": 1569
+            }
+        },
+        {
+            "text": "Ganepola",
+            "offset": 1593,
+            "line": {
+                "text": "                \"SanjulaGanepola.github-local-actions\",\n",
+                "offset": 1569
+            },
+            "length": 8,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 44,
+            "col": 25,
+            "uri": "file:///workspace/.devcontainer/devcontainer.json",
+            "context": {
+                "text": "                \"SanjulaGanepola.github-local-actions\",\n",
+                "offset": 1569
+            }
+        },
+        {
+            "text": "esbenp",
+            "offset": 1771,
+            "line": {
+                "text": "                \"esbenp.prettier-vscode\",\n",
+                "offset": 1754
+            },
+            "length": 6,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 48,
+            "col": 18,
+            "uri": "file:///workspace/.devcontainer/devcontainer.json",
+            "context": {
+                "text": "                \"esbenp.prettier-vscode\",\n",
+                "offset": 1754
+            }
+        },
+        {
+            "text": "richterger",
+            "offset": 1919,
+            "line": {
+                "text": "                \"richterger.perl\",\n",
+                "offset": 1902
+            },
+            "length": 10,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 51,
+            "col": 18,
+            "uri": "file:///workspace/.devcontainer/devcontainer.json",
+            "context": {
+                "text": "                \"richterger.perl\",\n",
+                "offset": 1902
+            }
+        }
+    ],
+    "info": [],
+    "debug": [],
+    "error": [],
+    "progress": [],
+    "result": {
+        "files": 1,
+        "filesWithIssues": [
+            ".devcontainer/devcontainer.json"
+        ],
+        "issues": 4,
+        "errors": 0,
+        "cachedFiles": 0
+    }
+}

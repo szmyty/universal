@@ -1,0 +1,179 @@
+{
+    "issues": [
+        {
+            "text": "browsable",
+            "offset": 2276,
+            "line": {
+                "text": "- Everything is searchable, version-controlled, and browsable\n",
+                "offset": 2224
+            },
+            "length": 9,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 62,
+            "col": 53,
+            "uri": "file:///workspace/docs/dx_presentation.md",
+            "context": {
+                "text": "- Everything is searchable, version-controlled, and browsable\n",
+                "offset": 2224
+            }
+        },
+        {
+            "text": "Dockerfiles",
+            "offset": 2654,
+            "line": {
+                "text": "- Trivy scans Dockerfiles, images, and Terraform for CVEs\n",
+                "offset": 2640
+            },
+            "length": 11,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 74,
+            "col": 15,
+            "uri": "file:///workspace/docs/dx_presentation.md",
+            "context": {
+                "text": "- Trivy scans Dockerfiles, images, and Terraform for CVEs\n",
+                "offset": 2640
+            }
+        },
+        {
+            "text": "talismanrc",
+            "offset": 2781,
+            "line": {
+                "text": "- Config files (`.talismanrc`, `.gitleaks.toml`) tuned for accuracy\n",
+                "offset": 2763
+            },
+            "length": 10,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 76,
+            "col": 19,
+            "uri": "file:///workspace/docs/dx_presentation.md",
+            "context": {
+                "text": "- Config files (`.talismanrc`, `.gitleaks.toml`) tuned for accuracy\n",
+                "offset": 2763
+            }
+        },
+        {
+            "text": "Qube",
+            "offset": 3178,
+            "line": {
+                "text": "- SonarQube integrated into CI and local Docker Compose\n",
+                "offset": 3171
+            },
+            "length": 4,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 88,
+            "col": 8,
+            "uri": "file:///workspace/docs/dx_presentation.md",
+            "context": {
+                "text": "- SonarQube integrated into CI and local Docker Compose\n",
+                "offset": 3171
+            }
+        },
+        {
+            "text": "autocompletions",
+            "offset": 3717,
+            "line": {
+                "text": "  - [`Continue.dev`](https://github.com/continuedev/continue) (chat + autocompletions)\n",
+                "offset": 3647
+            },
+            "length": 15,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 99,
+            "col": 71,
+            "uri": "file:///workspace/docs/dx_presentation.md",
+            "context": {
+                "text": "  - [`Continue.dev`](https://github.com/continuedev/continue) (chat + autocompletions)\n",
+                "offset": 3647
+            }
+        },
+        {
+            "text": "Sourcegraph",
+            "offset": 3837,
+            "line": {
+                "text": "  - `Cody` (from Sourcegraph) for codebase Q&A  \n",
+                "offset": 3820
+            },
+            "length": 11,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 101,
+            "col": 18,
+            "uri": "file:///workspace/docs/dx_presentation.md",
+            "context": {
+                "text": "  - `Cody` (from Sourcegraph) for codebase Q&A  \n",
+                "offset": 3820
+            }
+        },
+        {
+            "text": "Ollama",
+            "offset": 4161,
+            "line": {
+                "text": "  Paired with local LLMs like **Code Llama**, **StarCoder**, or **WizardCoder** using **Ollama** or **LM Studio**.\n",
+                "offset": 4073
+            },
+            "length": 6,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 106,
+            "col": 89,
+            "uri": "file:///workspace/docs/dx_presentation.md",
+            "context": {
+                "text": "  Paired with local LLMs like **Code Llama**, **StarCoder**, or **WizardCoder** using **Ollama** or **LM Studio**.\n",
+                "offset": 4073
+            }
+        },
+        {
+            "text": "Devbox",
+            "offset": 4272,
+            "line": {
+                "text": "  GitHub Codespaces, Coder, or Devbox to enable instant cloud-based onboarding.\n",
+                "offset": 4241
+            },
+            "length": 6,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 109,
+            "col": 32,
+            "uri": "file:///workspace/docs/dx_presentation.md",
+            "context": {
+                "text": "  GitHub Codespaces, Coder, or Devbox to enable instant cloud-based onboarding.\n",
+                "offset": 4241
+            }
+        },
+        {
+            "text": "Pulumi",
+            "offset": 4377,
+            "line": {
+                "text": "  Terraform or Pulumi modules to manage dev/test/staging infrastructure, including secrets and env config deployment.\n",
+                "offset": 4362
+            },
+            "length": 6,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 112,
+            "col": 16,
+            "uri": "file:///workspace/docs/dx_presentation.md",
+            "context": {
+                "text": "  Terraform or Pulumi modules to manage dev/test/staging infrastructure, including secrets and env config deployment.\n",
+                "offset": 4362
+            }
+        }
+    ],
+    "info": [],
+    "debug": [],
+    "error": [],
+    "progress": [],
+    "result": {
+        "files": 26,
+        "filesWithIssues": [
+            "docs/dx_presentation.md"
+        ],
+        "issues": 9,
+        "errors": 0,
+        "cachedFiles": 0
+    }
+}

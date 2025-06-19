@@ -1,0 +1,179 @@
+{
+    "issues": [
+        {
+            "text": "codetotal",
+            "offset": 876,
+            "line": {
+                "text": "  codetotal:\n",
+                "offset": 874
+            },
+            "length": 9,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 25,
+            "col": 3,
+            "uri": "file:///workspace/.devcontainer/docker-compose.yml",
+            "context": {
+                "text": "  codetotal:\n",
+                "offset": 874
+            }
+        },
+        {
+            "text": "codetotal",
+            "offset": 917,
+            "line": {
+                "text": "    image: ghcr.io/oxsecurity/codetotal@sha256:350b78b86cdfad1c509cf70c4aed5d3c26dce4c70508aae4b8786e06561e0918\n",
+                "offset": 887
+            },
+            "length": 9,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 26,
+            "col": 31,
+            "uri": "file:///workspace/.devcontainer/docker-compose.yml",
+            "context": {
+                "text": "    image: ghcr.io/oxsecurity/codetotal@sha256:350b78b86cdfad1c509cf70c4aed5d3c26dce4c70508aae4b8786e06561e0918\n",
+                "offset": 887
+            }
+        },
+        {
+            "text": "codetotal",
+            "offset": 1057,
+            "line": {
+                "text": "    container_name: ${COMPOSE_PROJECT_NAME:-devcontainer}-codetotal\n",
+                "offset": 999
+            },
+            "length": 9,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 27,
+            "col": 59,
+            "uri": "file:///workspace/.devcontainer/docker-compose.yml",
+            "context": {
+                "text": "    container_name: ${COMPOSE_PROJECT_NAME:-devcontainer}-codetotal\n",
+                "offset": 999
+            }
+        },
+        {
+            "text": "CODETOTAL",
+            "offset": 1083,
+            "line": {
+                "text": "    hostname: ${CODETOTAL_HOSTNAME:-codetotal}\n",
+                "offset": 1067
+            },
+            "length": 9,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 28,
+            "col": 17,
+            "uri": "file:///workspace/.devcontainer/docker-compose.yml",
+            "context": {
+                "text": "    hostname: ${CODETOTAL_HOSTNAME:-codetotal}\n",
+                "offset": 1067
+            }
+        },
+        {
+            "text": "codetotal",
+            "offset": 1103,
+            "line": {
+                "text": "    hostname: ${CODETOTAL_HOSTNAME:-codetotal}\n",
+                "offset": 1067
+            },
+            "length": 9,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 28,
+            "col": 37,
+            "uri": "file:///workspace/.devcontainer/docker-compose.yml",
+            "context": {
+                "text": "    hostname: ${CODETOTAL_HOSTNAME:-codetotal}\n",
+                "offset": 1067
+            }
+        },
+        {
+            "text": "CODETOTAL",
+            "offset": 1268,
+            "line": {
+                "text": "      - \"${CODETOTAL_PORT:-3001}:3000\"\n",
+                "offset": 1257
+            },
+            "length": 9,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 36,
+            "col": 12,
+            "uri": "file:///workspace/.devcontainer/docker-compose.yml",
+            "context": {
+                "text": "      - \"${CODETOTAL_PORT:-3001}:3000\"\n",
+                "offset": 1257
+            }
+        },
+        {
+            "text": "codetotal",
+            "offset": 1799,
+            "line": {
+                "text": "          --codetotal \\\n",
+                "offset": 1787
+            },
+            "length": 9,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 57,
+            "col": 13,
+            "uri": "file:///workspace/.devcontainer/docker-compose.yml",
+            "context": {
+                "text": "          --codetotal \\\n",
+                "offset": 1787
+            }
+        },
+        {
+            "text": "CODETOTAL",
+            "offset": 2024,
+            "line": {
+                "text": "      - CODETOTAL_PORT=${CODETOTAL_PORT:-3001}\n",
+                "offset": 2016
+            },
+            "length": 9,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 65,
+            "col": 9,
+            "uri": "file:///workspace/.devcontainer/docker-compose.yml",
+            "context": {
+                "text": "      - CODETOTAL_PORT=${CODETOTAL_PORT:-3001}\n",
+                "offset": 2016
+            }
+        },
+        {
+            "text": "CODETOTAL",
+            "offset": 2041,
+            "line": {
+                "text": "      - CODETOTAL_PORT=${CODETOTAL_PORT:-3001}\n",
+                "offset": 2016
+            },
+            "length": 9,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 65,
+            "col": 26,
+            "uri": "file:///workspace/.devcontainer/docker-compose.yml",
+            "context": {
+                "text": "      - CODETOTAL_PORT=${CODETOTAL_PORT:-3001}\n",
+                "offset": 2016
+            }
+        }
+    ],
+    "info": [],
+    "debug": [],
+    "error": [],
+    "progress": [],
+    "result": {
+        "files": 2,
+        "filesWithIssues": [
+            ".devcontainer/docker-compose.yml"
+        ],
+        "issues": 9,
+        "errors": 0,
+        "cachedFiles": 0
+    }
+}

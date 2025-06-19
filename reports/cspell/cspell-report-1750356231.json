@@ -1,0 +1,53 @@
+{
+    "issues": [
+        {
+            "text": "actrc",
+            "offset": 36,
+            "line": {
+                "text": "├── .actrc\n",
+                "offset": 31
+            },
+            "length": 5,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 5,
+            "col": 6,
+            "uri": "file:///workspace/docs/tree.md",
+            "context": {
+                "text": "├── .actrc\n",
+                "offset": 31
+            }
+        },
+        {
+            "text": "pyproject",
+            "offset": 897,
+            "line": {
+                "text": "├── pyproject.toml\n",
+                "offset": 893
+            },
+            "length": 9,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 46,
+            "col": 5,
+            "uri": "file:///workspace/docs/tree.md",
+            "context": {
+                "text": "├── pyproject.toml\n",
+                "offset": 893
+            }
+        }
+    ],
+    "info": [],
+    "debug": [],
+    "error": [],
+    "progress": [],
+    "result": {
+        "files": 27,
+        "filesWithIssues": [
+            "docs/tree.md"
+        ],
+        "issues": 2,
+        "errors": 0,
+        "cachedFiles": 0
+    }
+}

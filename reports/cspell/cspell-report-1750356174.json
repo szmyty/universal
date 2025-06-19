@@ -1,0 +1,161 @@
+{
+    "issues": [
+        {
+            "text": "DPKG",
+            "offset": 5,
+            "line": {
+                "text": "# 🧩 DPKG Configuration for Docker Optimization\n",
+                "offset": 0
+            },
+            "length": 4,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 1,
+            "col": 6,
+            "uri": "file:///workspace/config/dpkg/README.md",
+            "context": {
+                "text": "# 🧩 DPKG Configuration for Docker Optimization\n",
+                "offset": 0
+            }
+        },
+        {
+            "text": "dpkg",
+            "offset": 82,
+            "line": {
+                "text": "This directory contains modular `dpkg.cfg.d` configuration files that optimize the Debian `dpkg` package manager for use in Docker containers.\n",
+                "offset": 49
+            },
+            "length": 4,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 3,
+            "col": 34,
+            "uri": "file:///workspace/config/dpkg/README.md",
+            "context": {
+                "text": "This directory contains modular `dpkg.cfg.d` configuration files that optimize the Debian `dpkg` package manager for use in Docker containers.\n",
+                "offset": 49
+            }
+        },
+        {
+            "text": "dpkg",
+            "offset": 140,
+            "line": {
+                "text": "This directory contains modular `dpkg.cfg.d` configuration files that optimize the Debian `dpkg` package manager for use in Docker containers.\n",
+                "offset": 49
+            },
+            "length": 4,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 3,
+            "col": 92,
+            "uri": "file:///workspace/config/dpkg/README.md",
+            "context": {
+                "text": "This directory contains modular `dpkg.cfg.d` configuration files that optimize the Debian `dpkg` package manager for use in Docker containers.\n",
+                "offset": 49
+            }
+        },
+        {
+            "text": "dpkg",
+            "offset": 737,
+            "line": {
+                "text": "| `01-logging.conf`        | Enables log output to `/var/log/dpkg.log`                                       |\n",
+                "offset": 676
+            },
+            "length": 4,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 20,
+            "col": 62,
+            "uri": "file:///workspace/config/dpkg/README.md",
+            "context": {
+                "text": "| `01-logging.conf`        | Enables log output to `/var/log/dpkg.log`                                       |\n",
+                "offset": 676
+            }
+        },
+        {
+            "text": "noninteractive",
+            "offset": 793,
+            "line": {
+                "text": "| `10-noninteractive.conf` | Enables `confdef`, disables pagers and pseudo-tty use                           |\n",
+                "offset": 787
+            },
+            "length": 14,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 21,
+            "col": 7,
+            "uri": "file:///workspace/config/dpkg/README.md",
+            "context": {
+                "text": "| `10-noninteractive.conf` | Enables `confdef`, disables pagers and pseudo-tty use                           |\n",
+                "offset": 787
+            }
+        },
+        {
+            "text": "confdef",
+            "offset": 825,
+            "line": {
+                "text": "| `10-noninteractive.conf` | Enables `confdef`, disables pagers and pseudo-tty use                           |\n",
+                "offset": 787
+            },
+            "length": 7,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 21,
+            "col": 39,
+            "uri": "file:///workspace/config/dpkg/README.md",
+            "context": {
+                "text": "| `10-noninteractive.conf` | Enables `confdef`, disables pagers and pseudo-tty use                           |\n",
+                "offset": 787
+            }
+        },
+        {
+            "text": "dpkg",
+            "offset": 1289,
+            "line": {
+                "text": "COPY configs/dpkg/*.conf /etc/dpkg/dpkg.cfg.d/\n",
+                "offset": 1276
+            },
+            "length": 4,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 31,
+            "col": 14,
+            "uri": "file:///workspace/config/dpkg/README.md",
+            "context": {
+                "text": "COPY configs/dpkg/*.conf /etc/dpkg/dpkg.cfg.d/\n",
+                "offset": 1276
+            }
+        },
+        {
+            "text": "dpkg",
+            "offset": 1306,
+            "line": {
+                "text": "COPY configs/dpkg/*.conf /etc/dpkg/dpkg.cfg.d/\n",
+                "offset": 1276
+            },
+            "length": 4,
+            "isFlagged": false,
+            "isFound": false,
+            "row": 31,
+            "col": 31,
+            "uri": "file:///workspace/config/dpkg/README.md",
+            "context": {
+                "text": "COPY configs/dpkg/*.conf /etc/dpkg/dpkg.cfg.d/\n",
+                "offset": 1276
+            }
+        }
+    ],
+    "info": [],
+    "debug": [],
+    "error": [],
+    "progress": [],
+    "result": {
+        "files": 24,
+        "filesWithIssues": [
+            "config/dpkg/README.md"
+        ],
+        "issues": 8,
+        "errors": 0,
+        "cachedFiles": 0
+    }
+}

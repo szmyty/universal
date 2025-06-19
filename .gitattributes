@@ -82,11 +82,19 @@ docker-compose.yml text
 *.vcxproj.filters text eol=crlf
 
 # ─────────── Miscellaneous ───────────
-*.svg            text           # SVGs often treated as source
-*.min.js         text -diff     # Skip diffs on minified files
+
+# SVGs often treated as source
+*.svg            text
+
+# Skip diffs on minified files
+*.min.js         text -diff
 *.min.css        text -diff
-*.snap           text -diff     # Jest/RTL snapshot diffs can be noisy
-*.map            text -diff     # Source maps
+
+# Jest/RTL snapshot diffs can be noisy
+*.snap           text -diff
+
+# Source maps
+*.map            text -diff
 
 # ─────────── Make & Build ───────────
 Makefile         text eol=lf
