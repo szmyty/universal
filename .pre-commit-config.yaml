@@ -61,3 +61,11 @@ repos:
   #     - id: oxipng
   #       name: "🖼️ images · Optimize PNG files"
   #       args: ["-o", "4", "--strip", "safe", "--alpha"]
+
+  - repo: local
+    hooks:
+      - id: commitlint
+        name: commitlint
+        entry: bash -c 'npx commitlint --config "$(git rev-parse --show-toplevel)/config/.commitlint.config.cjs" --edit "$1"' --
+        language: system
+        stages: [commit-msg]

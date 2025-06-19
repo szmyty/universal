@@ -7,6 +7,7 @@ Buildx
 CHKTEX
 chktexrc
 codetotal
+commitlint
 confdef
 cookiecutter
 customised
