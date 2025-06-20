@@ -1,0 +1,164 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+# Taskfile for managing development tasks in a multi-platform environment
+
+version: "3"
+
+tasks:
+  up:
+    desc: Start selected services using Docker Compose
+    vars:
+      SERVICES: '{{default "" .SERVICES}}'
+    cmds:
+      - |
+        docker compose \
+          --file universal.base.yml \
+          --file universal.development.yml \
+          --env-file .env.universal \
+          --env-file .env.development \
+          up {{.SERVICES}} \
+          --build \
+          --force-recreate \
+          --detach \
+          --always-recreate-deps
+    silent: true
+
+  down:
+    desc: Stop selected services
+    vars:
+      SERVICES: '{{default "" .SERVICES}}'
+    cmds:
+      - |
+        docker compose \
+          --file universal.base.yml \
+          --file universal.development.yml \
+          --env-file .env.universal \
+          --env-file .env.development \
+          stop {{.SERVICES}}
+    silent: true
+
+  logs:
+    desc: View logs for selected services
+    vars:
+      SERVICES: '{{default "" .SERVICES}}'
+    cmds:
+      - |
+        docker compose \
+          --file universal.base.yml \
+          --file universal.development.yml \
+          --env-file .env.universal \
+          --env-file .env.development \
+          logs -f {{.SERVICES}}
+    silent: true
+
+  status:
+    desc: Show status of selected services
+    vars:
+      SERVICES: '{{default "" .SERVICES}}'
+    cmds:
+      - |
+        docker compose \
+          --file universal.base.yml \
+          --file universal.development.yml \
+          --env-file .env.universal \
+          --env-file .env.development \
+          ps {{.SERVICES}}
+    silent: true
+
+  health:
+    desc: Show health-check status for a specific service
+    vars:
+      SERVICE: '{{default "web" .SERVICE}}'
+    cmds:
+      - |
+        if command -v jq > /dev/null 2>&1; then
+          docker inspect {{.SERVICE}} | jq '.[].State.Health | {Status: .Status}'
+        else
+          echo "⚠️ 'jq' not found; fallback to docker ps output"
+          docker ps --filter "name={{.SERVICE}}" --format "table {{.Names}}\t{{.Status}}"
+        fi
+    silent: true
+
+  apache:
+    desc: Start just the Apache webserver
+    cmds:
+      - task: up
+        vars: { SERVICES: "web" }
+    silent: true
+
+  apache:logs:
+    desc: View Apache logs
+    cmds:
+      - task: logs
+        vars: { SERVICES: "web" }
+    silent: true
+
+  apache:status:
+    desc: View Apache status
+    cmds:
+      - task: status
+        vars: { SERVICES: "web" }
+    silent: true
+
+  apache:health:
+    desc: View Apache health status
+    cmds:
+      - task: health
+        vars: { SERVICES: "web" }
+    silent: true
+
+  database:
+    desc: Start just the database service
+    cmds:
+      - task: up
+        vars: { SERVICES: "database" }
+    silent: true
+
+  database:logs:
+    desc: View database logs
+    cmds:
+      - task: logs
+        vars: { SERVICES: "database" }
+    silent: true
+
+  database:status:
+    desc: View database status
+    cmds:
+      - task: status
+        vars: { SERVICES: "database" }
+    silent: true
+
+  database:health:
+    desc: View database health status
+    cmds:
+      - task: health
+        vars: { SERVICES: "database" }
+    silent: true
+
+  keycloak:database:
+    desc: Start just the Keycloak database service
+    cmds:
+      - task: up
+        vars: { SERVICES: "keycloak-db" }
+    silent: true
+
+  keycloak:database:logs:
+    desc: View Apache logs
+    cmds:
+      - task: logs
+        vars: { SERVICES: "keycloak-db" }
+    silent: true
+
+  keycloak:database:status:
+    desc: View Keycloak database status
+    cmds:
+      - task: status
+        vars: { SERVICES: "keycloak-db" }
+    silent: true
+
+  keycloak:database:health:
+    desc: View Keycloak database status
+    cmds:
+      - task: health
+        vars: { SERVICES: "keycloak-db" }
+    silent: true

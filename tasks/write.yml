@@ -1,0 +1,22 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+# Taskfile for managing development tasks in a multi-platform environment
+
+version: "3"
+
+tasks:
+  proposal:
+    desc: Build or live-preview the government proposal
+    cmds:
+      - latexmk -cd -pdf -pvc docs/proposal/main.tex -verbose
+    silent: true
+    env:
+      LATEXMK_DEBUG: "1"
+
+  scientific-paper:
+    desc: Write a scientific paper about the project
+    cmds:
+      - latexmk -cd -pdf -pvc docs/scientific-paper/main.tex
+    silent: true
+    env:
+      LATEXMK_DEBUG: "1"

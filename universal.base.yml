@@ -57,6 +57,11 @@ volumes:
     name: web
     # Driver for the volume, using local storage
     driver: local
+  keycloak-db:
+    # Name of the volume for Keycloak database storage
+    name: keycloak-db
+    # Driver for the volume, using local storage
+    driver: local
 
 # Define the base services in the Docker Compose file
 services:
@@ -92,7 +97,9 @@ services:
     environment:
       POSTGRES_DB: ${KEYCLOAK_DB_NAME:-keycloak}
       POSTGRES_USER: ${KEYCLOAK_DB_USER:-keycloak}
-      POSTGRES_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+      POSTGRES_PASSWORD: ${KEYCLOAK_DB_PASSWORD:-keycloak}
+    volumes:
+      - keycloak-db:/var/lib/postgresql/data
     healthcheck:
       test:
         [
@@ -102,6 +109,8 @@ services:
       interval: 10s
       timeout: 10s
       retries: 10
+    platform: linux/amd64
+    <<: *settings
 
   # Keycloak service for Identity and Access Management
   # keycloak:
