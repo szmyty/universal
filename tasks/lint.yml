@@ -10,62 +10,67 @@ tasks:
     cmds: ["pnpm run lint"]
     silent: true
 
-  lint:check:
+  check:
     desc: Run MegaLinter without auto-fix
     cmds: ["pnpm run lint:check"]
     silent: true
 
-  lint:mypy:
+  mypy:
     desc: Run MegaLinter with mypy
     cmds: ["pnpm run lint:mypy"]
     silent: true
 
-  lint:actionlint:
+  actionlint:
     desc: Run MegaLinter with actionlint
     cmds: ["pnpm run lint:actionlint"]
     silent: true
 
-  lint:ansible:
+  ansible:
     desc: Run MegaLinter with ansible-lint
     cmds: ["pnpm run lint:ansible"]
     silent: true
 
-  lint:spectral:
+  spectral:
     desc: Run MegaLinter with spectral
     cmds: ["pnpm run lint:spectral"]
     silent: true
 
-  lint:arm-ttk:
+  arm-ttk:
     desc: Run MegaLinter with arm-ttk
     cmds: ["pnpm run lint:arm-ttk"]
     silent: true
 
-  lint:shellcheck:
+  shellcheck:
     desc: Run MegaLinter with shellcheck
     cmds: ["pnpm run lint:shellcheck"]
     silent: true
 
-  lint:shfmt:
+  shfmt:
     desc: Run MegaLinter with shfmt
     cmds: ["pnpm run lint:shfmt"]
     silent: true
 
-  lint:bicep:
+  bicep:
     desc: Run MegaLinter with bicep
     cmds: ["pnpm run lint:bicep"]
     silent: true
 
-  lint:bash_exec:
+  bash_exec:
     desc: Run MegaLinter with bash-exec
     cmds: ["pnpm run lint:bash_exec"]
     silent: true
 
-  lint:chktex:
+  chktex:
     desc: Run MegaLinter with chktex
     cmds: ["pnpm run lint:chktex"]
     silent: true
 
-  lint:spellcheck:
+  spellcheck:
     desc: Run MegaLinter with spellcheck
     cmds: ["pnpm run lint:spellcheck"]
+    silent: true
+
+  copypaste:
+    desc: Run MegaLinter with copypaste
+    cmds: ["pnpm run lint:copypaste"]
     silent: true

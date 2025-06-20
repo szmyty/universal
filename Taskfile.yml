@@ -12,6 +12,7 @@ vars:
 
 includes:
   lint: ./tasks/lint.yml
+  utils: ./tasks/utils.yml
 
 tasks:
   setup:
@@ -57,13 +58,6 @@ tasks:
 
   format:
     cmds: ["pnpm run format"]
-
-  lint:copypaste:
-    cmds: ["pnpm run lint:copypaste"]
-
-  packages:
-    desc: List all installed packages
-    cmds: ["poetry show --tree"]
 
   os:
     cmds:
@@ -204,12 +198,6 @@ tasks:
     desc: Run MegaLinter via Docker
     cmds:
       - docker compose --file .devcontainer/docker-compose.yml run --rm megalinter
-
-  tree:ui:
-    desc: Generate UI tree structure
-    cmds:
-      - tree apps/ui -L 3 -I "node_modules"
-    silent: true
 
   dev:apache:
     desc: Start the apache webserver locally using Docker Compose

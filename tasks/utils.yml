@@ -1,0 +1,106 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+# Taskfile for managing development tasks in a multi-platform environment
+
+version: "3"
+
+tasks:
+  tree:
+    desc: Generate directory tree structure
+    cmds:
+      - tree -L 3 -I "node_modules|.venv|reports|.cache|deprecated"
+    silent: true
+
+  tree:ui:
+    desc: Generate UI tree structure
+    cmds:
+      - tree apps/ui -L 3 -I "node_modules|.venv|reports|.cache|deprecated"
+    silent: true
+
+  packages:
+    desc: List all installed packages
+    cmds: ["poetry show --tree"]
+    silent: true
+
+  clean:
+    desc: Remove build artifacts and caches
+    cmds:
+      - rm -rf .pytest_cache .mypy_cache .venv dist __pycache__ .cache coverage .DS_Store
+    silent: true
+
+  disk:usage:
+    desc: Show total disk usage for current directory (excluding ignored folders)
+    cmds:
+      - du -sh --exclude={node_modules,.venv,.cache,.git} .
+    silent: true
+
+  git:branch:
+    desc: Show the current Git branch
+    cmds:
+      - git rev-parse --abbrev-ref HEAD
+    silent: true
+
+  git:summary:
+    desc: Quick Git summary (status + log)
+    cmds:
+      - git status -sb
+      - git log --oneline -n 5 --graph --decorate
+    silent: true
+
+  todo:count:
+    desc: Count TODO/FIXME/NOTE comments
+    cmds:
+      - grep -rI --exclude-dir={.git,node_modules,.venv} -E 'TODO|FIXME|NOTE' . | wc -l
+    silent: true
+
+  python:env:
+    desc: Show Python version and virtualenv info
+    cmds:
+      - poetry env info || echo "No poetry env"
+    silent: true
+
+  files:count:
+    desc: Count number of files by extension, excluding common directories
+    cmds:
+      - >
+        find . \( -path "./node_modules" -o -path "./.git" -o -path "./.venv" -o -path "./.cache" -o -path "./dist" -o -path "./build" \) -prune -false
+        -o -type f
+        | sed 's/.*\.//'
+        | awk '!/\/$/ {print tolower($0)}'
+        | sort
+        | uniq -c
+        | sort -nr
+    silent: true
+
+  versions:
+    desc: Print versions of major tools
+    cmds:
+      - node -v || echo "node not found"
+      - pnpm -v || echo "pnpm not found"
+      - python --version
+      - poetry --version || echo "poetry not found"
+      - docker --version || echo "docker not found"
+      - git --version
+    silent: true
+
+  git:heatmap:
+    desc: Show commits per day in current repo
+    cmds:
+      - git log --pretty=format:'%ad' --date=short | sort | uniq -c | sort -nr | head -20
+    silent: true
+
+  git:contributors:
+    desc: List top contributors by commit count
+    cmds:
+      - git shortlog -sn --all --no-merges
+    silent: true
+
+  shell:info:
+    desc: Print useful shell info
+    cmds:
+      - 'echo "SHELL: $SHELL"'
+      - 'echo "User: $USER"'
+      - 'echo "OS: $(uname -s)"'
+      - 'echo "Arch: $(uname -m)"'
+      - 'echo "Hostname: $(hostname)"'
+    silent: true
