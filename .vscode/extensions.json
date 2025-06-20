@@ -11,6 +11,8 @@
         "tamasfe.even-better-toml",
         "redhat.ansible",
         "stoplight.spectral",
-        "james-yu.latex-workshop"
+        "james-yu.latex-workshop",
+        "remcohaszing.schemastore",
+        "mrmlnc.vscode-apache"
     ]
 }

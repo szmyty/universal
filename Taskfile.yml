@@ -10,6 +10,9 @@ vars:
   PLATFORM:
     sh: uname -s
 
+includes:
+  lint: ./tasks/lint.yml
+
 tasks:
   setup:
     desc: Install dependencies and set up the environment
@@ -44,61 +47,10 @@ tasks:
       - pnpm run changeset:init
     silent: true
 
-  lint:
-    desc: Run MegaLinter with auto-fix
-    cmds: ["pnpm run lint"]
-
-  lint:check:
-    desc: Run MegaLinter without auto-fix
-    cmds: ["pnpm run lint:check"]
-
-  lint:mypy:
-    desc: Run MegaLinter with mypy
-    cmds: ["pnpm run lint:mypy"]
-
-  lint:actionlint:
-    desc: Run MegaLinter with actionlint
-    cmds: ["pnpm run lint:actionlint"]
-
-  lint:ansible:
-    desc: Run MegaLinter with ansible-lint
-    cmds: ["pnpm run lint:ansible"]
-
-  lint:spectral:
-    desc: Run MegaLinter with spectral
-    cmds: ["pnpm run lint:spectral"]
-
-  lint:arm-ttk:
-    desc: Run MegaLinter with arm-ttk
-    cmds: ["pnpm run lint:arm-ttk"]
-
-  lint:bash_exec:
-    desc: Run MegaLinter with bash-exec
-    cmds: ["pnpm run lint:bash_exec"]
-
-  lint:shellcheck:
-    desc: Run MegaLinter with shellcheck
-    cmds: ["pnpm run lint:shellcheck"]
-
-  lint:shfmt:
-    desc: Run MegaLinter with shfmt
-    cmds: ["pnpm run lint:shfmt"]
-
-  lint:bicep:
-    desc: Run MegaLinter with bicep
-    cmds: ["pnpm run lint:bicep"]
-
-  lint:chktex:
-    desc: Run MegaLinter with chktex
-    cmds: ["pnpm run lint:chktex"]
-
   secrets:
     desc: Scan for secrets using gitleaks
     cmds:
       - gitleaks detect --source . --config=.gitleaks.toml --redact
-
-  lint:spellcheck:
-    cmds: ["pnpm run lint:spellcheck"]
 
   format:check:
     cmds: ["pnpm run format:check"]
@@ -257,4 +209,32 @@ tasks:
     desc: Generate UI tree structure
     cmds:
       - tree apps/ui -L 3 -I "node_modules"
+    silent: true
+
+  dev:apache:
+    desc: Start the apache webserver locally using Docker Compose
+    cmds:
+      - |
+        docker compose \
+          --file universal.base.yml \
+          --file universal.development.yml \
+          --env-file .env.universal \
+          --env-file .env.development \
+          up web \
+          --build \
+          --force-recreate \
+          --detach \
+          --always-recreate-deps
+    silent: true
+
+  dev:apache:logs:
+    desc: View Apache logs
+    cmds:
+      - docker logs -f web
+    silent: true
+
+  dev:apache:status:
+    desc: Check Apache container health status
+    cmds:
+      - docker inspect web | jq '.[].State.Health'
     silent: true
