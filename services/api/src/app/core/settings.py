@@ -1,7 +1,12 @@
 from __future__ import annotations
 
 import os
+import platform
+import getpass
+
 from pathlib import Path
+from structlog import BoundLogger
+from tzlocal import get_localzone_name
 from functools import lru_cache
 from typing import Any
 from pydantic import BaseModel, Field, SecretStr, PostgresDsn, model_validator
@@ -12,18 +17,24 @@ from pydantic_settings import (
     DotEnvSettingsSource,
     PyprojectTomlConfigSettingsSource,
 )
+from spdx_license_list import LICENSES
 
 class KeycloakSettings(BaseModel):
+    """Configuration for connecting to Keycloak OIDC server."""
     model_config = SettingsConfigDict(
         env_prefix="KEYCLOAK_",
         env_nested_delimiter="_",
     )
 
-    hostname: str = Field(default="keycloak")
-    http_port: int = Field(default=8080)
-    https_port: int = Field(default=8443)
-    realm: str = Field(default="universal")
-    http_relative_path: str = Field(default="/auth")
+    hostname: str = Field(default="keycloak", description="Keycloak service host")
+    http_port: int = Field(default=8080, description="Keycloak HTTP port")
+    https_port: int = Field(default=8443, description="Keycloak HTTPS port")
+    realm: str = Field(default="universal", description="Keycloak realm name")
+    client_id: str = Field(default="universal-client", description="OIDC client ID")
+    client_secret: SecretStr = Field(..., description="OIDC client secret")
+    http_relative_path: str = Field(default="/auth", description="Base Keycloak path")
+    swagger_client_id: str = Field(default="swagger-ui", description="Client ID used for Swagger UI OAuth2 authorization")
+    verify_ssl: bool = Field(default=True, description="Whether to verify Keycloak's SSL certificate")
 
     @property
     def http_url(self: KeycloakSettings) -> str:
@@ -32,6 +43,22 @@ class KeycloakSettings(BaseModel):
     @property
     def https_url(self: KeycloakSettings) -> str:
         return f"https://{self.hostname}:{self.https_port}{self.http_relative_path}"
+
+    @property
+    def base_issuer_url(self: KeycloakSettings) -> str:
+        return f"{self.https_url}/realms/{self.realm}"
+
+    @property
+    def openid_config_url(self: KeycloakSettings) -> str:
+        return f"{self.base_issuer_url}/.well-known/openid-configuration"
+
+    @property
+    def token_url(self: KeycloakSettings) -> str:
+        return f"{self.base_issuer_url}/protocol/openid-connect/token"
+
+    @property
+    def jwks_url(self: KeycloakSettings) -> str:
+        return f"{self.base_issuer_url}/protocol/openid-connect/certs"
 
 class DatabaseSettings(BaseModel):
     model_config = SettingsConfigDict(
@@ -69,12 +96,12 @@ class DatabaseSettings(BaseModel):
     @classmethod
     def build_url_from_components(cls: type[DatabaseSettings], values: dict[str, Any]) -> dict[str, Any]:
         # Only build if `url` is missing
-            backend = values.get("backend", "postgresql+asyncpg")
+            backend: str = str(values.get("backend", "postgresql+asyncpg"))
 
             if backend.startswith("sqlite"):
                 # sqlite:///file.db or sqlite:///:memory:
                 db_name: str = values.get("name", "sqlite.db")
-                path = ":memory:" if db_name == ":memory:" else os.path.relpath(db_name)
+                path: str = ":memory:" if db_name == ":memory:" else os.path.relpath(db_name)
                 values["url"] = f"sqlite+aiosqlite:///{path}"
             elif backend.startswith("postgresql"):
                 values["url"] = PostgresDsn.build(
@@ -90,16 +117,31 @@ class DatabaseSettings(BaseModel):
 
             return values
 
+class SystemSettings(BaseModel):
+    project_root: Path = Field(default_factory=lambda: Path(__file__).resolve().parents[3])
+    shell: str = Field(default_factory=lambda: Path(os.environ.get("SHELL", "unknown")).name)
+    os_name: str = Field(default_factory=platform.system)
+    os_version: str = Field(default_factory=platform.version)
+    python_version: str = Field(default_factory=lambda: platform.python_version())
+    user: str = Field(default_factory=getpass.getuser)
+    inside_container: bool = Field(default_factory=lambda: Path("/.dockerenv").exists())
+    ci: bool = Field(default_factory=lambda: "CI" in os.environ)
+    timezone: str = Field(default_factory=get_localzone_name)
+
 class Settings(BaseSettings):
     project_name: str = Field(..., alias="name", description="Project name, e.g., 'Universal API'")
     version: str = Field(..., alias="version", description="Project version, e.g., '1.0.0'")
     description: str = Field(..., alias="description", description="Project description")
+    license: str = Field(default="MIT", alias="license", description="License type, e.g., 'MIT'")
+    fqdn: str = Field(default="localhost", alias="FQDN", description="Fully qualified domain name for the service")
     debug: bool = Field(default=False, alias="UI_DEBUG_MODE", description="Enable debug mode")
     log_level: str = Field(default="INFO", alias="UI_LOG_LEVEL", description="Logging level for the application")
     log_file: str = Field(default="logs/app.log", alias="UI_LOG_FILE", description="Path to the log file")
+    api_prefix: str = Field(default="/api", alias="API_PREFIX", description="API URL prefix")
 
     database: DatabaseSettings
-    # keycloak: KeycloakSettings
+    keycloak: KeycloakSettings
+    system: SystemSettings = Field(default_factory=SystemSettings)
 
     model_config = SettingsConfigDict(
         env_file=os.environ.get("ENV_FILE_OVERRIDE", ".env"),
@@ -110,6 +152,23 @@ class Settings(BaseSettings):
         env_nested_delimiter='_',
         pyproject_toml_table_header=("tool", "poetry"),
     )
+
+    @property
+    def terms_of_service(self: Settings) -> str:
+        return f"https://{self.fqdn}/terms/"
+
+    @property
+    def license_info(self: Settings) -> dict[str, str]:
+        from app.utils.license import get_license_info
+        return get_license_info(self.license)
+
+    @property
+    def contact(self: Settings) -> dict[str, str]:
+        return {
+            "name": "Alan Szmyt",
+            "url": f"https://{self.fqdn}/contact/",
+            "email": "szmyty@gmail.com",
+        }
 
     @classmethod
     def settings_customise_sources(
@@ -128,15 +187,31 @@ class Settings(BaseSettings):
         )
         return (
             init_settings,
+            PyprojectTomlConfigSettingsSource(cls),
             env_settings,
             dotenv,
-            PyprojectTomlConfigSettingsSource(cls),
             file_secret_settings,
         )
+
+    @model_validator(mode="after")
+    def validate_license(self) -> Settings:
+        """Ensure the provided license is a valid SPDX identifier."""
+        if self.license not in LICENSES:
+            raise ValueError(f"Invalid SPDX license ID: {self.license}")
+        return self
+
+    def print_settings_summary(self: Settings) -> None:
+        """Logs a summary of the current settings, masking sensitive information."""
+        from app.core.logging import get_logger
+        log: BoundLogger = get_logger()
+        log.info("Application Settings Summary", settings=self.model_dump())
+        safe_settings: dict[str, Any | str] = {k: v if not isinstance(v, SecretStr) else "********" for k, v in self.model_dump().items()}
+        for key, value in safe_settings.items():
+            log.info(f"  {key}: {value}")
 
 @lru_cache()
 def get_settings() -> Settings:
     settings = Settings()
-    log_dir = Path(settings.log_file).parent
+    log_dir: Path = Path(settings.log_file).parent
     log_dir.mkdir(parents=True, exist_ok=True)
     return settings

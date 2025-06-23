@@ -10,6 +10,16 @@ services:
       - .env.universal
       - .env.development
 
+  keycloak-db:
+    env_file:
+      - .env.universal
+      - .env.development
+
+  keycloak:
+    env_file:
+      - .env.universal
+      - .env.development
+
   pgadmin:
     env_file:
       - .env.universal

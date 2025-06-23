@@ -113,11 +113,52 @@ services:
     <<: *settings
 
   # Keycloak service for Identity and Access Management
-  # keycloak:
-  #   image: keycloak
-  #   container_name: ${KEYCLOAK_CONTAINER_NAME:-keycloak}
-  #   hostname: ${KEYCLOAK_HOSTNAME:-keycloak}
-  #   environment:
+  keycloak:
+    image: keycloak/keycloak@sha256:4883630ef9db14031cde3e60700c9a9a8eaf1b5c24db1589d6a2d43de38ba2a9
+    container_name: ${KEYCLOAK_CONTAINER_NAME:-keycloak}
+    hostname: ${KEYCLOAK_HOSTNAME:-keycloak}
+    environment:
+      DB_VENDOR: ${KEYCLOAK_DB_VENDOR:-postgres}
+      DB_SCHEMA: ${KEYCLOAK_DB_SCHEMA:-public}
+      FQDN: ${FQDN:-localhost}
+      KC_HOSTNAME: ${FQDN:-localhost}
+      KEYCLOAK_DB_HOST: ${KEYCLOAK_DB_HOSTNAME:-keycloak-db}
+      KEYCLOAK_DB_PORT: ${KEYCLOAK_DB_PORT:-5432}
+      KEYCLOAK_DB_NAME: ${KEYCLOAK_DB_NAME:-keycloak}
+      KEYCLOAK_DB_USER: ${KEYCLOAK_DB_USER:-keycloak}
+      KEYCLOAK_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD:-keycloak}
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN_USER:-admin}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-adminpassword}
+      KEYCLOAK_LOGLEVEL: ${KEYCLOAK_LOGLEVEL:-INFO}
+      ROOT_LOGLEVEL: ${KEYCLOAK_ROOT_LOGLEVEL:-INFO}
+      PROXY_ADDRESS_FORWARDING: "true"
+      JAVA_OPTS_APPEND: -Dkeycloak.profile.feature.scripts=enabled -Dkeycloak.profile.feature.upload_scripts=enabled
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl --fail http://localhost:$KEYCLOAK_HTTP_PORT/auth/realms/master || exit 1",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    entrypoint:
+      [
+        "/opt/keycloak/bin/kc.sh",
+        "start-dev",
+        "--hostname=https://${FQDN:-localhost}:${WEB_HTTPS_EXPOSED_PORT:-443}/auth",
+        "--http-relative-path=${KEYCLOAK_HTTP_RELATIVE_PATH:-/auth}",
+        "--db=${KEYCLOAK_DB_VENDOR:-postgres}",
+        "--db-url-host=${KEYCLOAK_DB_HOSTNAME:-keycloak-db}",
+        "--db-username=${KEYCLOAK_DB_USER:-keycloak}",
+        "--db-password=${KEYCLOAK_DB_PASSWORD:-keycloak}",
+        "--db-url-database=${KEYCLOAK_DB_NAME:-keycloak}",
+      ]
+    depends_on:
+      keycloak-db:
+        condition: service_healthy
+    platform: linux/amd64
+    <<: *settings
 
   # PostGIS database service
   database:

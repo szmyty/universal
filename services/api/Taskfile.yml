@@ -1,35 +1,51 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+# Taskfile for managing development tasks in a multi-platform environment
+
 version: "3"
+
+includes:
+  test: ./tasks/test.yml
 
 env:
   PYTHONPYCACHEPREFIX: ".cache/pycache"
+  PYTHONPATH: src
 
 tasks:
-  test:
-    desc: Run all unit + integration tests
+  install:
+    desc: Install dependencies using Poetry
     cmds:
-      - poetry run pytest -v --tb=short
-
-  test:unit:
-    desc: Run unit tests only
-    cmds:
-      - poetry run pytest -m unit
-
-  test:int:
-    desc: Run integration tests only
-    cmds:
-      - poetry run pytest -v -m integration
-
-  test:watch:
-    desc: Watch and rerun tests on change (requires ptw)
-    cmds:
-      - poetry run ptw -- --tb=short -v
+      - poetry install --no-interaction --no-root
+    silent: true
 
   lint:
     desc: Lint code (placeholder, customize per project)
     cmds:
       - echo "Add linting with ruff / black"
+    silent: true
 
   shell:
     desc: Drop into poetry shell with test env loaded
     cmds:
       - poetry shell
+    silent: true
+
+  run:api:
+    desc: Run the FastAPI API locally using Poetry
+    cmds:
+      - poetry run python -m fastapi run src/app/main.py --host 127.0.0.1 --port 8005 --reload
+    silent: true
+
+  tree:
+    desc: Generate directory tree structure
+    cmds:
+      - tree -L 5 -I "node_modules|.venv|reports|.cache|deprecated"
+    silent: true
+
+  clean:
+    desc: Clean up Python cache files and directories
+    cmds:
+      - find . -type d -name "__pycache__" -exec rm -rf {} +
+      - find . -type f -name "*.pyc" -exec rm -f {} +
+      - rm -rf .cache
+    silent: true

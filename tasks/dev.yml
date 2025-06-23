@@ -143,7 +143,7 @@ tasks:
     silent: true
 
   keycloak:database:logs:
-    desc: View Apache logs
+    desc: View Keycloak database logs
     cmds:
       - task: logs
         vars: { SERVICES: "keycloak-db" }
@@ -157,8 +157,36 @@ tasks:
     silent: true
 
   keycloak:database:health:
-    desc: View Keycloak database status
+    desc: View Keycloak database health status
     cmds:
       - task: health
         vars: { SERVICES: "keycloak-db" }
+    silent: true
+
+  keycloak:
+    desc: Start just the Keycloak service
+    cmds:
+      - task: up
+        vars: { SERVICES: "keycloak" }
+    silent: true
+
+  keycloak:logs:
+    desc: View Keycloak logs
+    cmds:
+      - task: logs
+        vars: { SERVICES: "keycloak" }
+    silent: true
+
+  keycloak:status:
+    desc: View Keycloak status
+    cmds:
+      - task: status
+        vars: { SERVICES: "keycloak" }
+    silent: true
+
+  keycloak:health:
+    desc: View Keycloak status
+    cmds:
+      - task: health
+        vars: { SERVICES: "keycloak" }
     silent: true

@@ -1,15 +1,25 @@
 [tool.poetry]
-name = "universal-api"
+name = "api"
 version = "0.1.0"
 description = "A modular, async-first backend API built with FastAPI, SQLAlchemy, and Alembic. Designed for clean architecture, domain-driven design, and future-proof datastore flexibility."
 authors = ["Alan Szmyt <szmyty@gmail.com>"]
 license = "MIT"
 readme = "README.md"
-package-mode = false
+homepage = "https://github.com/szmyty/universal"
+repository = "https://github.com/szmyty/universal"
+documentation = "https://github.com/szmyty/universal"
+# package-mode = false
+keywords = ["api", "universal", "project"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+packages = [{ include = "app", from = "src" }]
 
 [tool.poetry.dependencies]
 python = "^3.12"
-fastapi = "^0.115.13"
+fastapi = { extras = ["all"], version = "^0.115.13" }
 asyncpg = "^0.30.0"
 fastapi-keycloak-middleware = "^1.3.0"
 sqlalchemy = "^2.0.41"
@@ -19,6 +29,9 @@ pydantic-settings = "^2.9.1"
 ptw = "^1.0.1"
 aiosqlite = "^0.21.0"
 greenlet = "^3.2.3"
+structlog = "^25.4.0"
+spdx-license-list = "^3.26.0"
+tzlocal = "^5.3.1"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^4.2.0"
@@ -43,6 +56,12 @@ markers = [
   "unit: unit tests",
   "integration: integration tests",
   "uses_env: tests that require env file config",
+  "health: tests related to health checks",
+  "api: tests related to API endpoints",
+  "db: tests related to database interactions",
+  "auth: tests related to authentication and authorization",
+  "messages: tests related to messaging functionality",
+  "map_states: tests related to map states",
 ]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"

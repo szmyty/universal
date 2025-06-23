@@ -1,3 +1,2 @@
-# API Service
-
-This directory is reserved for the future backend API. A FastAPI app is planned here but has not been implemented yet.
+# universal-api
+🔌 universal-api — Type-safe, scalable backend powering the Universal platform. Built for ⚡DX, 🔐 security, and seamless frontend integration.

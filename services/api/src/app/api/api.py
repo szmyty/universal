@@ -1,5 +1,9 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 
-from app.core.settings import get_settings
+from app.api.routes import healthcheck, messages, profile, map_states
 
-settings = get_settings()
+router = APIRouter()
+router.include_router(healthcheck.router)
+router.include_router(messages.router)
+router.include_router(profile.router)
+router.include_router(map_states.router)
