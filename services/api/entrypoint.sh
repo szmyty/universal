@@ -3,6 +3,7 @@
 # Entry point script for the FastAPI service in a Docker container.
 # Supports reload mode in development.
 # ------------------------------------------------------------------
+
 set -euo pipefail
 
 main() {
