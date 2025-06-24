@@ -3,6 +3,12 @@
         {
             "path": ".",
         },
+        {
+            "path": "services/api",
+        },
+        {
+            "path": "apps/ui",
+        },
     ],
     "settings": {
         "git.ignoreLimitWarning": true,
@@ -37,33 +43,33 @@
             "**/.vscode/**",
             "**/.git/**",
             "**/package.json",
-            "**/.spectral.yaml"
+            "**/.spectral.yaml",
         ],
         "cSpell.customDictionaries": {
             "project-words": {
                 "path": "./.vscode/dictionaries/project-words.dictionary",
-                "addWords": true
+                "addWords": true,
             },
             "backend-terms": {
                 "path": "./.vscode/dictionaries/backend-terms.dictionary",
-                "addWords": false
+                "addWords": false,
             },
             "devops-cloud-terms": {
                 "path": "./.vscode/dictionaries/devops-cloud-terms.dictionary",
-                "addWords": false
+                "addWords": false,
             },
             "frontend-terms": {
                 "path": "./.vscode/dictionaries/frontend-terms.dictionary",
-                "addWords": false
+                "addWords": false,
             },
             "programming-terms": {
                 "path": "./.vscode/dictionaries/programming-terms.dictionary",
-                "addWords": false
+                "addWords": false,
             },
             "software-terms": {
                 "path": "./.vscode/dictionaries/software-terms.dictionary",
-                "addWords": false
-            }
+                "addWords": false,
+            },
         },
         "telemetry.feedback.enabled": false,
         "emojisense.emojiDecoratorsEnabled": true,

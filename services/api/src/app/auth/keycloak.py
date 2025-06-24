@@ -1,4 +1,4 @@
-from fastapi_keycloak_middleware import KeycloakConfiguration, FastApiUser, AuthorizationMethod
+from fastapi_keycloak_middleware import KeycloakConfiguration, AuthorizationMethod
 
 from app.core.settings import get_settings, Settings
 

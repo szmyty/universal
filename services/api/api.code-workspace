@@ -1,8 +1,8 @@
 {
     "folders": [
         {
-            "path": "."
-        }
+            "path": ".",
+        },
     ],
     "settings": {
         "git.ignoreLimitWarning": true,
@@ -30,11 +30,11 @@
             "**/*.code-workspace",
             "**/build/**",
             "**/dist/**",
-            "**/Notes/**"
+            "**/Notes/**",
         ],
         "yaml.schemas": {
             "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible-lint-config.json": "**/.ansible-lint",
-            "https://taskfile.dev/schema.json": "**/Taskfile.yml"
+            "https://taskfile.dev/schema.json": "**/Taskfile.yml",
         },
         "local-history.path": "${workspaceFolder}/.cache/vscode",
         "latex-workshop.bibtex-fields.sort.enabled": true,
@@ -58,7 +58,7 @@
         "latex-workshop.linting.lacheck.enabled": true,
         "latex-workshop.latex.autoBuild.run": "never",
         "files.associations": {
-            ".mailmap": "plaintext"
+            ".mailmap": "plaintext",
         },
         "cSpell.words": [
             "customise",
@@ -70,8 +70,11 @@
             "sessionmaker",
             "sessionstart",
             "startpath",
-            "usefixtures"
+            "usefixtures",
         ],
+        "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+        "python.venvPath": "${workspaceFolder}/.venv",
+        "python.pythonPath": "${workspaceFolder}/.venv/bin/python",
         "python.analysis.addHoverSummaries": true,
         "python.analysis.autoIndent": true,
         "python.analysis.disableTaggedHints": false,
@@ -97,6 +100,6 @@
         "python.analysis.typeEvaluation.strictListInference": false,
         "python.analysis.typeEvaluation.strictParameterNoneValue": true,
         "python.analysis.typeEvaluation.strictSetInference": false,
-        "python.analysis.useLibraryCodeForTypes": true
-    }
+        "python.analysis.useLibraryCodeForTypes": true,
+    },
 }

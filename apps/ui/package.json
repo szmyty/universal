@@ -3,6 +3,35 @@
     "version": "0.1.0",
     "private": true,
     "description": "Universal React for the Universal project",
+    "keywords": [
+        "universal",
+        "react",
+        "typescript",
+        "vite",
+        "tailwindcss",
+        "storybook"
+    ],
+    "homepage": "https://github.com/szmyty/universal/#readme",
+    "bugs": {
+        "url": "https://github.com/szmyty/universal/issues",
+        "email": "szmyty@gmail.com"
+    },
+    "author": {
+        "name": "Alan Szmyt",
+        "email": "szmyty@gmail.com",
+        "url": "https://github.com/szmyty"
+    },
+    "contributors": [
+        {
+            "name": "Alan Szmyt",
+            "email": "szmyty@gmail.com",
+            "url": "https://github.com/szmyty"
+        }
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/szmyty/universal.git"
+    },
     "scripts": {
         "dev": "vite",
         "build": "vite build",

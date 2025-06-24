@@ -128,6 +128,12 @@ tasks:
       - poetry run pytest {{.ROOT_DIR}}/tests/api/test_map_states_api.py --tb=short
     silent: true
 
+  middleware:
+    desc: Run API middleware tests
+    cmds:
+      - poetry run pytest {{.ROOT_DIR}}/tests/api/test_middleware.py --tb=short
+    silent: true
+
   utils:license:
     desc: Run license utility tests
     cmds:

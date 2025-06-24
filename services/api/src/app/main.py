@@ -5,20 +5,18 @@ from typing import AsyncGenerator
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.utils import generate_unique_id
-from fastapi.middleware.gzip import GZipMiddleware
 from fastapi_keycloak_middleware.setup import setup_keycloak_middleware
 from structlog import BoundLogger
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.status import HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR
 
 from app.api.api import router as api_router
+from app.api.middleware import add_middlewares
 from app.auth.keycloak import keycloak, excluded_endpoints
 from app.auth.oidc_user import map_oidc_user
 from app.core.settings import get_settings
 from app.core.settings import Settings
 from app.db.migrations import run_migrations_async
-from app.extensions.logging_middleware import log_context_middleware
-from app.extensions.powered_by_middleware import powered_by_middleware
 from app.core.logging import get_logger
 
 settings: Settings = get_settings()
@@ -75,11 +73,8 @@ setup_keycloak_middleware(
     exclude_patterns=excluded_endpoints
 )
 
+add_middlewares(app)
 app.include_router(api_router)
-
-app.middleware("http")(log_context_middleware)
-app.middleware("http")(powered_by_middleware)
-app.add_middleware(GZipMiddleware, minimum_size=1000, compresslevel=5)
 
 async def startup(app: FastAPI) -> None:
     log.info("🚀 Startup initiated")

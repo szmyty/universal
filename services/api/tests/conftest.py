@@ -102,6 +102,8 @@ def pytest_sessionstart(session: Session) -> None:
     logging.getLogger("sqlalchemy.dialects.sqlite").setLevel(logging.WARNING)
     logging.getLogger("aiosqlite").setLevel(logging.WARNING)
     logging.getLogger("asyncio").setLevel(logging.WARNING)
+    logging.getLogger("httpx").setLevel(logging.WARNING)
+    logging.getLogger("tzlocal").setLevel(logging.WARNING)
     # e.g., initialize test DB, create temp dirs, start docker services, etc.
 
 def pytest_sessionfinish(session: Session, exitstatus: int | ExitCode) -> None:

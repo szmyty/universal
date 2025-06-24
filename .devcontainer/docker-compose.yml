@@ -13,14 +13,15 @@ services:
       context: ..
       dockerfile: .devcontainer/Dockerfile
     volumes:
-      # Mount the repository so that changes on the host are reflected
-      # inside the container
+      # Mount the repository so that changes on the host are reflected inside the container
       - ..:/workspace:cached
     command: sleep infinity
-    privileged: true  # required for docker-in-docker
+    privileged: true # required for docker-in-docker
     user: vscode
     networks:
       - devnet
+    env_file:
+      - .env.devcontainer
 
   codetotal:
     image: ghcr.io/oxsecurity/codetotal@sha256:350b78b86cdfad1c509cf70c4aed5d3c26dce4c70508aae4b8786e06561e0918

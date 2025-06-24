@@ -1,5 +1,6 @@
 {
-    "name": "Dev Container",
+    "$schema": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.schema.json",
+    "name": "universal-devcontainer",
     "dockerComposeFile": ["docker-compose.yml"],
     "service": "dev",
     "runServices": ["dev"],

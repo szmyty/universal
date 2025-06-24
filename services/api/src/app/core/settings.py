@@ -5,10 +5,11 @@ import platform
 import getpass
 
 from pathlib import Path
+import re
 from structlog import BoundLogger
 from tzlocal import get_localzone_name
 from functools import lru_cache
-from typing import Any
+from typing import Any, List
 from pydantic import BaseModel, Field, SecretStr, PostgresDsn, model_validator
 from pydantic_settings import (
     BaseSettings,
@@ -132,12 +133,17 @@ class Settings(BaseSettings):
     project_name: str = Field(..., alias="name", description="Project name, e.g., 'Universal API'")
     version: str = Field(..., alias="version", description="Project version, e.g., '1.0.0'")
     description: str = Field(..., alias="description", description="Project description")
+    environment: str = Field(default="development", alias="APP_ENV", description="Deployment environment, e.g., 'development', 'production'")
     license: str = Field(default="MIT", alias="license", description="License type, e.g., 'MIT'")
     fqdn: str = Field(default="localhost", alias="FQDN", description="Fully qualified domain name for the service")
     debug: bool = Field(default=False, alias="UI_DEBUG_MODE", description="Enable debug mode")
     log_level: str = Field(default="INFO", alias="UI_LOG_LEVEL", description="Logging level for the application")
     log_file: str = Field(default="logs/app.log", alias="UI_LOG_FILE", description="Path to the log file")
     api_prefix: str = Field(default="/api", alias="API_PREFIX", description="API URL prefix")
+    cors_allow_credentials: bool = Field(default=True, alias="CORS_ALLOW_CREDENTIALS", description="Allow credentials in CORS")
+    cors_allow_methods: str = Field(default="*")
+    cors_allow_headers: str = Field(default="*")
+    https_redirect: bool = Field(default=False, alias="HTTPS_REDIRECT", description="Redirect HTTP to HTTPS")
 
     database: DatabaseSettings
     keycloak: KeycloakSettings
@@ -169,6 +175,25 @@ class Settings(BaseSettings):
             "url": f"https://{self.fqdn}/contact/",
             "email": "szmyty@gmail.com",
         }
+
+    @property
+    def cors_origin_regex(self: Settings) -> str:
+        """
+        Allow all ports on the current FQDN for development.
+        Produces something like: r"^http://localhost:\\d+$"
+        """
+        escaped: str = re.escape(self.fqdn)
+        return rf"^https?://{escaped}(:\d+)?$"
+
+    @property
+    def cors_allow_methods_list(self: Settings) -> List[str]:
+        """Parses the CORS allow methods string into a list of methods."""
+        return [method.strip() for method in self.cors_allow_methods.split(",") if method.strip()]
+
+    @property
+    def cors_allow_headers_list(self: Settings) -> List[str]:
+        """Parses the CORS allow headers string into a list of headers."""
+        return [header.strip() for header in self.cors_allow_headers.split(",") if header.strip()]
 
     @classmethod
     def settings_customise_sources(

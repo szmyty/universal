@@ -152,3 +152,9 @@ tasks:
     desc: Run MegaLinter via Docker
     cmds:
       - docker compose --file .devcontainer/docker-compose.yml run --rm megalinter
+
+  devcontainer:backup:
+    desc: Backup devcontainer configuration
+    cmds:
+      - bash scripts/backup-container.sh
+    silent: true
