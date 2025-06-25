@@ -15,7 +15,13 @@ tasks:
   install:
     desc: Install dependencies using Poetry
     cmds:
-      - poetry install --no-interaction --no-root
+      - poetry install --no-interaction --no-ansi --no-cache --no-root
+    silent: true
+
+  lock:
+    desc: Lock dependencies using Poetry
+    cmds:
+      - poetry lock --no-interaction --no-ansi --no-cache
     silent: true
 
   lint:
@@ -30,7 +36,7 @@ tasks:
       - poetry shell
     silent: true
 
-  api:
+  run:api:
     desc: Run the API using Uvicorn
     cmds:
       - poetry run uvicorn app.main:app --host 127.0.0.1 --port 8005 --log-level debug --reload
@@ -48,4 +54,5 @@ tasks:
       - find . -type d -name "__pycache__" -exec rm -rf {} +
       - find . -type f -name "*.pyc" -exec rm -f {} +
       - rm -rf .cache
+      - rm -rf .venv
     silent: true

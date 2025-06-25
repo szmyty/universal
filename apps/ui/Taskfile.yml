@@ -49,12 +49,12 @@ tasks:
   install:
     desc: "Install dependencies using a frozen lockfile (CI-safe)"
     cmds:
-      - pnpm install --frozen-lockfile
+      - pnpm install --frozen-lockfile --prefer-offline --ignore-workspace
 
   lock:
     desc: "Update the lockfile only (without installing)"
     cmds:
-      - pnpm install --lockfile-only
+      - pnpm install --lockfile-only --prefer-offline --ignore-workspace
 
   verify-lockfile:
     desc: "Dry-run to verify lockfile and package.json are in sync"

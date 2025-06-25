@@ -28,8 +28,7 @@ ARG INSTALL_GOOGLE_FONTS=true
 ARG GOOGLE_FONTS_SHA_COMMIT=2b5bd4077bd9269cdf3114266603372af6c3222d
 ARG GOOGLE_FONTS_SHA256=e413e29c18fa727ff4d509280fd432fc0ecb1f6117eb29f2c0a87918d30fe3ad
 
-# Core environment variables for non-interactive apt operations and
-# consistent Python behaviour.
+# Core environment variables for non-interactive apt operations and consistent Python behaviour.
 ENV DEBIAN_FRONTEND=noninteractive \
     DEBCONF_NONINTERACTIVE_SEEN=true \
     DEBIAN_PRIORITY=critical \
@@ -44,8 +43,14 @@ ENV DEBIAN_FRONTEND=noninteractive \
     LC_ALL=${LC_ALL} \
     PYTHONUNBUFFERED=1 \
     PYTHONIOENCODING=UTF-8 \
+    PYTHONUTF8=1 \
     PYTHONHASHSEED=random \
     PIP_NO_CACHE_DIR=1 \
+    PYTHONFAULTHANDLER=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=on \
+    PIP_NO_WARN_SCRIPT_LOCATION=on \
+    PIP_DEFAULT_TIMEOUT=200 \
+    GNUTLS_FORCE_FIPS_MODE=1 \
     PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" \
     GOOGLE_FONTS_SHA_COMMIT=${GOOGLE_FONTS_SHA_COMMIT} \
     GOOGLE_FONTS_SHA256=${GOOGLE_FONTS_SHA256} \
@@ -179,6 +184,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-cache \
 # Rebuild the font cache after installing fonts
 RUN fc-cache -f -v
 
+# Configure the system locale and timezone
 RUN echo "LC_ALL=en_US.UTF-8" >> /etc/environment \
     && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
     && echo "LANG=en_US.UTF-8" > /etc/locale.conf \
@@ -186,8 +192,10 @@ RUN echo "LC_ALL=en_US.UTF-8" >> /etc/environment \
     && update-locale LANG=en_US.UTF-8 \
     && dpkg-reconfigure locales
 
+# Record the installed versions of apt packages for reference
 RUN dpkg-query -W -f='${Package}=${Version}\n' > apt-packages.lock
 
+# Install Perl modules needed for Perl Language Server
 RUN cpanm AnyEvent::AIO@1.1 IO::AIO@4.81 Perl::LanguageServer@2.6.2
 
 # Ensure SYS_UID_MAX and SYS_GID_MAX are set to high values, uncommented or inserted
@@ -237,6 +245,14 @@ RUN chmod +x /workspace/scripts/devtools.sh && \
     bash /workspace/scripts/devtools.sh && \
     rm -rf /workspace/scripts && \
     chown --recursive vscode:vscode "${DEVTOOLS_HOME}"
+
+# Copy and source custom shell aliases
+COPY shell/aliases.sh /etc/profile.d/docker_aliases.sh
+
+# Ensure correct permissions and sourcing
+RUN chmod 644 /etc/profile.d/docker_aliases.sh && \
+    echo '[ -d /etc/profile.d ] && for f in /etc/profile.d/*.sh; do [ -r "$f" ] && . "$f"; done' \
+    >> /etc/bash.bashrc
 
 ######################################################################
 # PDAL build stage

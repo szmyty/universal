@@ -1287,9 +1287,9 @@ asdf::install() {
     local version
     version="$(asdf::version)"
 
-    # Ensure required directories exist and are owned by the vscode user
+    # Ensure required directories exist and are owned by the app user
     mkdir -p "$(asdf::home)" "$(asdf::data_dir)"
-    chown vscode:vscode "$(asdf::home)" "$(asdf::data_dir)"
+    chown "${APP_USER:-$(id -un)}":"${APP_GROUP:-$(id -gn)}" "$(asdf::home)" "$(asdf::data_dir)"
 
     if [[ "${version}" == "latest" ]]; then
         log::info "🔍 Fetching latest ASDF version..."

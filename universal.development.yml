@@ -4,8 +4,13 @@ services:
     env_file:
       - .env.universal
       - .env.development
-    volumes:
-      - ./services/api:/app
+    # volumes:
+    #   - ./services/api/src:/app/src
+    #   - ./services/api/pyproject.toml:/app/pyproject.toml
+    #   - ./services/api/poetry.lock:/app/poetry.lock
+    #   - ./services/api/poetry.toml:/app/poetry.toml
+    ports:
+      - "${API_EXPOSED_PORT:-8000}:${API_PORT:-8000}"
 
   database:
     env_file:
@@ -21,10 +26,10 @@ services:
     env_file:
       - .env.universal
       - .env.development
-    environment:
-      KEYCLOAK_IMPORT: /opt/keycloak/data/import/development-realm.json
-    volumes:
-      - ./services/keycloak/development-realm.json:/opt/keycloak/data/import/development-realm.json:ro
+    # environment:
+    #   KEYCLOAK_IMPORT: /opt/keycloak/data/import/development-realm.json
+    # volumes:
+    #   - ./services/keycloak/development-realm.json:/opt/keycloak/data/import/development-realm.json:ro
 
   pgadmin:
     env_file:

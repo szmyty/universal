@@ -7,8 +7,8 @@
 set -euo pipefail
 
 main() {
-    echo "🔐 Updating certs in trust store..."
-    update-ca-certificates
+    # echo "🔐 Updating certs in trust store..."
+    # update-ca-certificates
 
     echo "🚀 Starting FastAPI (${APP_ENV})..."
 

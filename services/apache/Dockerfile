@@ -1,4 +1,4 @@
-FROM  httpd@sha256:f6557a77ee2f16c50a5ccbb2564a3fd56087da311bf69a160d43f73b23d3af2d
+FROM httpd@sha256:f6557a77ee2f16c50a5ccbb2564a3fd56087da311bf69a160d43f73b23d3af2d
 
 # Install Apache modules
 RUN apt-get update && \

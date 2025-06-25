@@ -16,6 +16,15 @@ tasks:
           --file universal.development.yml \
           --env-file .env.universal \
           --env-file .env.development \
+          build \
+          --no-cache {{.SERVICES}}
+
+      - |
+        docker compose \
+          --file universal.base.yml \
+          --file universal.development.yml \
+          --env-file .env.universal \
+          --env-file .env.development \
           up {{.SERVICES}} \
           --build \
           --force-recreate \
@@ -77,6 +86,13 @@ tasks:
           echo "⚠️ 'jq' not found; fallback to docker ps output"
           docker ps --filter "name={{.SERVICE}}" --format "table {{.Names}}\t{{.Status}}"
         fi
+    silent: true
+
+  api:
+    desc: Start just the API server
+    cmds:
+      - task: up
+        vars: { SERVICES: "api" }
     silent: true
 
   apache:
