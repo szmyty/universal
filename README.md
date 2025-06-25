@@ -38,3 +38,7 @@ Start the UI in dev mode with:
 ```bash
 pnpm --filter universal-ui dev
 ```
+
+## Runtime Environments
+
+Docker Compose files allow switching between `development`, `demo`, and `production` stacks. The development configuration automatically imports a Keycloak realm from `services/keycloak/development-realm.json` so local users and roles are available out of the box.
