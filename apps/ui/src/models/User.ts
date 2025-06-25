@@ -85,3 +85,27 @@ export const hasRole = (
 
     return false;
 };
+
+// OIDC user info returned from the API
+export interface OIDCUser {
+    sub: string;
+    preferred_username?: string;
+    email?: string;
+    given_name?: string;
+    family_name?: string;
+    name?: string;
+    picture?: string;
+    locale?: string;
+    roles?: string[];
+    groups?: string[];
+    extra?: Record<string, any>;
+}
+
+
+// Basic user entity returned from the API layer
+export type ApiUser = {
+    id: string;
+    username: string;
+    email: string;
+    roles?: UserRole[];
+};
