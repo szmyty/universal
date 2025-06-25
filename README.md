@@ -42,3 +42,30 @@ pnpm --filter universal-ui dev
 ## Runtime Environments
 
 Docker Compose files allow switching between `development`, `demo`, and `production` stacks. The development configuration automatically imports a Keycloak realm from `services/keycloak/development-realm.json` so local users and roles are available out of the box.
+### Docker Compose
+
+A multi environment Docker setup is provided. Start the development stack with:
+
+```bash
+docker compose -f universal.base.yml -f universal.development.yml \
+  --env-file .env.universal --env-file .env.development up --build
+```
+
+For the demo or production stacks replace `universal.development.yml` with
+`universal.demo.yml` or `universal.production.yml` and supply the matching
+environment files.
+
+Apache exposes the React UI at `/` and forwards API requests to `/api`. Keycloak
+is available under `/auth`.
+
+### Default Credentials
+
+- **Keycloak Admin:** `admin` / `6UE7nLjzv3F86qkChHwXaZoftMgYlazl`
+- **pgAdmin Login:** `admin@universal.localhost` / `6UE7nLjzv3F86qkChHwXaZoftMgYlazl`
+
+### Access URLs (development)
+
+- UI: http://localhost:8084 (or https://localhost:8085)
+- Keycloak: https://localhost:8085/auth
+- API: https://localhost:8085/api
+- pgAdmin: http://localhost:5050
