@@ -1,47 +1,47 @@
-# syntax=docker/dockerfile:1
+# syntax=docker/dockerfile:1.4
 
-# ---------- Builder Stage ----------
-FROM python:3.12-slim AS builder
+#############################
+# Base stage with devtools
+#############################
+FROM ubuntu@sha256:b59d21599a2b151e23eea5f6602f4af4d7d31c4e236d22bf0b62b86d2e386b8f AS base
 
-ENV POETRY_HOME=/opt/poetry \
-    POETRY_VERSION=1.8.2 \
-    PATH="$POETRY_HOME/bin:$PATH"
+ENV DEVTOOLS_HOME=/opt/devtools \
+    TASKFILE_HOME_DIR=/opt/devtools/.task \
+    ASDF_DIR=/opt/devtools/.asdf \
+    ASDF_DATA_DIR=/opt/devtools/.asdf/data \
+    ASDF_SHIMS_DIR=/opt/devtools/.asdf/data/shims
 
-WORKDIR /build
-
-# Install system deps and Poetry
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends curl build-essential \
-    && curl -sSL https://install.python-poetry.org | python3 - \
-    && poetry config virtualenvs.in-project true \
-    && apt-get purge -y --auto-remove curl \
-    && rm -rf /var/lib/apt/lists/*
-
-COPY pyproject.toml poetry.lock poetry.toml ./
-RUN poetry install --only main --no-interaction --no-root
-
-# ---------- Runtime Stage ----------
-FROM python:3.12-slim AS runtime
-
-ENV POETRY_HOME=/opt/poetry \
-    PATH="$POETRY_HOME/bin:/app/.venv/bin:$PATH" \
-    APP_ENV=production \
-    PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
+ENV PATH="${TASKFILE_HOME_DIR}:${ASDF_DIR}/bin:${ASDF_SHIMS_DIR}:${PATH}"
 
 WORKDIR /app
 
-# Install ca-certificates for HTTPS and refresh trust store
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates \
-    && update-ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+# Install asdf-managed tools (Python, Poetry, etc.)
+COPY scripts/devtools.sh /tmp/devtools.sh
+COPY services/api/.tool-versions .tool-versions
+RUN chmod +x /tmp/devtools.sh && \
+    bash /tmp/devtools.sh && \
+    rm /tmp/devtools.sh
 
-# Copy poetry + env from builder
-COPY --from=builder $POETRY_HOME $POETRY_HOME
-COPY --from=builder /build/.venv /app/.venv
-COPY pyproject.toml poetry.lock poetry.toml ./
-COPY src ./src
-COPY entrypoint.sh /entrypoint.sh
+#############################
+# Builder stage
+#############################
+FROM base AS builder
+
+COPY services/api/pyproject.toml services/api/poetry.lock services/api/poetry.toml ./
+RUN poetry install --only main --no-root
+
+#############################
+# Runtime stage
+#############################
+FROM base AS runtime
+ENV APP_ENV=production \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+COPY --from=builder /app/.venv /app/.venv
+COPY services/api/pyproject.toml services/api/poetry.lock services/api/poetry.toml ./
+COPY services/api/src ./src
+COPY services/api/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]

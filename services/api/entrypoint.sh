@@ -12,9 +12,10 @@ main() {
 
     echo "🚀 Starting FastAPI (${APP_ENV})..."
 
-    cmd="poetry run python -m fastapi run app/main.py \
+    cmd="poetry run uvicorn app.main:app \
       --host=0.0.0.0 \
       --port=${API_PORT:-8000} \
+      --log-level debug \
       --proxy-headers \
       --root-path /api"
 
