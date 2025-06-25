@@ -1,38 +1,58 @@
+# app/api/middleware.py
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from piccolo_api.csrf.middleware import CSRFMiddleware
+from piccolo_api.rate_limiting.middleware import RateLimitingMiddleware
 
+from app.extensions.body_size_middleware import BodySizeLimitMiddleware
 from app.extensions.csp_middleware import CSPMiddleware
 from app.extensions.powered_by_middleware import PoweredByMiddleware
 from app.extensions.process_time_middleware import ProcessTimeMiddleware
 from app.extensions.correlation_id_middleware import CorrelationIdMiddleware
 from app.core.settings import Settings, get_settings
+from app.core.logging import get_logger
+from app.utils.general import get_class_name as get_middleware_name
 
 def add_middlewares(app: FastAPI) -> None:
-    """Add middlewares to the FastAPI application."""
+    """Add middlewares to the FastAPI application, in correct order."""
     settings: Settings = get_settings()
+    log = get_logger()
 
-    app.add_middleware(ProcessTimeMiddleware)
-    app.add_middleware(PoweredByMiddleware)
-    app.add_middleware(CorrelationIdMiddleware)
+    # Rate Limiting (first line of defense)
+    app.add_middleware(RateLimitingMiddleware, provider=settings.rate_limit_provider)
 
+    # CSRF Protection
     app.add_middleware(
-        GZipMiddleware,
-        minimum_size=1000,
-        compresslevel=5
+        CSRFMiddleware,
+        allowed_hosts=[settings.fqdn],
+        cookie_name="csrftoken",
+        header_name="X-CSRFToken",
+        allow_form_param=False,
+        allow_header_param=True,
+        max_age=31536000,
     )
 
-    # Example: allowed_hosts=["example.com", "*.example.com"]
+    # HTTPS redirect (if enabled)
+    if settings.https_redirect:
+        app.add_middleware(HTTPSRedirectMiddleware)
+
+    # Trusted Host enforcement
     app.add_middleware(
         TrustedHostMiddleware,
-        allowed_hosts=["*"]
+        allowed_hosts=["*"]  # Update in prod
     )
 
-    # Add CORS middleware
-    # https://fastapi.tiangolo.com/tutorial/cors/
+    # Body Size Limit
+    app.add_middleware(
+        BodySizeLimitMiddleware,
+        max_body_size=settings.body_size_max_bytes,
+    )
+
+    # CORS
     app.add_middleware(
         CORSMiddleware,
         allow_origin_regex=settings.cors_origin_regex,
@@ -42,18 +62,30 @@ def add_middlewares(app: FastAPI) -> None:
         max_age=600,
     )
 
-    if settings.https_redirect:
-        app.add_middleware(HTTPSRedirectMiddleware)
-
+    # CSP
     app.add_middleware(CSPMiddleware)
 
-    # Add CSRF protection middleware
+    # GZip
     app.add_middleware(
-        CSRFMiddleware,
-        allowed_hosts=[settings.fqdn],           # Only required for HTTPS
-        cookie_name="csrftoken",                 # Default name
-        header_name="X-CSRFToken",               # Matches frontend JS libs
-        allow_form_param=False,                  # Enable if posting forms
-        allow_header_param=True,                 # Needed for JS/AJAX
-        max_age=31536000,                        # 1 year (optional)
+        GZipMiddleware,
+        minimum_size=1000,
+        compresslevel=5
     )
+
+    # Correlation ID
+    app.add_middleware(CorrelationIdMiddleware)
+
+    # X-Service header
+    app.add_middleware(PoweredByMiddleware)
+
+    # Process timing (outermost layer)
+    app.add_middleware(ProcessTimeMiddleware)
+
+    # Log installed middlewares in declared order
+    log.info(
+        "🧩 Middleware stack initialized",
+        middlewares=[get_middleware_name(middleware.cls) for middleware in app.user_middleware]
+    )
+    log.info("✅ All middlewares added")
+
+    log.info("🔧 Rate limit config", provider=settings.rate_limit_provider, limit=settings.rate_limit_max_requests)

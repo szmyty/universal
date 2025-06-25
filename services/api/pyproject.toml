@@ -86,7 +86,7 @@ exclude = [
 ]
 ignore = []
 defineConstant = { DEBUG = true }
-stubPath = "src/stubs"
+stubPath = "./typings"
 reportMissingImports = "error"
 reportMissingTypeStubs = true
 verboseOutput = false

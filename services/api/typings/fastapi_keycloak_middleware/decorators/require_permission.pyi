@@ -11,7 +11,7 @@ This module providers a decorator that can be used to check if a user has a spec
 permission.
 """
 log = ...
-def require_permission(permissions: typing.Union[str, typing.List[str]], match_strategy: MatchStrategy = ...) -> Callable:
+def require_permission(permissions: typing.Union[str, typing.List[str]], match_strategy: MatchStrategy = ...) -> Callable[..., typing.Any]:
     """
     This decorator can be used to enfore certain permissions for the path
     function it is applied to.

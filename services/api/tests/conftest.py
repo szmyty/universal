@@ -3,6 +3,7 @@ import os
 import logging
 from typing import Literal
 import pytest
+from _pytest.monkeypatch import MonkeyPatch
 
 from pathlib import Path
 from pytest import ExitCode, Session
@@ -69,7 +70,7 @@ def settings() -> Settings:
     # Clear the cache to ensure we get a fresh instance.
     get_settings.cache_clear()
     settings: Settings = get_settings()
-    print(f"[DEBUG] Loaded settings: {settings.model_dump_json(indent=4)}")
+    # print(f"[DEBUG] Loaded settings: {settings.model_dump_json(indent=4)}")
 
     return settings
 

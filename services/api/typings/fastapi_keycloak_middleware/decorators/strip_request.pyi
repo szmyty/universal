@@ -10,7 +10,9 @@ would lead to a Python exception if the argument is not removed.
 This wrapper will check if the function contains the request argument and if
 not, will remove it from kwargs before calling the function.
 """
-def strip_request(func): # -> _Wrapped[Callable[..., Any], Any, Callable[..., Any], CoroutineType[Any, Any, Any]]:
+from typing import Callable, Any
+
+def strip_request(func: Callable[..., Any]) -> Callable[..., Any]:
     """
     Wrapper that strips the request argument from kwargs
     """

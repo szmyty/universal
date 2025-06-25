@@ -12,10 +12,9 @@ from app.domain.health.enums import HealthStatus
 class TestHealthRepository:
     """Unit tests for DefaultHealthCheckRepository."""
 
-    async def test_health_repository_returns_healthy(self, db_session: AsyncSession) -> None:
+    async def test_health_repository_returns_healthy(self) -> None:
         # Arrange
-        dao = HealthDAO(db_session)
-        repo = DefaultHealthCheckRepository(dao)
+        repo = DefaultHealthCheckRepository()
 
         # Act
         result: HealthCheck = await repo.check_health()

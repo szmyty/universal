@@ -30,10 +30,10 @@ tasks:
       - poetry shell
     silent: true
 
-  run:api:
-    desc: Run the FastAPI API locally using Poetry
+  api:
+    desc: Run the API using Uvicorn
     cmds:
-      - poetry run python -m fastapi run src/app/main.py --host 127.0.0.1 --port 8005 --reload
+      - poetry run uvicorn app.main:app --host 127.0.0.1 --port 8005 --log-level debug --reload
     silent: true
 
   tree:

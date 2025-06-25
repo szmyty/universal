@@ -1,5 +1,8 @@
 from fastapi_keycloak_middleware import KeycloakConfiguration, AuthorizationMethod
+from fastapi_keycloak_middleware.setup import setup_keycloak_middleware
+from fastapi import FastAPI
 
+from app.auth.oidc_user import map_oidc_user
 from app.core.settings import get_settings, Settings
 
 # Initialize Keycloak configuration
@@ -38,3 +41,12 @@ keycloak = KeycloakConfiguration(
 excluded_endpoints: list[str] = [
     "^/health/?$"
 ]
+
+def add_keycloak(app: FastAPI) -> None:
+    """Integrate Keycloak authentication middleware into the FastAPI application."""
+    setup_keycloak_middleware(
+        app=app,
+        keycloak_configuration=keycloak,
+        user_mapper=map_oidc_user,
+        exclude_patterns=excluded_endpoints,
+    )

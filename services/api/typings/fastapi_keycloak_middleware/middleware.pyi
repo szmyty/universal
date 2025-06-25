@@ -49,5 +49,5 @@ class KeycloakMiddleware:
         """Middleware constructor"""
         ...
 
-    async def __call__(self, scope: Scope, receive: Receive, send: Send): # -> None:
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         ...

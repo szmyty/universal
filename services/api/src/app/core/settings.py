@@ -19,6 +19,10 @@ from pydantic_settings import (
     PyprojectTomlConfigSettingsSource,
 )
 from spdx_license_list import LICENSES
+from piccolo_api.rate_limiting.middleware import InMemoryLimitProvider
+from piccolo_api.rate_limiting.middleware import RateLimitProvider
+
+from app.extensions.rate_limiting_middleware import NoOpLimitProvider
 
 class KeycloakSettings(BaseModel):
     """Configuration for connecting to Keycloak OIDC server."""
@@ -27,6 +31,7 @@ class KeycloakSettings(BaseModel):
         env_nested_delimiter="_",
     )
 
+    enabled: bool = Field(default=False, description="Enable Keycloak authentication")
     hostname: str = Field(default="keycloak", description="Keycloak service host")
     http_port: int = Field(default=8080, description="Keycloak HTTP port")
     https_port: int = Field(default=8443, description="Keycloak HTTPS port")
@@ -144,6 +149,11 @@ class Settings(BaseSettings):
     cors_allow_methods: str = Field(default="*")
     cors_allow_headers: str = Field(default="*")
     https_redirect: bool = Field(default=False, alias="HTTPS_REDIRECT", description="Redirect HTTP to HTTPS")
+    rate_limit_enabled: bool = Field(default=False, description="Enable rate limiting")
+    rate_limit_max_requests: int = Field(default=1000, description="Max requests in the time window")
+    rate_limit_timespan: int = Field(default=300, description="Time window for rate limiting in seconds")
+    rate_limit_block_duration: int = Field(default=300, description="Block duration in seconds after exceeding rate limit")
+    body_size_max_bytes: int = Field(default=1_000_000_000, alias="MAX_BODY_SIZE_BYTES", description="Max request body size in bytes")
 
     database: DatabaseSettings
     keycloak: KeycloakSettings
@@ -195,6 +205,17 @@ class Settings(BaseSettings):
         """Parses the CORS allow headers string into a list of headers."""
         return [header.strip() for header in self.cors_allow_headers.split(",") if header.strip()]
 
+    @property
+    def rate_limit_provider(self: Settings) -> RateLimitProvider:
+        """Returns the appropriate rate limit provider based on settings."""
+        if self.rate_limit_enabled:
+            return InMemoryLimitProvider(
+                limit=self.rate_limit_max_requests,
+                timespan=self.rate_limit_timespan,
+                block_duration=self.rate_limit_block_duration,
+            )
+        return NoOpLimitProvider()
+
     @classmethod
     def settings_customise_sources(
         cls: type[Settings],
@@ -236,7 +257,8 @@ class Settings(BaseSettings):
 
 @lru_cache()
 def get_settings() -> Settings:
-    settings = Settings()
+    """Get cached settings instance, ensuring log directory exists."""
+    settings = Settings() # type: ignore
     log_dir: Path = Path(settings.log_file).parent
     log_dir.mkdir(parents=True, exist_ok=True)
     return settings

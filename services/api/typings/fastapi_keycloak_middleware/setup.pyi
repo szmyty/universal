@@ -13,7 +13,7 @@ and 403 responses and modify the OpenAPI schema to correctly include
 OpenID Connect information.
 """
 log = ...
-def setup_keycloak_middleware(app: FastAPI, keycloak_configuration: KeycloakConfiguration, exclude_patterns: typing.List[str] | None = ..., user_mapper: typing.Callable[[typing.Dict[str, typing.Any]], typing.Awaitable[typing.Any]] | None = ..., scope_mapper: typing.Callable[[typing.List[str]], typing.Awaitable[typing.List[str]]] | None = ..., add_exception_response: bool = ..., add_swagger_auth: bool = ..., swagger_openId_base_url: str | None = ..., swagger_auth_scopes: typing.List[str] | None = ..., swagger_auth_pkce: bool = ..., swagger_scheme_name: str = ...): # -> None:
+def setup_keycloak_middleware(app: FastAPI, keycloak_configuration: KeycloakConfiguration, exclude_patterns: typing.List[str] | None = ..., user_mapper: typing.Callable[[typing.Dict[str, typing.Any]], typing.Awaitable[typing.Any]] | None = ..., scope_mapper: typing.Callable[[typing.List[str]], typing.Awaitable[typing.List[str]]] | None = ..., add_exception_response: bool = ..., add_swagger_auth: bool = ..., swagger_openId_base_url: str | None = ..., swagger_auth_scopes: typing.List[str] | None = ..., swagger_auth_pkce: bool = ..., swagger_scheme_name: str = ...) -> None:
     """
     This function can be used to initialize the middleware on an existing
     FastAPI application. Note that the middleware can also be added directly.
