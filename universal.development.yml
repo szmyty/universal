@@ -19,6 +19,10 @@ services:
     env_file:
       - .env.universal
       - .env.development
+    environment:
+      KEYCLOAK_IMPORT: /opt/keycloak/data/import/development-realm.json
+    volumes:
+      - ./services/keycloak/development-realm.json:/opt/keycloak/data/import/development-realm.json:ro
 
   pgadmin:
     env_file:
