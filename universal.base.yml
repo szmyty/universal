@@ -87,6 +87,11 @@ services:
       interval: 10s
       timeout: 10s
       retries: 10
+    depends_on:
+      database:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
     <<: *settings
 
   # Keycloak / Identity and Access Management Database service
@@ -217,7 +222,7 @@ services:
     hostname: ${WEB_HOSTNAME:-web}
     build:
       context: .
-      dockerfile: ./services/apache/Dockerfile
+      dockerfile: ./apps/ui/Dockerfile
     ports:
       - "${WEB_HTTP_EXPOSED_PORT:-80}:${WEB_HTTP_PORT:-80}"
       - "${WEB_HTTPS_EXPOSED_PORT:-443}:${WEB_HTTPS_PORT:-443}"
@@ -227,7 +232,6 @@ services:
       - ./services/apache/${APP_ENV}/certs/cert.key:/usr/local/apache2/conf/server.key:ro
       - ./services/apache/${APP_ENV}/certs/cert.crt:/usr/local/apache2/conf/server.crt:ro
       - ./services/apache/${APP_ENV}/conf/httpd-status.conf:/usr/local/apache2/conf/extra/httpd-status.conf:ro
-      - web:/usr/local/apache2/htdocs
     healthcheck:
       test:
         [
@@ -237,10 +241,10 @@ services:
       interval: 10s
       timeout: 10s
       retries: 10
-    # depends_on:
-    #   api:
-    #     condition: service_healthy
-    #   keycloak:
-    #     condition: service_healthy
+    depends_on:
+      api:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
     platform: linux/amd64
     <<: *settings

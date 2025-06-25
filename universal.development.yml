@@ -4,6 +4,8 @@ services:
     env_file:
       - .env.universal
       - .env.development
+    volumes:
+      - ./services/api:/app
 
   database:
     env_file:
@@ -33,3 +35,5 @@ services:
     env_file:
       - .env.universal
       - .env.development
+    volumes:
+      - ./apps/ui:/app
