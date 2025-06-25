@@ -63,8 +63,8 @@ RUN rm -f /etc/apt/apt.conf.d/docker-clean
 RUN mkdir --parents /usr/share/man/man1
 
 # Copy configuration files for apt and dpkg
-COPY configs/dpkg/*.conf /etc/dpkg/dpkg.cfg.d/
-COPY configs/apt/*.conf /etc/apt/apt.conf.d/
+COPY config/dpkg/*.conf /etc/dpkg/dpkg.cfg.d/
+COPY config/apt/*.conf /etc/apt/apt.conf.d/
 
 RUN apt-config dump > /workspace/_apt-config.dump
 RUN grep -r . /etc/dpkg/dpkg.cfg.d/ > /workspace/_dpkg-config.dump
@@ -241,19 +241,19 @@ RUN chmod +x /workspace/scripts/devtools.sh && \
 ######################################################################
 # PDAL build stage
 ######################################################################
-FROM deps AS pdal-build
+# FROM deps AS pdal-build
 
-# Commit to build and its SHA256 checksum
-ARG PDAL_SHA=bba54fc27c4476d1571318dd43259c59e86cdc84
-ARG PDAL_SHA256=14bc6b06eb1c0c2bea865913741916a9f54e29b7e6da26c7c0e2f9d19d1ba3a4
+# # Commit to build and its SHA256 checksum
+# ARG PDAL_SHA=bba54fc27c4476d1571318dd43259c59e86cdc84
+# ARG PDAL_SHA256=14bc6b06eb1c0c2bea865913741916a9f54e29b7e6da26c7c0e2f9d19d1ba3a4
 
-COPY scripts/install_pdal.sh /workspace/scripts/install_pdal.sh
-RUN chmod +x /workspace/scripts/install_pdal.sh && \
-    bash /workspace/scripts/install_pdal.sh "${PDAL_SHA}" "${PDAL_SHA256}" && \
-    rm /workspace/scripts/install_pdal.sh
+# COPY scripts/install_pdal.sh /workspace/scripts/install_pdal.sh
+# RUN chmod +x /workspace/scripts/install_pdal.sh && \
+#     bash /workspace/scripts/install_pdal.sh "${PDAL_SHA}" "${PDAL_SHA256}" && \
+#     rm /workspace/scripts/install_pdal.sh
 
 ######################################################################
 # Final image with PDAL installed
 ######################################################################
 FROM deps
-COPY --from=pdal-build /usr/local/ /usr/local/
+# COPY --from=pdal-build /usr/local/ /usr/local/
