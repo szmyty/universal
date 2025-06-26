@@ -26,7 +26,8 @@
         }
     },
     "mounts": [
-        "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind",
+        "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached",
+        "source=${localEnv:HOME}/.aws,target=/home/vscode/.aws,type=bind,consistency=cached",
         "source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,consistency=cached"
     ],
     "containerEnv": {},
@@ -56,7 +57,13 @@
                 "stoplight.spectral",
                 "James-Yu.latex-workshop",
                 "remcohaszing.schemastore",
-                "mrmlnc.vscode-apache"
+                "mrmlnc.vscode-apache",
+                "mkhl.shfmt",
+                "shakram02.bash-beautify",
+                "matthewpi.caddyfile-support",
+                "timonwong.shellcheck",
+                "DavidAnson.vscode-markdownlint",
+                "dbaeumer.vscode-eslint"
             ]
         }
     }

@@ -77,14 +77,14 @@ tasks:
   health:
     desc: Show health-check status for a specific service
     vars:
-      SERVICE: '{{default "web" .SERVICE}}'
+      SERVICES: '{{default "web" .SERVICES}}'
     cmds:
       - |
         if command -v jq > /dev/null 2>&1; then
-          docker inspect {{.SERVICE}} | jq '.[].State.Health | {Status: .Status}'
+          docker inspect {{.SERVICES}} | jq '.[].State.Health | {Status: .Status}'
         else
           echo "⚠️ 'jq' not found; fallback to docker ps output"
-          docker ps --filter "name={{.SERVICE}}" --format "table {{.Names}}\t{{.Status}}"
+          docker ps --filter "name={{.SERVICES}}" --format "table {{.Names}}\t{{.Status}}"
         fi
     silent: true
 
@@ -205,4 +205,32 @@ tasks:
     cmds:
       - task: health
         vars: { SERVICES: "keycloak" }
+    silent: true
+
+  pgadmin:
+    desc: Start just the pgadmin service
+    cmds:
+      - task: up
+        vars: { SERVICES: "pgadmin" }
+    silent: true
+
+  pgadmin:logs:
+    desc: View pgadmin logs
+    cmds:
+      - task: logs
+        vars: { SERVICES: "pgadmin" }
+    silent: true
+
+  pgadmin:status:
+    desc: View pgadmin status
+    cmds:
+      - task: status
+        vars: { SERVICES: "pgadmin" }
+    silent: true
+
+  pgadmin:health:
+    desc: View pgadmin health status
+    cmds:
+      - task: health
+        vars: { SERVICES: "pgadmin" }
     silent: true
