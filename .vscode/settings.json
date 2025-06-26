@@ -35,7 +35,8 @@
         "**/bower_components": true,
         "**/*.code-search": true,
         "**/.git": true,
-        "**/reports": true
+        "**/reports": true,
+        "**/.lock": true
     },
     "git.ignoreLimitWarning": true,
     "cSpell.words": ["TASKFILE"],

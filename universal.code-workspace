@@ -98,6 +98,9 @@
         "yaml.schemas": {
             "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible-lint-config.json": "**/.ansible-lint",
             "https://taskfile.dev/schema.json": "**/Taskfile.yml",
+            "https://json.schemastore.org/github-issue-config.json": "**/.github/ISSUE_TEMPLATE/config.yml",
+            "https://json.schemastore.org/github-workflow.json": "**/.github/workflows/*.yml",
+            "https://json.schemastore.org/github-action.json": "**/.github/actions/*.yml",
         },
         "local-history.path": "${workspaceFolder}/.cache/vscode",
         "latex-workshop.bibtex-fields.sort.enabled": true,
