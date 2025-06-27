@@ -86,7 +86,7 @@ export default defineConfig({
     define: {
         global: "globalThis",
         "process.env": Object.fromEntries(
-            Object.entries(env).map(([key, val]) => [key, JSON.stringify(val)])
+            Object.entries(env).map(([key, val]) => [key, JSON.stringify(val)]),
         ),
     },
 

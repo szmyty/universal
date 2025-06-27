@@ -233,15 +233,15 @@ services:
       args:
         - APP_USER=${APP_USER:-universal}
         - APP_GROUP=${APP_GROUP:-universal}
+        - WEB_HTTP_PORT=${WEB_HTTP_PORT:-80}
+        - WEB_HTTPS_PORT=${WEB_HTTPS_PORT:-443}
+        - FQDN=${FQDN:-localhost}
     ports:
       - "${WEB_HTTP_EXPOSED_PORT:-80}:${WEB_HTTP_PORT:-80}"
       - "${WEB_HTTPS_EXPOSED_PORT:-443}:${WEB_HTTPS_PORT:-443}"
     volumes:
-      - ./services/apache/${APP_ENV}/conf/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
-      - ./services/apache/${APP_ENV}/conf/httpd-ssl.conf:/usr/local/apache2/conf/extra/httpd-ssl.conf:ro
-      - ./services/apache/${APP_ENV}/certs/cert.key:/usr/local/apache2/conf/server.key:ro
-      - ./services/apache/${APP_ENV}/certs/cert.crt:/usr/local/apache2/conf/server.crt:ro
-      - ./services/apache/${APP_ENV}/conf/httpd-status.conf:/usr/local/apache2/conf/extra/httpd-status.conf:ro
+      - ./services/apache/certs/${APP_ENV}/cert.key:/usr/local/apache2/conf/server.key:ro
+      - ./services/apache/certs/${APP_ENV}/cert.crt:/usr/local/apache2/conf/server.crt:ro
     healthcheck:
       test:
         [
@@ -251,9 +251,9 @@ services:
       interval: 10s
       timeout: 10s
       retries: 10
-    depends_on:
-      api:
-        condition: service_healthy
-      keycloak:
-        condition: service_healthy
+    # depends_on:
+    #   api:
+    #     condition: service_healthy
+    # keycloak:
+    #   condition: service_healthy
     <<: *settings

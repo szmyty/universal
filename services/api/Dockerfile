@@ -32,7 +32,7 @@ ENV APP_UID=65532
 ENV APP_GID=65532
 ENV APP_HOME=/home/${APP_USER}
 
-# Core environment variables for non-interactive apt operations and consistent Python behaviour.
+# Core environment variables for non-interactive apt operations and consistent behaviour.
 ENV DEBIAN_FRONTEND=noninteractive \
     DEBCONF_NONINTERACTIVE_SEEN=true \
     DEBIAN_PRIORITY=critical \

@@ -5,6 +5,29 @@
 version: "3"
 
 tasks:
+  up:quick:
+    desc: Start selected services quickly using Docker Compose
+    vars:
+      SERVICES: '{{default "" .SERVICES}}'
+    cmds:
+      - |
+        docker compose \
+          --file universal.base.yml \
+          --file universal.development.yml \
+          --env-file .env.universal \
+          --env-file .env.development \
+          build {{.SERVICES}}
+
+      - |
+        docker compose \
+          --file universal.base.yml \
+          --file universal.development.yml \
+          --env-file .env.universal \
+          --env-file .env.development \
+          up {{.SERVICES}} \
+          --detach
+    silent: true
+
   up:
     desc: Start selected services using Docker Compose
     vars:
@@ -95,28 +118,35 @@ tasks:
         vars: { SERVICES: "api" }
     silent: true
 
-  apache:
+  web:
     desc: Start just the Apache webserver
     cmds:
       - task: up
         vars: { SERVICES: "web" }
     silent: true
 
-  apache:logs:
+  web:quick:
+    desc: Start just the Apache webserver
+    cmds:
+      - task: up:quick
+        vars: { SERVICES: "web" }
+    silent: true
+
+  web:logs:
     desc: View Apache logs
     cmds:
       - task: logs
         vars: { SERVICES: "web" }
     silent: true
 
-  apache:status:
+  web:status:
     desc: View Apache status
     cmds:
       - task: status
         vars: { SERVICES: "web" }
     silent: true
 
-  apache:health:
+  web:health:
     desc: View Apache health status
     cmds:
       - task: health
