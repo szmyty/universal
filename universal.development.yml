@@ -40,5 +40,5 @@ services:
     env_file:
       - .env.universal
       - .env.development
-    volumes:
-      - ./apps/ui:/app
+    # volumes:
+    #   - ./apps/ui:/app

@@ -17,10 +17,24 @@ tasks:
     cmds:
       - pnpm dev
 
+  install:
+    desc: "Install dependencies using pnpm"
+    cmds:
+      - task: clean
+      - pnpm install --prefer-offline --ignore-workspace --frozen-lockfile --force
+
   build:
     desc: "Build the production frontend"
     cmds:
       - pnpm build
+
+  clean:
+    desc: "Clean the build artifacts"
+    cmds:
+      - rm -rf node_modules
+      - rm -rf dist
+      - rm -rf .cache
+    silent: true
 
   preview:
     desc: "Preview the production build"
@@ -45,12 +59,6 @@ tasks:
   # ─────────────────────────────────────────────────────────────
   # Dependency Management
   # ─────────────────────────────────────────────────────────────
-
-  install:
-    desc: "Install dependencies using a frozen lockfile (CI-safe)"
-    cmds:
-      - pnpm install --frozen-lockfile --prefer-offline --ignore-workspace
-
   lock:
     desc: "Update the lockfile only (without installing)"
     cmds:

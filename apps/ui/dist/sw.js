@@ -81,47 +81,47 @@ define(['./workbox-c6c6fb7c'], (function (workbox) { 'use strict';
    * See https://goo.gl/S9QRab
    */
   workbox.precacheAndRoute([{
-    "url": "assets/About-DED1GIGI.js",
+    "url": "assets/About-C2jtc1U3.js",
     "revision": null
   }, {
-    "url": "assets/Admin-ClAFHT84.js",
+    "url": "assets/Admin-36VAMV5K.js",
     "revision": null
   }, {
-    "url": "assets/Callback-CJDOSTgX.js",
+    "url": "assets/Callback-BHsiUm8K.js",
     "revision": null
   }, {
     "url": "assets/clsx-B-dksMZM.js",
     "revision": null
   }, {
-    "url": "assets/FloatingTanStackRouterDevtools-BvkwXkOY.js",
+    "url": "assets/FloatingTanStackRouterDevtools-DFr2IL18.js",
     "revision": null
   }, {
-    "url": "assets/Home-BJsPbaSy.js",
+    "url": "assets/Home-C-GNqPKV.js",
     "revision": null
   }, {
     "url": "assets/main-Ch87Rj2V.css",
     "revision": null
   }, {
-    "url": "assets/main-CoeosJP7.js",
+    "url": "assets/main-DKvBgGxR.js",
     "revision": null
   }, {
-    "url": "assets/NotFound-C89DQmHg.js",
+    "url": "assets/NotFound-DZAkn-5q.js",
     "revision": null
   }, {
-    "url": "assets/SuperAdmin-q8G2haAx.js",
+    "url": "assets/SuperAdmin-DKWuqW-N.js",
     "revision": null
   }, {
     "url": "assets/vendor-CLyQEj53.js",
     "revision": null
   }, {
     "url": "index.html",
-    "revision": "8a807b13a221f07a7ef2f8b69612739f"
+    "revision": "ffed67e8e4a00ca08deb364d198b14af"
   }, {
     "url": "registerSW.js",
     "revision": "1872c500de691dce40960bb85481de07"
   }, {
     "url": "stats.html",
-    "revision": "b351c07c3653476bbd4e101f12f5a019"
+    "revision": "566819bc46b3514b26013d26488b6f98"
   }, {
     "url": "vendor/css/mapbox-gl.css",
     "revision": "4e32dfebe9cc16b5fc92f8b14a3add23"

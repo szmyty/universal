@@ -104,18 +104,18 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-cache \
     --mount=type=cache,target=/var/lib/apt,sharing=locked,id=apt-lib \
     apt-get update -qq && \
     apt-get install --yes --no-install-recommends \
-    ca-certificates \
-    curl \
-    gnupg \
-    locales \
-    libapache2-mod-auth-openidc \
-    gettext \
-    git \
-    gosu \
-    jq \
-    build-essential \
-    libssl-dev \
-    wget \
+    build-essential=12.9 \
+    ca-certificates=20230311+deb12u1 \
+    curl=7.88.1-10+deb12u12 \
+    gettext=0.21-12 \
+    git=1:2.39.5-0+deb12u2 \
+    gnupg=2.2.40-1.1 \
+    gosu=1.14-1+b10 \
+    jq=1.6-2.1 \
+    libapache2-mod-auth-openidc=2.4.12.3-2+deb12u4 \
+    libssl-dev=3.0.16-1~deb12u1 \
+    locales=2.36-9+deb12u10 \
+    wget=1.21.3-1+deb12u1 \
     && rm -rf /var/lib/apt/lists/*
 
 # Configure the system locale and timezone
@@ -142,25 +142,25 @@ RUN chmod +x /tmp/devtools.sh && \
     rm /tmp/devtools.sh
 
 # Copy package.json and lockfile to leverage Docker cache
-COPY apps/ui/package.json apps/ui/pnpm-lock.yaml ./
-
-RUN mkdir -p ${APP_SERVE_DIR}
+COPY apps/ui/package.json apps/ui/pnpm-lock.yaml apps/ui/Taskfile.yml ./
 
 # Install Node.js dependencies
-# RUN pnpm install --frozen-lockfile
+RUN task install
 
 # Copy and build app
-# COPY apps/ui/ ./
-# RUN pnpm build
+COPY apps/ui/ ./
+RUN task build
 
 ###############################################
 # 🚀 Runtime Stage — Serve via Apache
 ###############################################
 FROM builder as runtime
 
-COPY --from=builder ${APP_SERVE_DIR} /usr/local/apache2/htdocs/
+COPY --from=builder ${APP_SERVE_DIR} /usr/local/apache2/htdocs
 COPY apps/ui/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
+
+# COPY services/apache/index.html /usr/local/apache2/htdocs/index.html
 
 # Copy and source custom shell aliases
 COPY shell/aliases.sh /etc/profile.d/docker_aliases.sh

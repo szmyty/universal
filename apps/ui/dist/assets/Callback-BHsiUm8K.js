@@ -1,0 +1,2 @@
+import{u as a,j as e}from"./main-DKvBgGxR.js";import"./vendor-CLyQEj53.js";function l(){const{activeNavigator:i,isLoading:s}=a();return i==="signinRedirect"?e.jsxDEV("div",{children:"Redirecting..."},void 0,!1,{fileName:"/workspace/apps/ui/src/pages/Callback.tsx",lineNumber:8,columnNumber:12},this):e.jsxDEV("div",{children:s?"Loading auth...":"Signed in successfully."},void 0,!1,{fileName:"/workspace/apps/ui/src/pages/Callback.tsx",lineNumber:11,columnNumber:10},this)}export{l as default};
+//# sourceMappingURL=Callback-BHsiUm8K.js.map

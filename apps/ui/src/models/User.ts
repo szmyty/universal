@@ -71,7 +71,7 @@ export const hasRole = (
     profile: UserProfile,
     role: UserRole,
     source: "realm" | "resource" = "realm",
-    clientId?: string
+    clientId?: string,
 ): boolean => {
     if (source === "realm") {
         return profile.realm_access?.roles?.includes(role) ?? false;
@@ -98,9 +98,8 @@ export interface OIDCUser {
     locale?: string;
     roles?: string[];
     groups?: string[];
-    extra?: Record<string, any>;
+    extra?: Record<string, unknown>;
 }
-
 
 // Basic user entity returned from the API layer
 export type ApiUser = {

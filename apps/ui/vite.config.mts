@@ -33,6 +33,8 @@ const env = {
 };
 
 export default defineConfig({
+    base: "/", // Base path for the application
+    publicDir: "public", // Directory for static assets
     css: {
         postcss,
     },

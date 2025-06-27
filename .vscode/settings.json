@@ -36,7 +36,10 @@
         "**/*.code-search": true,
         "**/.git": true,
         "**/reports": true,
-        "**/.lock": true
+        "**/.lock": true,
+        "**/dist": true,
+        "**/build": true,
+        "**/coverage": true
     },
     "git.ignoreLimitWarning": true,
     "cSpell.words": ["TASKFILE"],

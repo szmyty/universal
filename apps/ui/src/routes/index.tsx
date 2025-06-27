@@ -39,4 +39,9 @@ export const routeTree = rootRoute.addChildren([
   callbackRoute,
 ]);
 
-export const router = createRouter({ routeTree });
+export const router = createRouter(
+    {
+        routeTree,
+        basepath: "/",
+    }
+);
