@@ -28,8 +28,21 @@ services:
       - .env.development
     # environment:
     #   KEYCLOAK_IMPORT: /opt/keycloak/data/import/development-realm.json
-    # volumes:
-    #   - ./services/keycloak/development-realm.json:/opt/keycloak/data/import/development-realm.json:ro
+    volumes:
+      - ./services/keycloak/realms/development-realm.json:/opt/keycloak/data/import/development-realm.json:ro
+    entrypoint:
+      [
+        "/opt/keycloak/bin/kc.sh",
+        "start-dev",
+        "--import-realm",
+        "--hostname=https://${FQDN:-localhost}:${WEB_HTTPS_EXPOSED_PORT:-443}/auth",
+        "--http-relative-path=${KEYCLOAK_HTTP_RELATIVE_PATH:-/auth}",
+        "--db=${KEYCLOAK_DB_VENDOR:-postgres}",
+        "--db-url-host=${KEYCLOAK_DB_HOSTNAME:-keycloak-db}",
+        "--db-username=${KEYCLOAK_DB_USER:-keycloak}",
+        "--db-password=${KEYCLOAK_DB_PASSWORD:-keycloak}",
+        "--db-url-database=${KEYCLOAK_DB_NAME:-keycloak}",
+      ]
 
   pgadmin:
     env_file:
