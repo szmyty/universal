@@ -35,7 +35,12 @@
         "**/bower_components": true,
         "**/*.code-search": true,
         "**/.git": true,
-        "**/reports": true
+        "**/reports": true,
+        "**/.lock": true,
+        "**/dist": true,
+        "**/build": true,
+        "**/coverage": true,
+        "**/pnpm-lock.*": true
     },
     "cSpell.words": ["TASKFILE"],
     "json.schemas": [

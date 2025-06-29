@@ -39,7 +39,8 @@
         "**/.lock": true,
         "**/dist": true,
         "**/build": true,
-        "**/coverage": true
+        "**/coverage": true,
+        "**/pnpm-lock.*": true
     },
     "git.ignoreLimitWarning": true,
     "cSpell.words": ["TASKFILE"],

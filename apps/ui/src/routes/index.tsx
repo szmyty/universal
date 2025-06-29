@@ -7,16 +7,10 @@ import { callbackRoute } from "./callback.route";
 import { superAdminRoute } from "./superadmin.route";
 
 import { lazy, Suspense } from "react";
-import type { ComponentType } from "react";
 import { PageLoader } from "@universal/components";
-import type { FC } from "react";
 
 // ✅ Lazy-load NotFound with fallback loader
-const LazyNotFound = lazy(() =>
-  import("../pages/NotFound.js").then(
-    (mod) => mod as unknown as { default: ComponentType<FC> }
-  )
-);
+const LazyNotFound = lazy(() => import("../pages/NotFound.js"));
 
 function NotFoundComponent() {
   return (

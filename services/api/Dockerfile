@@ -125,7 +125,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-cache \
     libxml2-dev=2.9.14+dfsg-1.3ubuntu3.3 \
     libxslt1-dev=1.1.39-0exp1ubuntu0.24.04.2 \
     python3-dev=3.12.3-0ubuntu2 \
-    python3-pip=24.0+dfsg-1ubuntu1.1 \
+    python3-pip \
     python3-venv=3.12.3-0ubuntu2 \
     unzip=6.0-28ubuntu4.1 \
     uuid-dev=2.39.3-9ubuntu6.2 \

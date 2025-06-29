@@ -141,14 +141,11 @@ RUN chmod +x /tmp/devtools.sh && \
     bash /tmp/devtools.sh && \
     rm /tmp/devtools.sh
 
-# Copy package.json and lockfile to leverage Docker cache
-COPY apps/ui/package.json apps/ui/pnpm-lock.yaml apps/ui/Taskfile.yml ./
+# Copy and build app
+COPY apps/ui/ ./
 
 # Install Node.js dependencies
 RUN task install
-
-# Copy and build app
-COPY apps/ui/ ./
 RUN task build
 
 ###############################################
@@ -194,6 +191,12 @@ RUN mkdir -p /etc/apache2 && \
 COPY services/apache/conf /usr/local/apache2/conf/
 
 COPY services/apache/envvars /etc/apache2/envvars
+
+# Copy mkcert root CA into container
+COPY services/apache/certs/rootCA.pem /usr/local/share/ca-certificates/mkcert-root.crt
+
+# Register it with the system trust store
+RUN update-ca-certificates
 
 # Switch to the non-root user.
 # USER ${APP_USER}:${APP_GROUP}

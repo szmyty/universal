@@ -8,7 +8,7 @@ import type { UserProfile } from "@universal/models";
 
 /**
  * Returns the unified auth context depending on environment config.
- * Real auth context when VITE_ENABLE_AUTH=true, otherwise mock.
+ * Real auth context when MOCK_AUTH=false, otherwise mock.
  */
 export function useAuth(): AuthContextValue {
     if (!isAuthEnabled()) {

@@ -13,6 +13,7 @@ import wasm from "vite-plugin-wasm";
 import fixReactVirtualized from "esbuild-plugin-react-virtualized";
 import pkg from "./package.json";
 import postcss from "./postcss.config.mjs";
+import ViteSitemapPlugin from "vite-plugin-sitemap";
 
 // Inject selected environment variables
 const env = {
@@ -30,6 +31,10 @@ const env = {
         process.env.FoursquareAPIURL || "https://api.foursquare.com/v2",
     FoursquareUserMapsURL: process.env.FoursquareUserMapsURL || "",
     OpenAIToken: process.env.OpenAIToken || "",
+    API_PORT: process.env.API_PORT || 8000,
+    API_HOSTNAME: process.env.API_HOSTNAME || "localhost",
+    API_PREFIX: process.env.API_PREFIX || "/api",
+    MOCK_AUTH: process.env.MOCK_AUTH || "false",
 };
 
 export default defineConfig({
@@ -60,15 +65,16 @@ export default defineConfig({
             brotliSize: true,
             emitFile: true,
         }),
+        // ViteSitemapPlugin({
+        //     hostname: "https://yourdomain.com",
+        // }),
     ],
-
     resolve: {
         alias: {
             "@": path.resolve(__dirname, "src"),
         },
         dedupe: ["react", "react-dom", "styled-components"],
     },
-
     server: {
         port: Number(process.env.UI_PORT) || 5173,
         host: true,
@@ -77,21 +83,16 @@ export default defineConfig({
         headers: {
             "Access-Control-Allow-Origin": "*",
         },
-        // proxy: {
-        //     "/api": {
-        //         target: `http://localhost:${process.env.API_PORT || 8000}`,
-        //         changeOrigin: true,
-        //     },
-        // },
     },
-
     define: {
         global: "globalThis",
-        "process.env": Object.fromEntries(
-            Object.entries(env).map(([key, val]) => [key, JSON.stringify(val)]),
+        ...Object.fromEntries(
+            Object.entries(env).map(([key, val]) => [
+                `import.meta.env.${key}`,
+                JSON.stringify(val),
+            ]),
         ),
     },
-
     optimizeDeps: {
         esbuildOptions: {
             plugins: [fixReactVirtualized],
@@ -110,7 +111,6 @@ export default defineConfig({
         ],
         exclude: ["@vitejs/plugin-react-refresh"],
     },
-
     build: {
         outDir: "dist",
         target: "esnext",

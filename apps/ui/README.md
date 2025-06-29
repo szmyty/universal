@@ -27,16 +27,19 @@ This project uses **ASDF** + **Taskfile** for reproducible environments and DX a
 ### ✅ 1. Install Required Tools
 
 **asdf (version manager)**
+
 ```shell
 brew install asdf
 ```
 
 **task (task runner)**
+
 ```
 brew install go-task/tap/go-task
 ```
 
 **asdf plugins (declared in `.tool-versions`)**
+
 ```
 asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
 asdf plugin add pnpm https://github.com/jonathanmorley/asdf-pnpm.git
@@ -47,6 +50,7 @@ asdf plugin add rust
 ```
 
 **Install all versions**
+
 ```
 asdf install
 ```
@@ -94,7 +98,7 @@ task test        # Run Vitest tests
 
 This template supports:
 
-- Real OIDC (via Keycloak) → set `VITE_ENABLE_AUTH=true`
+- Real OIDC (via Keycloak) → set `MOCK_AUTH=false`
 - Mock Auth for local/dev → default mode
 
 Control this in `src/config/runtime.ts`.
@@ -118,7 +122,6 @@ Control this in `src/config/runtime.ts`.
 ├── .tool-versions # ASDF toolchain declaration
 ├── vite.config.mts # Vite + plugins
 ```
-
 
 ---
 

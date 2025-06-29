@@ -5,11 +5,18 @@
 version: "3"
 
 tasks:
-  up:quick:
-    desc: Start selected services quickly using Docker Compose
+  up:refresh:
+    desc: Refresh selected services using Docker Compose
     vars:
       SERVICES: '{{default "" .SERVICES}}'
     cmds:
+      - |
+        docker compose \
+          --file universal.base.yml \
+          --file universal.development.yml \
+          --env-file .env.universal \
+          --env-file .env.development \
+          down {{.SERVICES}}
       - |
         docker compose \
           --file universal.base.yml \
@@ -125,10 +132,10 @@ tasks:
         vars: { SERVICES: "web" }
     silent: true
 
-  web:quick:
+  web:refresh:
     desc: Start just the Apache webserver
     cmds:
-      - task: up:quick
+      - task: up:refresh
         vars: { SERVICES: "web" }
     silent: true
 

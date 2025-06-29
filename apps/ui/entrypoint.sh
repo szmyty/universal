@@ -21,7 +21,7 @@ main() {
   OIDC_ESCAPED_ISSUER=$(printf 'https://%s:%s/auth/realms/' "${FQDN}" "${WEB_HTTPS_PORT}" | jq -sRr @uri)
 
   cat <<EOF > /usr/local/apache2/conf/extra/oidc-rewrite.conf
-RewriteCond "%{REQUEST_URI}" "^/app/oauth2callback.*"
+RewriteCond "%{REQUEST_URI}" "^/oauth2callback.*"
 RewriteCond "%{QUERY_STRING}" "(.*(?:^|&))iss=([^&]*)&?(.*)&?$"
 RewriteCond "%2" "!^${OIDC_ESCAPED_ISSUER}.*$" [NC]
 RewriteRule "^.*$" "/?" [R]
