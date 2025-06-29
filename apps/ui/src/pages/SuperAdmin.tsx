@@ -1,8 +1,8 @@
 // Example page accessible only to the `superadmin` role.
-import { useAuth } from "@universal/auth";
+import { useUser } from "@universal/auth";
 
 export default function SuperAdminPanel() {
-  const { user, roles } = useAuth();
+  const { user } = useUser();
 
   return (
     <div className="max-w-4xl mx-auto py-10 space-y-8">
@@ -16,7 +16,7 @@ export default function SuperAdminPanel() {
       </p>
 
       <ul className="list-disc list-inside text-sm text-gray-900 pl-4">
-        {roles.map((role: string) => (
+        {user.realm_access?.roles.map((role: string) => (
           <li key={role}>{role}</li>
         ))}
       </ul>

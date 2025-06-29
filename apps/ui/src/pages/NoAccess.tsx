@@ -1,8 +1,8 @@
 // Displayed when a user lacks sufficient permissions.
-import { useAuth, AdminBadge } from "@universal/auth";
+import { useUser, AdminBadge } from "@universal/auth";
 
 export default function NoAccess() {
-  const { user, isAuthenticated, roles } = useAuth();
+  const { user } = useUser();
 
   return (
     <div className="max-w-xl mx-auto text-center py-20">
@@ -12,7 +12,7 @@ export default function NoAccess() {
         You do not have permission to view this page.
       </p>
 
-      {isAuthenticated ? (
+      {user ? (
         <div className="bg-gray-100 p-4 rounded border">
           <p className="mb-2 font-medium">Logged in as:</p>
           <pre className="text-sm bg-white p-2 rounded overflow-auto text-left">
@@ -22,7 +22,7 @@ export default function NoAccess() {
           <div className="mt-4">
             Your roles:{" "}
             <span className="font-mono text-sm text-gray-800">
-              {roles.join(", ")}
+              {user.realm_access?.roles.join(", ")}
             </span>{" "}
             <AdminBadge />
           </div>

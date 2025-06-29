@@ -1,23 +1,32 @@
 // src/auth/useHasRole.ts
 // Utility hooks for checking user roles and groups.
 
-import { useAuth } from "./useAuth";
-import type { UserRole } from "@universal/models/user";
+import type { UserRole } from "@universal/models";
+import { useUser } from "./useUser";
+
+export function normalizeRoles(
+    roles: string[] | UserRole[] | undefined,
+): string[] {
+    return Array.isArray(roles) ? roles.map((role) => String(role)) : [];
+}
 
 /**
  * Returns true if the current user has any of the required roles.
  * If no roles are specified, returns true if the user is authenticated.
  */
-export function useHasRole(requiredRoles?: UserRole[] | string[]): boolean {
-    const { isAuthenticated, roles: userRoles } = useAuth();
+export function useHasRole(requiredRoles?: (UserRole | string)[]): boolean {
+    const { user } = useUser();
 
-    if (!isAuthenticated) return false;
+    if (!user) return false;
 
     if (!requiredRoles || requiredRoles.length === 0) {
-        return true; // any authenticated user is valid
+        return true;
     }
 
-    return requiredRoles.some((role) => userRoles.includes(role));
+    const userRoles: string[] = normalizeRoles(user.realm_access?.roles);
+    const required: string[] = normalizeRoles(requiredRoles);
+
+    return required.some((role) => userRoles.includes(role));
 }
 
 /**
@@ -32,6 +41,6 @@ export function useIsAdmin(): boolean {
  * Checks if the current user is in the specified group.
  */
 export function useIsInGroup(groupName: string): boolean {
-    const { user } = useAuth();
+    const { user } = useUser();
     return user?.groups?.includes(groupName) ?? false;
 }

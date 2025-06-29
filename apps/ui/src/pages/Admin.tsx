@@ -1,12 +1,8 @@
 // Protected admin page showing user info and roles.
-import { useAuth } from "@universal/auth";
+import { useUser } from "@universal/auth";
 
 export default function Admin() {
-  const { user, accessToken, roles, isAuthenticated } = useAuth();
-
-  if (!isAuthenticated) {
-    return <div className="text-red-500">You are not authenticated.</div>;
-  }
+  const { user } = useUser();
 
   return (
     <div className="space-y-4">
@@ -22,14 +18,14 @@ export default function Admin() {
       <div className="p-4 rounded bg-gray-100 border">
         <h2 className="font-semibold mb-2">Access Token</h2>
         <pre className="text-sm bg-white p-2 rounded overflow-auto">
-          {accessToken}
+          {/* {accessToken} */}
         </pre>
       </div>
 
       <div className="p-4 rounded bg-gray-100 border">
         <h2 className="font-semibold mb-2">Roles</h2>
         <ul className="list-disc pl-6">
-          {roles.map((role: string) => (
+          {user.realm_access?.roles.map((role: string) => (
             <li key={role}>{role}</li>
           ))}
         </ul>

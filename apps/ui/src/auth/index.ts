@@ -5,3 +5,4 @@ export * from "./useAuth";
 export * from "./useHasRole";
 export * from "./AdminBadge";
 export * from "./config";
+export * from "./useUser";

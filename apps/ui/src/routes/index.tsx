@@ -3,7 +3,6 @@ import { RootLayout } from "./root.route";
 import { homeRoute } from "./home.route";
 import { aboutRoute } from "./about.route";
 import { adminRoute } from "./admin.route";
-import { callbackRoute } from "./callback.route";
 import { superAdminRoute } from "./superadmin.route";
 
 import { lazy, Suspense } from "react";
@@ -30,7 +29,6 @@ export const routeTree = rootRoute.addChildren([
   aboutRoute,
   adminRoute,
   superAdminRoute,
-  callbackRoute,
 ]);
 
 export const router = createRouter(
