@@ -26,6 +26,7 @@ ARG APP_GROUP=universal
 ARG WEB_HTTP_PORT=80
 ARG WEB_HTTPS_PORT=443
 ARG FQDN=localhost
+ARG API_PREFIX=/api
 
 # Set environment variables.
 ENV APP_USER=${APP_USER}
@@ -64,8 +65,10 @@ ENV DEBIAN_FRONTEND=noninteractive \
     ASDF_DIR=/opt/devtools/.asdf \
     ASDF_DATA_DIR=/opt/devtools/.asdf/data \
     ASDF_SHIMS_DIR=/opt/devtools/.asdf/data/shims \
+    FQDN=${FQDN} \
     WEB_HTTP_PORT=${WEB_HTTP_PORT} \
-    WEB_HTTPS_PORT=${WEB_HTTPS_PORT}
+    WEB_HTTPS_PORT=${WEB_HTTPS_PORT} \
+    API_PREFIX=${API_PREFIX}
 
 # Add devtools to PATH
 ENV PATH="${TASKFILE_HOME_DIR}:${ASDF_DIR}/bin:${ASDF_SHIMS_DIR}:${PATH}"

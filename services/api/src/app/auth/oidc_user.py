@@ -34,8 +34,25 @@ def get_user(request: Request) -> Dict[str, Any]:
     user_claims: Dict[str, Any] = cast(Dict[str, Any], raw_user)
     return user_claims
 
+def get_user_from_headers(request: Request) -> Dict[str, Any]:
+    """Extract user info from Apache-forwarded headers set by mod_auth_openidc."""
+    headers = request.headers
 
-async def map_oidc_user(userinfo: Dict[str, Any] = Depends(get_user)) -> OIDCUser:
+    return {
+        "sub": headers.get("x-remote-user"),
+        "preferred_username": headers.get("x-remote-user"),
+        "email": headers.get("x-remote-user"),  # use x-email if forwarded
+        "name": headers.get("x-name"),
+        "given_name": headers.get("x-given-name"),
+        "family_name": headers.get("x-family-name"),
+        "locale": headers.get("x-locale"),
+        "picture": headers.get("x-picture"),
+        "roles": headers.get("x-roles", "").split(","),
+        "groups": headers.get("x-groups", "").split(","),
+        "extra": {},  # Add custom headers if needed
+    }
+
+async def map_oidc_user(userinfo: Dict[str, Any] = Depends(get_user_from_headers)) -> OIDCUser:
     """
     Converts raw OIDC claims dictionary into a strongly typed OIDCUser model.
     Use this as a dependency in routes/services: `user: OIDCUser = Depends(map_oidc_user)`

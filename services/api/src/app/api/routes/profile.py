@@ -4,7 +4,6 @@ from app.auth.oidc_user import OIDCUser, map_oidc_user
 
 router = APIRouter()
 
-@router.get("/me")
-async def profile(user: OIDCUser = Depends(map_oidc_user)) -> dict:
-    """Get the profile of the currently authenticated user."""
-    return user.model_dump()
+@router.get("/me", response_model=OIDCUser)
+async def read_user(user: OIDCUser = Depends(map_oidc_user)):
+    return user

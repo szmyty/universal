@@ -1,31 +1,39 @@
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { config } from "@universal/config";
 import type { UserProfile } from "@universal/models";
-import { UserRole } from "@universal/models";
 
-export function useUser(): { user: UserProfile } {
-    const user = useMemo<UserProfile>(
-        () => ({
-            sub: "mock-sub-1234",
-            preferred_username: "mockuser",
-            email: "mockuser@example.com",
-            given_name: "Mock",
-            family_name: "User",
-            name: "Mock User",
-            picture: "https://avatars.githubusercontent.com/u/000000?v=4",
-            locale: "en-US",
-            updated_at: Date.now(),
-            realm_access: {
-                roles: [UserRole.Superuser, UserRole.Developer, UserRole.Admin],
-            },
-            resource_access: {
-                "my-client-id": {
-                    roles: [UserRole.Admin],
-                },
-            },
-            groups: ["mock-group"],
-        }),
-        [],
-    );
+// You can export this if needed elsewhere
+export interface UseUserResult {
+    user: UserProfile | null;
+    isLoading: boolean;
+    error: Error | null;
+}
 
-    return { user };
+export function useUser(): UseUserResult {
+    const [user, setUser] = useState<UserProfile | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<Error | null>(null);
+
+    const url = `${config.api.user}`;
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const res = await axios.get<UserProfile>(url, {
+                    withCredentials: true, // send cookies if needed
+                });
+                setUser(res.data);
+            } catch (err) {
+                setError(err as Error);
+                setUser(null);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchUser();
+    }, [url]);
+
+    return { user, isLoading, error };
 }

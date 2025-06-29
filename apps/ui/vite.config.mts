@@ -31,8 +31,8 @@ const env = {
         process.env.FoursquareAPIURL || "https://api.foursquare.com/v2",
     FoursquareUserMapsURL: process.env.FoursquareUserMapsURL || "",
     OpenAIToken: process.env.OpenAIToken || "",
-    API_PORT: process.env.API_PORT || 8000,
-    API_HOSTNAME: process.env.API_HOSTNAME || "localhost",
+    WEB_HTTPS_PORT: process.env.WEB_HTTPS_PORT || 443,
+    FQDN: process.env.FQDN || "localhost",
     API_PREFIX: process.env.API_PREFIX || "/api",
     MOCK_AUTH: process.env.MOCK_AUTH || "false",
 };
