@@ -100,11 +100,11 @@ services:
       interval: 10s
       timeout: 10s
       retries: 10
-    # depends_on:
-    #   database:
-    #     condition: service_healthy
-    #   keycloak:
-    #     condition: service_healthy
+    depends_on:
+      database:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
     <<: *settings
 
   # Keycloak / Identity and Access Management Database service
@@ -259,9 +259,6 @@ services:
       timeout: 10s
       retries: 10
     depends_on:
-      # api:
-      #   condition: service_healthy
-      keycloak:
-        condition: service_started
-      # condition: service_healthy
+      api:
+        condition: service_healthy
     <<: *settings
