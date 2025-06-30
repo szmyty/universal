@@ -3,7 +3,7 @@
 ###############################################
 # 🧱 Base Stage — includes devtools and Apache
 ###############################################
-FROM httpd:2.4 AS base
+FROM httpd:2.4@sha256:f6557a77ee2f16c50a5ccbb2564a3fd56087da311bf69a160d43f73b23d3af2d AS base
 
 # Ensure the build process uses the root user.
 USER root
@@ -149,6 +149,8 @@ COPY apps/ui/ ./
 
 # Install Node.js dependencies
 RUN task install
+
+# Build the application
 RUN task build
 
 ###############################################

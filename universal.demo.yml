@@ -1,11 +1,46 @@
 # Docker Compose for demonstration purposes
 services:
+  api:
+    env_file:
+      - .env.universal
+      - .env.demo
+
   database:
     env_file:
       - .env.universal
       - .env.demo
 
+  keycloak-db:
+    env_file:
+      - .env.universal
+      - .env.demo
+
+  keycloak:
+    env_file:
+      - .env.universal
+      - .env.demo
+    volumes:
+      - ./services/keycloak/realms/demo-realm.json:/opt/keycloak/data/import/demo-realm.json:ro
+    entrypoint:
+      [
+        "/opt/keycloak/bin/kc.sh",
+        "start-dev",
+        "--import-realm",
+        "--hostname=https://${FQDN:-localhost}:${WEB_HTTPS_EXPOSED_PORT:-443}/auth",
+        "--http-relative-path=${KEYCLOAK_HTTP_RELATIVE_PATH:-/auth}",
+        "--db=${KEYCLOAK_DB_VENDOR:-postgres}",
+        "--db-url-host=${KEYCLOAK_DB_HOSTNAME:-keycloak-db}",
+        "--db-username=${KEYCLOAK_DB_USER:-keycloak}",
+        "--db-password=${KEYCLOAK_DB_PASSWORD:-keycloak}",
+        "--db-url-database=${KEYCLOAK_DB_NAME:-keycloak}",
+      ]
+
   pgadmin:
+    env_file:
+      - .env.universal
+      - .env.demo
+
+  web:
     env_file:
       - .env.universal
       - .env.demo

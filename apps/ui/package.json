@@ -11,6 +11,7 @@
         "tailwindcss",
         "storybook"
     ],
+    "license": "MIT",
     "homepage": "https://github.com/szmyty/universal/#readme",
     "bugs": {
         "url": "https://github.com/szmyty/universal/issues",

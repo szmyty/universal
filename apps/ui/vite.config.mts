@@ -14,6 +14,7 @@ import fixReactVirtualized from "esbuild-plugin-react-virtualized";
 import pkg from "./package.json";
 import postcss from "./postcss.config.mjs";
 import ViteSitemapPlugin from "vite-plugin-sitemap";
+import tailwindcss from "@tailwindcss/vite";
 
 // Inject selected environment variables
 const env = {
@@ -57,6 +58,7 @@ export default defineConfig({
         }),
         checker({ typescript: true }),
         VitePWA(),
+        tailwindcss(),
         wasm(),
         visualizer({
             filename: "stats.html",

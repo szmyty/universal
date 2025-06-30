@@ -1,11 +1,31 @@
-# Docker Compose for production
+# Docker Compose for production environment
 services:
+  api:
+    env_file:
+      - .env.universal
+      - .env.production
+
   database:
     env_file:
       - .env.universal
       - .env.production
 
+  keycloak-db:
+    env_file:
+      - .env.universal
+      - .env.production
+
+  keycloak:
+    env_file:
+      - .env.universal
+      - .env.production
+
   pgadmin:
+    env_file:
+      - .env.universal
+      - .env.production
+
+  web:
     env_file:
       - .env.universal
       - .env.production
