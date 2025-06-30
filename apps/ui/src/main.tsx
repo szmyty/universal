@@ -2,7 +2,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "@universal/styles/app.css";
-import { UniversalAuthProvider } from "@universal/auth";
 import { Provider } from "react-redux";
 import { store } from "@universal/api";
 import App from "./App";

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { config } from "@universal/config";
 import type { MapState, MapStateCreate } from "@universal/models";
@@ -115,4 +115,3 @@ export default function MapStateManager() {
     </div>
   );
 }
-
