@@ -18,7 +18,9 @@ class TestSqlMapStateRepository:
     async def test_create_and_get(self, db_session: AsyncSession) -> None:
         dao = MapStateDAO(db_session)
         repo = SqlAlchemyMapStateRepository(dao)
-        created: MapStateDomain = await repo.create("user-1", "Map1", "{}")
+        created: MapStateDomain = await repo.create(
+            "user-1", "Map1", "d", "{}"
+        )
         fetched: MapStateDomain | None = await repo.get(created.id)
         assert fetched is not None
         assert fetched.id == created.id
@@ -27,16 +29,16 @@ class TestSqlMapStateRepository:
     async def test_list_returns_all(self, db_session: AsyncSession) -> None:
         dao = MapStateDAO(db_session)
         repo = SqlAlchemyMapStateRepository(dao)
-        await repo.create("u1", "A", "{}")
-        await repo.create("u2", "B", "{}")
+        await repo.create("u1", "A", "d1", "{}")
+        await repo.create("u2", "B", "d2", "{}")
         states: list[MapStateDomain] = await repo.list()
         assert len(states) == 2
 
     async def test_update(self, db_session: AsyncSession) -> None:
         dao = MapStateDAO(db_session)
         repo = SqlAlchemyMapStateRepository(dao)
-        ms: MapStateDomain = await repo.create("u", "orig", "{}")
-        updated: MapStateDomain | None = await repo.update(ms.id, "new", "{1}")
+        ms: MapStateDomain = await repo.create("u", "orig", "d1", "{}")
+        updated: MapStateDomain | None = await repo.update(ms.id, "new", "d2", "{1}")
         assert updated is not None
         assert updated.name == "new"
         assert updated.state == "{1}"
@@ -44,7 +46,7 @@ class TestSqlMapStateRepository:
     async def test_delete(self, db_session: AsyncSession) -> None:
         dao = MapStateDAO(db_session)
         repo = SqlAlchemyMapStateRepository(dao)
-        ms: MapStateDomain = await repo.create("u", "del", "{}")
+        ms: MapStateDomain = await repo.create("u", "del", "d3", "{}")
         deleted: bool = await repo.delete(ms.id)
         refetched: MapStateDomain | None = await repo.get(ms.id)
         assert deleted is True

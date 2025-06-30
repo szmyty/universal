@@ -11,7 +11,11 @@ class MapStateRepository(ABC):
 
     @abstractmethod
     async def create(
-        self: MapStateRepository, user_id: str, name: str, state: str
+        self: MapStateRepository,
+        user_id: str,
+        name: str,
+        description: str,
+        state: str,
     ) -> MapStateDomain: ...
 
     @abstractmethod
@@ -22,7 +26,11 @@ class MapStateRepository(ABC):
 
     @abstractmethod
     async def update(
-        self: MapStateRepository, id: int, name: str, state: str
+        self: MapStateRepository,
+        id: int,
+        name: str,
+        description: str,
+        state: str,
     ) -> MapStateDomain | None: ...
 
     @abstractmethod

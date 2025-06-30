@@ -12,7 +12,9 @@ class MapStateService:
         self.repo: MapStateRepository = repo
 
     async def create(self, user_id: str, payload: MapStateCreate) -> MapStateDomain:
-        return await self.repo.create(user_id, payload.name, payload.state)
+        return await self.repo.create(
+            user_id, payload.name, payload.description, payload.state
+        )
 
     async def get(self, id: int) -> MapStateDomain | None:
         return await self.repo.get(id)
@@ -24,7 +26,9 @@ class MapStateService:
         return await self.repo.list_by_user(user_id)
 
     async def update(self, id: int, payload: MapStateUpdate) -> MapStateDomain | None:
-        return await self.repo.update(id, payload.name, payload.state)
+        return await self.repo.update(
+            id, payload.name, payload.description, payload.state
+        )
 
     async def delete(self, id: int) -> bool:
         return await self.repo.delete(id)

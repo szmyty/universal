@@ -8,6 +8,7 @@ class MapStateBase(BaseModel):
     """Base model for map states."""
 
     name: str = Field(..., examples=["My Map"])
+    description: str = Field(..., examples=["My map description"])
     state: str = Field(..., examples=["{...}"])
 
 
@@ -21,6 +22,7 @@ class MapStateUpdate(BaseModel):
     """Model for updating a map state."""
 
     name: str
+    description: str
     state: str
 
 
