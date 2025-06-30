@@ -1,5 +1,5 @@
 import { useUser } from "@universal/auth";
-import { Button } from "@universal/components";
+import { Button, MapStateManager } from "@universal/components";
 import { useApiHealth } from "@universal/hooks";
 
 // Simple helper to display key-value pairs
@@ -46,6 +46,11 @@ export default function Home() {
       </div>
 
       <Button onClick={() => alert("Hello!")}>Say Hi</Button>
+
+      <div>
+        <h2 className="text-xl font-semibold">🗺️ Map States</h2>
+        <MapStateManager />
+      </div>
     </div>
   );
 }
