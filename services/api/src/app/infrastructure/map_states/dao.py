@@ -19,7 +19,12 @@ class MapStateDAO:
     async def create(
         self: MapStateDAO, user_id: str, payload: MapStateCreate
     ) -> MapState:
-        map_state = MapState(user_id=user_id, name=payload.name, state=payload.state)
+        map_state = MapState(
+            user_id=user_id,
+            name=payload.name,
+            description=payload.description,
+            state=payload.state,
+        )
         self.session.add(map_state)
         await self.session.commit()
         await self.session.refresh(map_state)
@@ -39,6 +44,7 @@ class MapStateDAO:
         if map_state is None:
             return None
         map_state.name = payload.name
+        map_state.description = payload.description
         map_state.state = payload.state
         await self.session.commit()
         await self.session.refresh(map_state)

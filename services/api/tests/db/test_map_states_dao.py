@@ -17,7 +17,7 @@ class TestMapStateDAO:
 
     async def test_create_and_fetch(self, db_session: AsyncSession) -> None:
         dao = MapStateDAO(db_session)
-        payload = MapStateCreate(name="Test", state="{}")
+        payload = MapStateCreate(name="Test", description="d", state="{}")
         created: MapState = await dao.create(user_id="user-abc", payload=payload)
         fetched: MapState | None = await dao.get(created.id)
         assert created.id is not None
@@ -34,10 +34,12 @@ class TestMapStateDAO:
     async def test_update(self, db_session: AsyncSession) -> None:
         dao = MapStateDAO(db_session)
         original: MapState = await dao.create(
-            user_id="user", payload=MapStateCreate(name="Orig", state="{}")
+            user_id="user",
+            payload=MapStateCreate(name="Orig", description="d1", state="{}"),
         )
         updated: MapState | None = await dao.update(
-            original.id, MapStateUpdate(name="New", state="{1}")
+            original.id,
+            MapStateUpdate(name="New", description="d2", state="{1}"),
         )
         assert updated is not None
         assert updated.name == "New"
@@ -46,7 +48,8 @@ class TestMapStateDAO:
     async def test_delete(self, db_session: AsyncSession) -> None:
         dao = MapStateDAO(db_session)
         ms: MapState = await dao.create(
-            user_id="u", payload=MapStateCreate(name="Del", state="{}")
+            user_id="u",
+            payload=MapStateCreate(name="Del", description="d3", state="{}"),
         )
         deleted: bool = await dao.delete(ms.id)
         fetched: MapState | None = await dao.get(ms.id)

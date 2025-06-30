@@ -21,7 +21,7 @@ class TestMapStateService:
         dao = MapStateDAO(db_session)
         repo = SqlAlchemyMapStateRepository(dao)
         service = MapStateService(repo)
-        payload = MapStateCreate(name="Map", state="{}")
+        payload = MapStateCreate(name="Map", description="d", state="{}")
         created: MapStateDomain = await service.create("user", payload)
         fetched: MapStateDomain | None = await service.get(created.id)
         assert fetched is not None
@@ -32,8 +32,8 @@ class TestMapStateService:
         dao = MapStateDAO(db_session)
         repo = SqlAlchemyMapStateRepository(dao)
         service = MapStateService(repo)
-        await service.create("u1", MapStateCreate(name="A", state="{}"))
-        await service.create("u2", MapStateCreate(name="B", state="{}"))
+        await service.create("u1", MapStateCreate(name="A", description="d1", state="{}"))
+        await service.create("u2", MapStateCreate(name="B", description="d2", state="{}"))
         states: Sequence[MapStateDomain] = await service.list()
         assert len(states) == 2
 
@@ -42,10 +42,10 @@ class TestMapStateService:
         repo = SqlAlchemyMapStateRepository(dao)
         service = MapStateService(repo)
         ms: MapStateDomain = await service.create(
-            "u", MapStateCreate(name="old", state="{}")
+            "u", MapStateCreate(name="old", description="d1", state="{}")
         )
         updated: MapStateDomain | None = await service.update(
-            ms.id, MapStateUpdate(name="new", state="{1}")
+            ms.id, MapStateUpdate(name="new", description="d2", state="{1}")
         )
         assert updated is not None
         assert updated.name == "new"
@@ -55,7 +55,7 @@ class TestMapStateService:
         repo = SqlAlchemyMapStateRepository(dao)
         service = MapStateService(repo)
         ms: MapStateDomain = await service.create(
-            "u", MapStateCreate(name="temp", state="{}")
+            "u", MapStateCreate(name="temp", description="d3", state="{}")
         )
         deleted: bool = await service.delete(ms.id)
         fetched: MapStateDomain | None = await service.get(ms.id)

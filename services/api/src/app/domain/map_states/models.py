@@ -15,6 +15,7 @@ class MapStateDomain(BaseModel):
     id: int
     user_id: str
     name: str
+    description: str
     state: str
     user: Optional[OIDCUser] = None
     created_at: datetime
@@ -27,6 +28,7 @@ class MapStateDomain(BaseModel):
             id=db_obj.id,
             user_id=db_obj.user_id,
             name=db_obj.name,
+            description=db_obj.description,
             state=db_obj.state,
             user=None,
             created_at=db_obj.created_at,

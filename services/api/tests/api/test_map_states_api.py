@@ -42,7 +42,7 @@ class TestMapStatesApi:
         async with AsyncClient(
             transport=ASGITransport(app=test_app), base_url="http://test"
         ) as client:
-            payload = MapStateCreate(name="Map", state="{}")
+            payload = MapStateCreate(name="Map", description="d", state="{}")
             create_resp: Response = await client.post(
                 "/api/map-states/", json=payload.model_dump()
             )
@@ -61,11 +61,13 @@ class TestMapStatesApi:
             transport=ASGITransport(app=test_app), base_url="http://test"
         ) as client:
             resp = await client.post(
-                "/api/map-states/", json={"name": "A", "state": "{}"}
+                "/api/map-states/",
+                json={"name": "A", "description": "d1", "state": "{}"},
             )
             map_state_id = resp.json()["id"]
             update_resp: Response = await client.put(
-                f"/api/map-states/{map_state_id}", json={"name": "B", "state": "{1}"}
+                f"/api/map-states/{map_state_id}",
+                json={"name": "B", "description": "d2", "state": "{1}"},
             )
             assert update_resp.status_code == status.HTTP_200_OK
             assert update_resp.json()["name"] == "B"
@@ -82,7 +84,7 @@ class TestMapStatesApi:
         async with AsyncClient(
             transport=ASGITransport(app=test_app), base_url="http://test"
         ) as client:
-            payload = MapStateCreate(name="Del", state="{}")
+            payload = MapStateCreate(name="Del", description="d3", state="{}")
             create_resp: Response = await client.post(
                 "/api/map-states/", json=payload.model_dump()
             )

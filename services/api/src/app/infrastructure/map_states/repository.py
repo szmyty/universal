@@ -16,10 +16,15 @@ class SqlAlchemyMapStateRepository(MapStateRepository):
         self.dao: MapStateDAO = dao
 
     async def create(
-        self: SqlAlchemyMapStateRepository, user_id: str, name: str, state: str
+        self: SqlAlchemyMapStateRepository,
+        user_id: str,
+        name: str,
+        description: str,
+        state: str,
     ) -> MapStateDomain:
         db_obj: MapState = await self.dao.create(
-            user_id, MapStateCreate(name=name, state=state)
+            user_id,
+            MapStateCreate(name=name, description=description, state=state),
         )
         return MapStateDomain.from_entity(db_obj)
 
@@ -31,10 +36,15 @@ class SqlAlchemyMapStateRepository(MapStateRepository):
         return [MapStateDomain.from_entity(m) for m in await self.dao.list()]
 
     async def update(
-        self: SqlAlchemyMapStateRepository, id: int, name: str, state: str
+        self: SqlAlchemyMapStateRepository,
+        id: int,
+        name: str,
+        description: str,
+        state: str,
     ) -> MapStateDomain | None:
         db_obj: MapState | None = await self.dao.update(
-            id, MapStateUpdate(name=name, state=state)
+            id,
+            MapStateUpdate(name=name, description=description, state=state),
         )
         return MapStateDomain.from_entity(db_obj) if db_obj else None
 
