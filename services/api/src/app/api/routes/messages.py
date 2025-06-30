@@ -40,6 +40,18 @@ async def create_message(
     return MessageRead.model_validate(created)
 
 
+@router.get("/generate", response_model=MessageRead, status_code=status.HTTP_201_CREATED)
+async def generate_message(
+    user: OIDCUser = Depends(map_oidc_user),
+    service: MessageService = Depends(get_message_service),
+) -> MessageRead:
+    """Generate a random message for the current user."""
+    created: MessageDomain = await service.generate(user.sub)
+    created.user = user
+    log.info("Generated message", message_id=created.id, user_id=user.sub)
+    return MessageRead.model_validate(created)
+
+
 @router.get("/", response_model=list[MessageRead])
 async def list_all_messages(
     user: OIDCUser = Depends(map_oidc_user),
