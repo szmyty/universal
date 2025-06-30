@@ -154,10 +154,11 @@ services:
       KC_HTTP_MANAGEMENT_PORT: ${KEYCLOAK_HTTP_MANAGEMENT_PORT:-9000}
       JAVA_OPTS_APPEND: -Dkeycloak.profile.feature.scripts=enabled -Dkeycloak.profile.feature.upload_scripts=enabled
     healthcheck:
+      # https://gist.github.com/sarath-soman/5d9aec06953bbd0990c648605d4dba07
       test:
         [
           "CMD-SHELL",
-          "[ -f /tmp/HealthCheck.java ] || echo 'public class HealthCheck { public static void main(String[] args) throws java.lang.Throwable { System.exit(java.net.HttpURLConnection.HTTP_OK == ((java.net.HttpURLConnection)new java.net.URL(args[0]).openConnection()).getResponseCode() ? 0 : 1); } }' > /tmp/HealthCheck.java && java /tmp/HealthCheck.java http://localhost:${KEYCLOAK_HTTP_PORT}/health/live",
+          '[ -f /tmp/HealthCheck.java ] || echo ''public class HealthCheck { public static void main(String[] args) throws java.lang.Throwable { try { java.net.URI uri = new java.net.URI(args[0]); java.net.HttpURLConnection conn = (java.net.HttpURLConnection) uri.toURL().openConnection(); int code = conn.getResponseCode(); System.out.println("Health check response code: " + code); System.exit(code == java.net.HttpURLConnection.HTTP_OK ? 0 : 1); } catch (Exception e) { e.printStackTrace(); System.exit(1); } } }'' > /tmp/HealthCheck.java && java /tmp/HealthCheck.java http://localhost:${KEYCLOAK_HTTP_PORT}/auth/realms/master',
         ]
       interval: 5s
       timeout: 5s

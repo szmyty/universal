@@ -5,7 +5,7 @@
     "service": "dev",
     "runServices": ["dev"],
     "workspaceFolder": "/workspace",
-    "forwardPorts": [8000, 8084, 8085, 5050, 80, 443, 5173],
+    "forwardPorts": [8000, 8084, 8085, 5050, 80, 443, 5173, 9000],
     "postCreateCommand": "task --dir /workspace --taskfile /workspace/Taskfile.yml --yes setup",
     "features": {
         "ghcr.io/devcontainers/features/docker-in-docker:2.12.2": {
