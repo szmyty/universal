@@ -80,7 +80,6 @@ services:
   api:
     container_name: ${API_CONTAINER_NAME:-api}
     hostname: ${API_HOSTNAME:-api}
-    # entrypoint: sleep infinity
     build:
       context: .
       dockerfile: ./services/api/Dockerfile
@@ -150,16 +149,19 @@ services:
       KEYCLOAK_LOGLEVEL: ${KEYCLOAK_LOGLEVEL:-INFO}
       ROOT_LOGLEVEL: ${KEYCLOAK_ROOT_LOGLEVEL:-INFO}
       PROXY_ADDRESS_FORWARDING: "true"
+      KC_HEALTH_ENABLED: "true"
+      KC_METRICS_ENABLED: "true"
+      KC_HTTP_MANAGEMENT_PORT: ${KEYCLOAK_HTTP_MANAGEMENT_PORT:-9000}
       JAVA_OPTS_APPEND: -Dkeycloak.profile.feature.scripts=enabled -Dkeycloak.profile.feature.upload_scripts=enabled
     healthcheck:
       test:
         [
           "CMD-SHELL",
-          "curl --fail http://localhost:$KEYCLOAK_HTTP_PORT/auth/realms/master || exit 1",
+          "[ -f /tmp/HealthCheck.java ] || echo 'public class HealthCheck { public static void main(String[] args) throws java.lang.Throwable { System.exit(java.net.HttpURLConnection.HTTP_OK == ((java.net.HttpURLConnection)new java.net.URL(args[0]).openConnection()).getResponseCode() ? 0 : 1); } }' > /tmp/HealthCheck.java && java /tmp/HealthCheck.java http://localhost:${KEYCLOAK_HTTP_PORT}/health/live",
         ]
-      interval: 10s
-      timeout: 10s
-      retries: 10
+      interval: 5s
+      timeout: 5s
+      retries: 30
     entrypoint:
       [
         "/opt/keycloak/bin/kc.sh",
