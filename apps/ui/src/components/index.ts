@@ -5,3 +5,5 @@ export { default as PageLoader } from "./PageLoader";
 
 export { default as Button } from "./Button";
 export type { ButtonProps } from "./Button";
+
+export { default as MapStateManager } from "./MapStateManager";
