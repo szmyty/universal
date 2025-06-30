@@ -1,4 +1,5 @@
 from typing import Sequence
+from uuid import uuid4
 
 from app.domain.messages.interfaces import MessageRepository
 from app.schemas.messages import MessageCreate, MessageUpdate
@@ -35,3 +36,8 @@ class MessageService:
     async def delete(self, id: int) -> bool:
         """Delete a message by ID."""
         return await self.repo.delete(id)
+
+    async def generate(self, user_id: str) -> MessageDomain:
+        """Generate and create a random message for the given user."""
+        content = f"Hello from ChatGPT {uuid4()}"
+        return await self.repo.create(user_id, content)

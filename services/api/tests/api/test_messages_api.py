@@ -99,3 +99,14 @@ class TestMessagesApi:
             # Confirm it's gone
             fetch_resp: Response = await client.get(f"/api/messages/{message_id}")
             assert fetch_resp.status_code == status.HTTP_404_NOT_FOUND
+
+    async def test_generate_message(self, test_app: FastAPI) -> None:
+        """Should generate and return a random message."""
+        async with AsyncClient(transport=ASGITransport(app=test_app), base_url="http://test") as client:
+            resp: Response = await client.get("/api/messages/generate")
+            assert resp.status_code == status.HTTP_201_CREATED
+
+            data = resp.json()
+            assert data["user_id"] == "test-user-id"
+            assert data["content"].startswith("Hello from ChatGPT")
+            assert isinstance(MessageRead.model_validate(data), MessageRead)

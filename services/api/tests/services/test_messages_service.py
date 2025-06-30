@@ -84,3 +84,17 @@ class TestMessageService:
         # Assert
         assert deleted is True
         assert fetched is None
+
+    async def test_generate_message(self: TestMessageService, db_session: AsyncSession) -> None:
+        """Should generate a random message and store it."""
+        dao = MessageDAO(db_session)
+        repo = SqlAlchemyMessageRepository(dao)
+        service = MessageService(repo)
+
+        generated: MessageDomain = await service.generate("user-gen")
+        fetched: MessageDomain | None = await service.get(generated.id)
+
+        assert fetched is not None
+        assert fetched.id == generated.id
+        assert fetched.user_id == "user-gen"
+        assert fetched.content.startswith("Hello from ChatGPT")
