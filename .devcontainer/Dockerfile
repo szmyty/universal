@@ -25,6 +25,7 @@ ARG LC_ALL=en_US.UTF-8
 
 # Optional Google Fonts installation
 ARG INSTALL_GOOGLE_FONTS=true
+ARG INSTALL_TEXLIVE=false
 ARG GOOGLE_FONTS_SHA_COMMIT=2b5bd4077bd9269cdf3114266603372af6c3222d
 ARG GOOGLE_FONTS_SHA256=e413e29c18fa727ff4d509280fd432fc0ecb1f6117eb29f2c0a87918d30fe3ad
 
@@ -54,7 +55,8 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" \
     GOOGLE_FONTS_SHA_COMMIT=${GOOGLE_FONTS_SHA_COMMIT} \
     GOOGLE_FONTS_SHA256=${GOOGLE_FONTS_SHA256} \
-    INSTALL_GOOGLE_FONTS=${INSTALL_GOOGLE_FONTS}
+    INSTALL_GOOGLE_FONTS=${INSTALL_GOOGLE_FONTS} \
+    INSTALL_TEXLIVE=${INSTALL_TEXLIVE}
 
 # Set working directory
 WORKDIR /workspace
@@ -168,7 +170,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-cache \
     sysstat=12.6.1-2 \
     tar=1.35+dfsg-3build1 \
     tcpdump=4.99.4-3ubuntu4 \
-    texlive-full=2023.20240207-1 \
     tk-dev=8.6.14build1 \
     tzdata=2025b-0ubuntu0.24.04.1 \
     unzip=6.0-28ubuntu4.1 \
@@ -180,6 +181,13 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-cache \
     zsh=5.9-6ubuntu2 \
     libtool=2.4.7-7build1 \
     potrace=1.16-2build1
+
+# Optional TeX Live installation
+RUN if [ "${INSTALL_TEXLIVE}" = "true" ]; then \
+    apt-get install --yes --no-install-recommends texlive-full=2023.20240207-1; \
+    else \
+    echo "📁 Skipping texlive-full install"; \
+    fi
 
 # Rebuild the font cache after installing fonts
 RUN fc-cache -f -v

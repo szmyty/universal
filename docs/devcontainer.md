@@ -31,7 +31,8 @@ The development environment is defined by two main files in the
 
 - **Dockerfile** – builds the image used for development. It pins the
   base image, installs system packages and sets up optional extras such
-  as Google Fonts and language runtimes.
+  as Google Fonts and language runtimes. TeX Live can be included by
+  setting the `INSTALL_TEXLIVE` build argument to `true`.
 - **docker-compose.yml** – starts the `dev` service using that image and
   mounts the repository into `/workspace`.
 
