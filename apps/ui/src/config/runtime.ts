@@ -1,19 +1,39 @@
-export const isAuthEnabled = (): boolean => {
-    // return import.meta.env.MOCK_AUTH === "false";
-    return true; // Always enable auth for now
-};
+import type { Config } from "./config.types";
 
-export const config = {
+const env: ImportMetaEnv = import.meta.env;
+
+export const config: Config = {
     api: {
-        hostname: import.meta.env.FQDN,
-        port: import.meta.env.WEB_HTTPS_PORT,
-        prefix: import.meta.env.API_PREFIX,
+        hostname: env.FQDN,
+        port: env.WEB_HTTPS_PORT,
+        prefix: env.API_PREFIX,
         protocol: "https",
         get baseUrl() {
             return `${this.protocol}://${this.hostname}:${this.port}${this.prefix}`;
         },
         get user() {
             return `${this.baseUrl}/me`;
+        },
+    },
+    keplergl: {
+        mapbox: {
+            accessToken: env.MapboxAccessToken,
+            exportToken: env.MapboxExportToken,
+        },
+        dropbox: {
+            clientId: env.DropboxClientId,
+        },
+        carto: {
+            clientId: env.CartoClientId,
+        },
+        foursquare: {
+            clientId: env.FoursquareClientId,
+            domain: env.FoursquareDomain,
+            apiUrl: env.FoursquareAPIURL,
+            userMapsUrl: env.FoursquareUserMapsURL,
+        },
+        openAI: {
+            token: env.OpenAIToken,
         },
     },
 };
