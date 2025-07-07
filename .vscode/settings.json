@@ -9,6 +9,12 @@
     "cSpell.mergeCSpellSettings": true,
     "cSpell.useGitignore": true,
     "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+        "source.fixAll": "always"
+    },
+    "prettier.useEditorConfig": true,
+    "prettier.configPath": "./.prettier.config.mjs",
     "[javascript]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
@@ -42,7 +48,6 @@
         "**/coverage": true,
         "**/pnpm-lock.*": true
     },
-    "git.ignoreLimitWarning": true,
     "cSpell.words": ["TASKFILE"],
     "json.schemas": [
         {

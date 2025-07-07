@@ -1,41 +1,22 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/megalinter/megalinter/main/megalinter/descriptors/schemas/megalinter-configuration.jsonschema.json
+
 # This is a configuration file for MegaLinter, a code quality tool.
-CONSOLE_REPORTER: true
-CONSOLE_REPORTER_SECTIONS: true
+# Configuration Options: https://megalinter.io/latest/json-schemas/configuration.html
 
-CONFIG_REPORTER: true
-CONFIG_REPORTER_SUB_FOLDER: IDE-config
-
-GITHUB_COMMENT_REPORTER: true
-GITHUB_STATUS_REPORTER: true
+# Common variables: https://megalinter.io/latest/config-variables/
+ADDITIONAL_EXCLUDED_DIRECTORIES: []
+APPLY_FIXES: none
 CLEAR_REPORT_FOLDER: true
-
-JSON_REPORTER: true
-JSON_REPORTER_OUTPUT_DETAIL: detailed
-
-LOG_FILE: mega-linter.log
-LOG_LEVEL: INFO
-
-MARKDOWN_SUMMARY_REPORTER: true
-MARKDOWN_SUMMARY_REPORTER_FILE_NAME: SUMMARY.md
-
-REPORTERS_MARKDOWN_TYPE: advanced
-REPORT_OUTPUT_FOLDER: reports/megalinter
-
-COPYPASTE_JSCPD_CONFIG_FILE: config/.jscpd.json
-
-TAP_REPORTER: true
-TAP_REPORTER_SUB_FOLDER: tap
-
-TEXT_REPORTER: true
-TEXT_REPORTER_SUB_FOLDER: linters_logs
-
-SPELL_CSPELL_CONFIG_FILE: cspell.config.mjs
-
-IGNORE_GITIGNORED_FILES: true
-
+CONFIG_PROPERTIES_TO_APPEND: []
+DISABLE_ERRORS: false
+DISABLE: []
 DISABLE_LINTERS:
   - REPOSITORY_DEVSKIM
-
+DISABLE_ERRORS_LINTERS: []
+ENABLE_ERRORS_LINTERS: []
+# ENABLE: []
+# ENABLE_LINTERS: []
 EXCLUDED_DIRECTORIES:
   - node_modules
   - .git
@@ -57,14 +38,63 @@ EXCLUDED_DIRECTORIES:
   - .pytest_cache
   - .mypy_cache
   - .ruff_cache
-
-SHOW_SKIPPED_LINTERS: false
-SHOW_ELAPSED_TIME: true
+EXTENDS: []
+FAIL_IF_MISSING_LINTER_IN_FLAVOR: true
+FAIL_IF_UPDATED_SOURCES: false
+FILTER_REGEX_EXCLUDE: none
+FILTER_REGEX_INCLUDE: all
+FLAVOR_SUGGESTIONS: true
+FORMATTERS_DISABLE_ERRORS: false
+IGNORE_GENERATED_FILES: true
+IGNORE_GITIGNORED_FILES: true
+JAVASCRIPT_DEFAULT_STYLE: prettier
+LINTER_RULES_PATH: .github/linters
+LOG_FILE: mega-linter.log
+LOG_LEVEL: INFO
+MARKDOWN_DEFAULT_STYLE: markdownlint
+PARALLEL: true
+PARALLEL_PROCESS_NUMBER: 4
+PLUGINS: []
+POST_COMMANDS: []
+PRE_COMMANDS: []
 PRINT_ALPACA: true
 PRINT_ALL_FILES: true
-FLAVOR_SUGGESTIONS: false
-FAIL_IF_MISSING_LINTER_IN_FLAVOR: true
-DISABLE_ERRORS: false
+PYTHON_DEFAULT_STYLE: ruff
+REPORT_OUTPUT_FOLDER: reports/megalinter
+SECURED_ENV_VARIABLES: []
+SHOW_ELAPSED_TIME: true
+SHOW_SKIPPED_LINTERS: false
+SKIP_CLI_LINT_MODES: []
+TYPESCRIPT_DEFAULT_STYLE: prettier
+VALIDATE_ALL_CODEBASE: true
+
+# Linter configuration: https://megalinter.io/latest/supported-linters/
+CONSOLE_REPORTER: true
+CONSOLE_REPORTER_SECTIONS: true
+
+CONFIG_REPORTER: true
+CONFIG_REPORTER_SUB_FOLDER: IDE-config
+
+GITHUB_COMMENT_REPORTER: true
+GITHUB_STATUS_REPORTER: true
+
+JSON_REPORTER: true
+JSON_REPORTER_OUTPUT_DETAIL: detailed
+
+MARKDOWN_SUMMARY_REPORTER: true
+MARKDOWN_SUMMARY_REPORTER_FILE_NAME: SUMMARY.md
+
+REPORTERS_MARKDOWN_TYPE: advanced
+
+COPYPASTE_JSCPD_CONFIG_FILE: config/.jscpd.json
+
+TAP_REPORTER: true
+TAP_REPORTER_SUB_FOLDER: tap
+
+TEXT_REPORTER: true
+TEXT_REPORTER_SUB_FOLDER: linters_logs
+
+SPELL_CSPELL_CONFIG_FILE: cspell.config.mjs
 
 ERROR_ON_MISSING_EXEC_BIT: true
 

@@ -9,7 +9,7 @@
  * @see https://storybook.js.org/docs/react/configure/features-and-behavior#manager-api
  */
 
-import { addons } from "@storybook/manager-api";
+import addons from "@storybook/manager-api";
 import { themes } from "@storybook/theming";
 
 /**
@@ -24,5 +24,5 @@ import { themes } from "@storybook/theming";
  * });
  */
 addons.setConfig({
-  theme: themes.dark, // Set the Storybook Manager to use the dark theme.
+    theme: themes.dark, // Set the Storybook Manager to use the dark theme.
 });
