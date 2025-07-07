@@ -81,7 +81,7 @@ RUN rm -f /etc/apt/apt.conf.d/docker-clean
 # See https://github.com/debuerreotype/docker-debian-artifacts/issues/24#issuecomment-360870939
 RUN mkdir --parents /usr/share/man/man1
 
-# Copy configuration files for apt and dpkg
+# Copy APT/Dpkg config overrides
 COPY config/dpkg/*.conf /etc/dpkg/dpkg.cfg.d/
 COPY config/apt/*.conf /etc/apt/apt.conf.d/
 
@@ -102,23 +102,23 @@ RUN groupadd \
     && chown --recursive ${APP_USER}:${APP_GROUP} ${APP_USER_HOME} \
     && chmod --recursive 700 ${APP_USER_HOME}
 
-# Install dependencies with pinned versions for reproducible builds
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-cache \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked,id=apt-lib \
-    apt-get update -qq && \
-    apt-get install --yes --no-install-recommends \
-    build-essential=12.9 \
-    ca-certificates=20230311+deb12u1 \
-    curl=7.88.1-10+deb12u12 \
-    gettext=0.21-12 \
-    git=1:2.39.5-0+deb12u2 \
-    gnupg=2.2.40-1.1 \
-    gosu=1.14-1+b10 \
-    jq=1.6-2.1 \
-    libapache2-mod-auth-openidc=2.4.12.3-2+deb12u4 \
-    libssl-dev=3.0.16-1~deb12u1 \
-    locales=2.36-9+deb12u10 \
-    wget=1.21.3-1+deb12u1 \
+# Install dependencies (with cache mounts)
+RUN --mount=type=cache,target=/var/cache/apt \
+    --mount=type=cache,target=/var/lib/apt \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    ca-certificates \
+    curl \
+    git \
+    jq \
+    wget \
+    gettext \
+    gnupg \
+    gosu \
+    locales \
+    libssl-dev \
+    libapache2-mod-auth-openidc \
     && rm -rf /var/lib/apt/lists/*
 
 # Configure the system locale and timezone
@@ -129,10 +129,10 @@ RUN echo "LC_ALL=en_US.UTF-8" >> /etc/environment \
     && update-locale LANG=en_US.UTF-8 \
     && dpkg-reconfigure locales
 
-###############################################
-# 🛠️ Build Stage
-###############################################
-FROM base as builder
+##################################################
+# 🛠️ Builder Stage — Build Web UI
+##################################################
+FROM base AS builder
 
 # Change to the application directory.
 WORKDIR ${APP_HOME}
@@ -147,24 +147,19 @@ RUN chmod +x /tmp/devtools.sh && \
 # Copy and build app
 COPY apps/ui/ ./
 
-# Install Node.js dependencies
-RUN task install
+# Install Node.js dependencies and Build the application
+RUN task install && task build
 
-# Build the application
-RUN task build
+##################################################
+# 🛠️ Shared Runtime Base Stage
+##################################################
+FROM base AS runtime-base
 
-###############################################
-# 🚀 Runtime Stage — Serve via Apache
-###############################################
-FROM builder as runtime
-
-COPY --from=builder ${APP_SERVE_DIR} /usr/local/apache2/htdocs
 COPY apps/ui/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+RUN chmod +x /entrypoint.sh && \
+    chown -R ${APP_USER}:${APP_GROUP} ${APP_HOME}
 
-# COPY services/apache/index.html /usr/local/apache2/htdocs/index.html
-
-# Copy and source custom shell aliases
+# Shell aliases + Apache runtime perms
 COPY shell/aliases.sh /etc/profile.d/docker_aliases.sh
 
 # Ensure correct permissions and sourcing
@@ -194,7 +189,6 @@ RUN mkdir -p /etc/apache2 && \
 
 # Copy Apache configuration files
 COPY services/apache/conf /usr/local/apache2/conf/
-
 COPY services/apache/envvars /etc/apache2/envvars
 
 # Copy mkcert root CA into container
@@ -203,12 +197,22 @@ COPY services/apache/certs/rootCA.pem /usr/local/share/ca-certificates/mkcert-ro
 # Register it with the system trust store
 RUN update-ca-certificates
 
-# Switch to the non-root user.
-# USER ${APP_USER}:${APP_GROUP}
+##################################################
+# 🚀 Runtime Stage — Includes Web UI (Production)
+##################################################
+FROM runtime-base AS runtime
 
-# Expose the HTTP and HTTPS ports
+COPY --from=builder ${APP_SERVE_DIR} /usr/local/apache2/htdocs
+
 EXPOSE ${WEB_HTTP_PORT} ${WEB_HTTPS_PORT}
+ENTRYPOINT ["/entrypoint.sh"]
+CMD []
 
-# Set the default entrypoint and command.
+##################################################
+# 🧪 Local Runtime Stage — No UI, just Apache setup
+##################################################
+FROM runtime-base AS local
+
+EXPOSE ${WEB_HTTP_PORT} ${WEB_HTTPS_PORT}
 ENTRYPOINT ["/entrypoint.sh"]
 CMD []
