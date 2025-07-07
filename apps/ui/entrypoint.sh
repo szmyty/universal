@@ -5,6 +5,9 @@
 
 set -euo pipefail
 
+DEV_REVERSE_PROXY_TEMPLATE=/usr/local/apache2/conf/extra/dev-reverse-proxy.template.conf
+DEV_REVERSE_PROXY_RENDERED=/usr/local/apache2/conf/extra/dev-reverse-proxy.conf
+
 main() {
   printf "🔧 Rendering Apache configuration with envsubst..."
 
@@ -16,7 +19,7 @@ main() {
     < /usr/local/apache2/conf/httpd.template.conf \
     > /usr/local/apache2/conf/httpd.conf
 
-  echo "🔁 Generating OIDC rewrite rule..."
+  printf "🔁 Generating OIDC rewrite rule..."
   # Precompute the URL-encoded issuer for secure redirect matching
   OIDC_ESCAPED_ISSUER=$(printf 'https://%s:%s/auth/realms/' "${FQDN}" "${WEB_HTTPS_PORT}" | jq -sRr @uri)
 
@@ -27,7 +30,17 @@ RewriteCond "%2" "!^${OIDC_ESCAPED_ISSUER}.*$" [NC]
 RewriteRule "^.*$" "/?" [R]
 EOF
 
-  printf "🚀 Launching Apache HTTP Server in foreground as %s..." "${APP_USER:-root}"
+    # Render the dev reverse proxy file if it exists
+    if [[ -f "$DEV_REVERSE_PROXY_TEMPLATE" ]]; then
+        printf "🔁 Found dev reverse proxy template. Rendering with UI_PORT=%s...\n" "${UI_PORT:-5173}"
+
+        envsubst '${UI_PORT}' < "$DEV_REVERSE_PROXY_TEMPLATE" > "$DEV_REVERSE_PROXY_RENDERED"
+        printf "✅ Rendered dev reverse proxy config to %s\n" "$DEV_REVERSE_PROXY_RENDERED"
+    else
+        printf "ℹ️ No dev reverse proxy template found. Skipping.\n"
+    fi
+
+    printf "🚀 Launching Apache HTTP Server in foreground as %s..." "${APP_USER:-root}"
 #   exec gosu "${APP_USER}" httpd-foreground
     exec httpd-foreground
 

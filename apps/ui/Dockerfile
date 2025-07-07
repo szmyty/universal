@@ -98,9 +98,9 @@ RUN groupadd \
     --home-dir ${APP_USER_HOME} \
     --shell /usr/sbin/nologin \
     ${APP_USER} \
-    && mkdir --parents ${APP_USER_HOME} \
-    && chown --recursive ${APP_USER}:${APP_GROUP} ${APP_USER_HOME} \
-    && chmod --recursive 700 ${APP_USER_HOME}
+    && mkdir --parents ${APP_USER_HOME} ${APP_HOME} \
+    && chown --recursive ${APP_USER}:${APP_GROUP} ${APP_USER_HOME} ${APP_HOME} \
+    && chmod --recursive 700 ${APP_USER_HOME} ${APP_HOME}
 
 # Install dependencies (with cache mounts)
 RUN --mount=type=cache,target=/var/cache/apt \
@@ -212,6 +212,9 @@ CMD []
 # 🧪 Local Runtime Stage — No UI, just Apache setup
 ##################################################
 FROM runtime-base AS local
+
+# Only in local: copy optional dev-only config
+COPY services/apache/optional/dev-reverse-proxy.template.conf /usr/local/apache2/conf/extra/dev-reverse-proxy.template.conf
 
 EXPOSE ${WEB_HTTP_PORT} ${WEB_HTTPS_PORT}
 ENTRYPOINT ["/entrypoint.sh"]
