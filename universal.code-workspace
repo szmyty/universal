@@ -123,5 +123,12 @@
         "latex-workshop.linting.chktex.enabled": true,
         "latex-workshop.linting.lacheck.enabled": true,
         "latex-workshop.latex.autoBuild.run": "never",
+        "shellcheck.disableVersionCheck": false,
+        "shellcheck.enable": true,
+        "shellcheck.enableQuickFix": true,
+        "shellcheck.useWorkspaceRootAsCwd": false,
+        "shellcheck.run": "onSave",
+        "shellcheck.logLevel": "debug",
+        "shellformat.useEditorConfig": true,
     },
 }

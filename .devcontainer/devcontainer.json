@@ -63,7 +63,8 @@
                 "matthewpi.caddyfile-support",
                 "timonwong.shellcheck",
                 "DavidAnson.vscode-markdownlint",
-                "dbaeumer.vscode-eslint"
+                "dbaeumer.vscode-eslint",
+                "foxundermoon.shell-format"
             ]
         }
     }

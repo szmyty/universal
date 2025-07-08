@@ -13,6 +13,8 @@
         "stoplight.spectral",
         "james-yu.latex-workshop",
         "remcohaszing.schemastore",
-        "mrmlnc.vscode-apache"
+        "mrmlnc.vscode-apache",
+        "foxundermoon.shell-format",
+        "timonwong.shellcheck"
     ]
 }
