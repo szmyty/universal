@@ -5,6 +5,24 @@
 version: "3"
 
 tasks:
+  pre:env:check:
+    desc: Unset any shell variables defined in the Compose --env-files
+    cmds:
+      - |
+        echo "🔍 Unsetting shell variables defined in .env files..."
+        for file in .env.universal .env.development; do
+          if [[ -f "$file" ]]; then
+            grep -E '^[A-Za-z_][A-Za-z0-9_]*=' "$file" | cut -d= -f1 | while read -r var; do
+              if [[ -n "${!var:-}" ]]; then
+                echo "⚠️  Unsetting $var (was: '${!var}')"
+                unset "$var"
+              fi
+            done
+          else
+            echo "ℹ️  Skipping missing env file: $file"
+          fi
+        done
+
   up:refresh:
     desc: Refresh selected services using Docker Compose
     vars:
