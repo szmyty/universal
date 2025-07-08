@@ -1,49 +1,55 @@
-import os
+from __future__ import annotations
+from typing import Any, Dict
+
 import pytest
-import requests
+from fastapi import FastAPI
+from httpx import AsyncClient, Response, ASGITransport
 
-@pytest.mark.integration
-@pytest.mark.auth
-class TestRealKeycloakAuth:
-    """Integration test hitting real Keycloak and API instance"""
+from app.api.routes.profile import router as profile_router
 
-    def get_token(self) -> str:
-        """Authenticate against Keycloak and get a bearer token."""
-        keycloak_url = os.getenv("KEYCLOAK_URL", "http://localhost:8080")
-        realm = os.getenv("KEYCLOAK_REALM", "dev")
-        client_id = os.getenv("KEYCLOAK_CLIENT_ID", "api")
-        client_secret = os.getenv("KEYCLOAK_CLIENT_SECRET", "changeme")
-        username = os.getenv("TEST_USERNAME", "testuser")
-        password = os.getenv("TEST_PASSWORD", "testpass")
+KEYCLOAK_BASE_URL = "http://localhost:8085/auth"
+REALM = "development"
+CLIENT_ID = "development"
+CLIENT_SECRET = "your-client-secret-here"
+USERNAME = "root.smith"
+PASSWORD = "Root123!"
 
-        token_url = f"{keycloak_url}/auth/realms/{realm}/protocol/openid-connect/token"
+@pytest.fixture(scope="session")
+def access_token() -> str:
+    token_url = f"{KEYCLOAK_BASE_URL}/realms/{REALM}/protocol/openid-connect/token"
+    data = {
+        "client_id": CLIENT_ID,
+        "client_secret": CLIENT_SECRET,
+        "grant_type": "password",
+        "username": USERNAME,
+        "password": PASSWORD,
+    }
+    r = requests.post(token_url, data=data)
+    r.raise_for_status()
+    return r.json()["access_token"]
 
-        data = {
-            "grant_type": "password",
-            "client_id": client_id,
-            "client_secret": client_secret,
-            "username": username,
-            "password": password,
-        }
+@pytest.fixture
+def test_app_real_oidc() -> FastAPI:
+    """Use the real OIDC mapping logic (no mock override)."""
+    app = FastAPI()
+    app.include_router(profile_router)
+    return app
 
-        resp = requests.post(token_url, data=data)
-        resp.raise_for_status()
-        return resp.json()["access_token"]
-
-    def test_real_me_endpoint(self) -> None:
-        """Hit the real /me endpoint with a valid Keycloak token."""
-        token = self.get_token()
-
-        api_url = os.getenv("API_URL", "http://localhost:8000")
-        resp = requests.get(
-            f"{api_url}/me",
-            headers={"Authorization": f"Bearer {token}"}
-        )
+@pytest.mark.anyio
+class TestKeycloakIntegration:
+    async def test_me_with_real_keycloak_user(self, test_app_real_oidc: FastAPI, access_token: str) -> None:
+        """Hit /me with a real Keycloak-issued token."""
+        transport = ASGITransport(app=test_app_real_oidc)
+        async with AsyncClient(transport=transport, base_url="http://test") as client:
+            resp: Response = await client.get(
+                "/me", headers={"Authorization": f"Bearer {access_token}"}
+            )
 
         assert resp.status_code == 200
-        data = resp.json()
+        data: Dict[str, Any] = resp.json()
 
-        assert "email" in data
-        assert "sub" in data
-        assert "preferred_username" in data
-        assert isinstance(data.get("roles", []), list)
+        # Assertions based on actual Keycloak data
+        assert data["email"] == "root@universal.dev"
+        assert data["preferred_username"] == "root.smith"
+        assert "roles" in data
+        assert data["sub"]
