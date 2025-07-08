@@ -85,6 +85,13 @@ export default defineConfig({
         headers: {
             "Access-Control-Allow-Origin": "*",
         },
+        hmr: {
+            protocol: "wss", // Because Apache uses HTTPS
+            host: "localhost", // Browser will connect to Apache here
+            port: 5174, // Internal WS server (you bind this)
+            clientPort: 8085, // Browser will use this for WebSocket (Apache port)
+            path: "/hmr", // WS route used in dev-reverse-proxy.conf
+        },
     },
     define: {
         global: "globalThis",
