@@ -139,3 +139,9 @@ tasks:
     cmds:
       - poetry run pytest {{.ROOT_DIR}}/tests/utils/test_licenses.py --tb=short
     silent: true
+
+  api:auth:
+    desc: Run API authentication tests
+    cmds:
+      - poetry run pytest {{.ROOT_DIR}}/tests/api/test_auth.py --tb=short
+    silent: true
