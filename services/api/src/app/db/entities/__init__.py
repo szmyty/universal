@@ -1,4 +1,4 @@
 from .message import Message
-from .map_state import MapState
+from .map import Map
 
-__all__ = ["Message", "MapState"]
+__all__ = ["Message", "Map"]

@@ -101,5 +101,9 @@
         "python.analysis.typeEvaluation.strictParameterNoneValue": true,
         "python.analysis.typeEvaluation.strictSetInference": false,
         "python.analysis.useLibraryCodeForTypes": true,
+        "python.analysis.extraPaths": ["src"],
+        "python.testing.pytestEnabled": true,
+        "python.testing.pytestArgs": ["tests"],
+        "python.testing.pytestPath": "pytest",
     },
 }

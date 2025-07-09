@@ -8,7 +8,7 @@ from httpx import AsyncClient, ASGITransport, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
-from app.api.routes.map_states import router as map_states_router, get_map_state_service
+from app.api.routes.maps import router as map_states_router, get_map_state_service
 from app.auth.oidc_user import OIDCUser, map_oidc_user
 from app.services.map_state_service import MapStateService
 from app.infrastructure.map_states.dao import MapStateDAO
@@ -44,12 +44,12 @@ class TestMapStatesApi:
         ) as client:
             payload = MapStateCreate(name="Map", description="d", state="{}")
             create_resp: Response = await client.post(
-                "/api/map-states/", json=payload.model_dump()
+                "/api/maps/", json=payload.model_dump()
             )
             assert create_resp.status_code == status.HTTP_201_CREATED
             map_state_id = create_resp.json()["id"]
 
-            fetch_resp: Response = await client.get(f"/api/map-states/{map_state_id}")
+            fetch_resp: Response = await client.get(f"/api/maps/{map_state_id}")
             assert fetch_resp.status_code == status.HTTP_200_OK
             data = fetch_resp.json()
             assert data["id"] == map_state_id
@@ -61,12 +61,12 @@ class TestMapStatesApi:
             transport=ASGITransport(app=test_app), base_url="http://test"
         ) as client:
             resp = await client.post(
-                "/api/map-states/",
+                "/api/maps/",
                 json={"name": "A", "description": "d1", "state": "{}"},
             )
             map_state_id = resp.json()["id"]
             update_resp: Response = await client.put(
-                f"/api/map-states/{map_state_id}",
+                f"/api/maps/{map_state_id}",
                 json={"name": "B", "description": "d2", "state": "{1}"},
             )
             assert update_resp.status_code == status.HTTP_200_OK
@@ -76,7 +76,7 @@ class TestMapStatesApi:
         async with AsyncClient(
             transport=ASGITransport(app=test_app), base_url="http://test"
         ) as client:
-            list_resp: Response = await client.get("/api/map-states/")
+            list_resp: Response = await client.get("/api/maps/")
             assert list_resp.status_code == status.HTTP_200_OK
             assert isinstance(list_resp.json(), list)
 
@@ -86,15 +86,15 @@ class TestMapStatesApi:
         ) as client:
             payload = MapStateCreate(name="Del", description="d3", state="{}")
             create_resp: Response = await client.post(
-                "/api/map-states/", json=payload.model_dump()
+                "/api/maps/", json=payload.model_dump()
             )
             map_state_id = create_resp.json()["id"]
             delete_resp: Response = await client.delete(
-                f"/api/map-states/{map_state_id}"
+                f"/api/maps/{map_state_id}"
             )
             assert delete_resp.status_code == status.HTTP_200_OK
             deleted = delete_resp.json()
             assert deleted["id"] == map_state_id
             assert isinstance(MapStateRead.model_validate(deleted), MapStateRead)
-            fetch = await client.get(f"/api/map-states/{map_state_id}")
+            fetch = await client.get(f"/api/maps/{map_state_id}")
             assert fetch.status_code == status.HTTP_404_NOT_FOUND

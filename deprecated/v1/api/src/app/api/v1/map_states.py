@@ -8,7 +8,7 @@ from ...schemas.map_state import MapStateCreate, MapStateRead
 router = APIRouter()
 
 
-@router.post("/map-states", response_model=MapStateRead)
+@router.post("/maps", response_model=MapStateRead)
 async def create_map_state(payload: MapStateCreate, session: AsyncSession = Depends(get_db)):
     svc = MapStateService(session)
     state = await svc.create(payload.user_id, payload.state)
@@ -17,7 +17,7 @@ async def create_map_state(payload: MapStateCreate, session: AsyncSession = Depe
     return MapStateRead.model_validate(state.__dict__)
 
 
-@router.get("/map-states", response_model=list[MapStateRead])
+@router.get("/maps", response_model=list[MapStateRead])
 async def list_map_states(session: AsyncSession = Depends(get_db)):
     svc = MapStateService(session)
     states = await svc.list_all()

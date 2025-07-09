@@ -1,33 +1,32 @@
 from datetime import datetime
+
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.auth.oidc_user import OIDCUser
 
 
-class MapStateBase(BaseModel):
-    """Base model for map states."""
+class MapBase(BaseModel):
+    """Shared fields for creating or reading a map."""
 
     name: str = Field(..., examples=["My Map"])
     description: str = Field(..., examples=["My map description"])
     state: str = Field(..., examples=["{...}"])
 
 
-class MapStateCreate(MapStateBase):
-    """Model for creating a map state."""
-
+class MapCreate(MapBase):
+    """Schema for creating a new map."""
     pass
 
 
-class MapStateUpdate(BaseModel):
-    """Model for updating a map state."""
-
+class MapUpdate(BaseModel):
+    """Schema for updating a map."""
     name: str
     description: str
     state: str
 
 
-class MapStateRead(MapStateBase):
-    """Model for reading a map state."""
+class MapRead(MapBase):
+    """Schema for reading a map (includes metadata)."""
 
     id: int
     user_id: str

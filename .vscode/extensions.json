@@ -15,6 +15,7 @@
         "remcohaszing.schemastore",
         "mrmlnc.vscode-apache",
         "foxundermoon.shell-format",
-        "timonwong.shellcheck"
+        "timonwong.shellcheck",
+        "irongeek.vscode-env"
     ]
 }

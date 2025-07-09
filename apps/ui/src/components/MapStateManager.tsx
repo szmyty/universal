@@ -15,7 +15,7 @@ export default function MapStateManager() {
 
   const fetchStates = async () => {
     try {
-      const res = await axios.get<MapState[]>(`${config.api.baseUrl}/map-states`);
+      const res = await axios.get<MapState[]>(`${config.api.baseUrl}/maps`);
       setMapStates(res.data);
       if (res.data.length && selectedId === null) {
         setSelectedId(res.data[0].id);
@@ -40,7 +40,7 @@ export default function MapStateManager() {
     e.preventDefault();
     try {
       const res = await axios.post<MapState>(
-        `${config.api.baseUrl}/map-states`,
+        `${config.api.baseUrl}/maps`,
         form
       );
       setForm({ name: "", description: "", state: "" });

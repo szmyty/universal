@@ -64,7 +64,8 @@
                 "timonwong.shellcheck",
                 "DavidAnson.vscode-markdownlint",
                 "dbaeumer.vscode-eslint",
-                "foxundermoon.shell-format"
+                "foxundermoon.shell-format",
+                "IronGeek.vscode-env"
             ]
         }
     }
