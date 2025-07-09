@@ -17,6 +17,7 @@ class TestMessageService:
     """Unit tests for the MessageService class."""
 
     async def test_create_and_get_message(self: TestMessageService, db_session: AsyncSession) -> None:
+        """Should create a message and then fetch it by ID."""
         # Arrange
         dao = MessageDAO(db_session)
         repo = SqlAlchemyMessageRepository(dao)
@@ -36,6 +37,7 @@ class TestMessageService:
         assert fetched.user_id == user_id
 
     async def test_list_returns_all_messages(self: TestMessageService, db_session: AsyncSession) -> None:
+        """Should list all messages created by different users."""
         # Arrange
         dao = MessageDAO(db_session)
         repo = SqlAlchemyMessageRepository(dao)
@@ -54,6 +56,7 @@ class TestMessageService:
         assert "Msg 2" in contents
 
     async def test_update_existing_message(self: TestMessageService, db_session: AsyncSession) -> None:
+        """Should update an existing message's content."""
         # Arrange
         dao = MessageDAO(db_session)
         repo = SqlAlchemyMessageRepository(dao)
@@ -70,6 +73,7 @@ class TestMessageService:
         assert updated.content == "Updated content"
 
     async def test_delete_message(self: TestMessageService, db_session: AsyncSession) -> None:
+        """Should delete an existing message and return None when fetched."""
         # Arrange
         dao = MessageDAO(db_session)
         repo = SqlAlchemyMessageRepository(dao)

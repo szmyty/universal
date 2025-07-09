@@ -17,7 +17,7 @@ from app.core.logging import get_logger
 
 log: BoundLogger = get_logger()
 
-router = APIRouter(prefix="/api/messages", tags=["Messages"])
+router = APIRouter(prefix="/messages", tags=["Messages"])
 
 
 def get_message_service(session: AsyncSession = Depends(get_async_session)) -> MessageService:

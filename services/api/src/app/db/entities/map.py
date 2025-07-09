@@ -9,7 +9,7 @@ from app.db.base import Base
 class Map(Base):
     """SQLAlchemy model for the 'maps' table."""
 
-    __tablename__ = "maps"
+    __tablename__: str = "maps"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, index=True)
     user_id: Mapped[str] = mapped_column(nullable=False, index=True)

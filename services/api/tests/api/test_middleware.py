@@ -5,12 +5,11 @@ import pytest
 from fastapi import FastAPI, Request
 from httpx import ASGITransport, AsyncClient, Response
 from starlette.responses import JSONResponse
-
-from app.api.middleware import add_middlewares
-from app.core.settings import Settings
 from piccolo_api.rate_limiting.middleware import InMemoryLimitProvider
 from piccolo_api.rate_limiting.middleware import RateLimitingMiddleware
 
+from app.api.middleware import add_middlewares
+from app.core.settings import Settings
 from app.extensions.body_size_middleware import BodySizeLimitMiddleware
 from app.extensions.rate_limiting_middleware import NoOpLimitProvider
 
@@ -22,20 +21,24 @@ def test_app(settings: Settings) -> FastAPI:
 
     @app.get("/test")
     async def test_route() -> JSONResponse:  # type: ignore
+        """A simple test route to verify middleware functionality."""
         return JSONResponse({"message": "ok"})
 
     @app.post("/test")
     async def test_post_route() -> JSONResponse:  # type: ignore
+        """A test POST route to verify CSRF and other middleware."""
         return JSONResponse({"message": "POST OK"})
 
     @app.get("/cors-test")
     async def cors_test() -> JSONResponse:  # type: ignore
+        """A test route to verify CORS middleware."""
         return JSONResponse({"message": "CORS OK"})
 
     return app
 
 @pytest.fixture
 def isolated_rate_limited_app() -> FastAPI:
+    """Fixture for a FastAPI app with isolated rate limiting middleware."""
     limiter = InMemoryLimitProvider(limit=2, timespan=1, block_duration=2)
 
     app = FastAPI()
@@ -43,17 +46,20 @@ def isolated_rate_limited_app() -> FastAPI:
 
     @app.get("/ratelimit-test")
     async def ratelimit_test()  -> JSONResponse: # type: ignore
+        """A test route to verify rate limiting functionality."""
         return JSONResponse({"message": "allowed"})
 
     return app
 
 @pytest.fixture
 def no_op_rate_limit_app() -> FastAPI:
+    """Fixture for a FastAPI app with no-op rate limiting middleware."""
     app = FastAPI()
     app.add_middleware(RateLimitingMiddleware, provider=NoOpLimitProvider())
 
     @app.get("/ratelimit-test")
     async def ratelimit_test()  -> JSONResponse: # type: ignore
+        """A test route to verify no-op rate limiting functionality."""
         return JSONResponse({"message": "still allowed"})
 
     return app
@@ -66,6 +72,7 @@ def body_limited_app() -> FastAPI:
 
     @app.post("/upload")
     async def upload(request: Request) -> JSONResponse:   # type: ignore
+        """A test route to verify body size limit functionality."""
         data = await request.body()
         return JSONResponse({"length": len(data)})
 
@@ -75,6 +82,7 @@ def body_limited_app() -> FastAPI:
 class TestMiddleware:
     """Middleware test suite (AAA pattern)."""
     async def test_x_service_header_present(self: TestMiddleware, test_app: FastAPI) -> None:
+        """Test that the x-service header is present and correctly formatted."""
         # Arrange
         transport = ASGITransport(app=test_app)
 
@@ -88,6 +96,7 @@ class TestMiddleware:
         assert resp.headers["x-service"].startswith("api@") or resp.headers["x-service"].startswith("your-project-name@")
 
     async def test_process_time_and_trace_id_headers(self: TestMiddleware, test_app: FastAPI) -> None:
+        """Test that process time and trace ID headers are present and valid."""
         # Arrange
         transport = ASGITransport(app=test_app)
 
@@ -103,6 +112,7 @@ class TestMiddleware:
         assert len(resp.headers["x-trace-id"]) > 0
 
     async def test_cors_allows_matching_origin(self: TestMiddleware, test_app: FastAPI) -> None:
+        """Test that CORS allows requests from a matching origin."""
         # Arrange
         transport = ASGITransport(app=test_app)
 
@@ -121,6 +131,7 @@ class TestMiddleware:
         assert resp.headers.get("access-control-allow-origin") == "http://localhost:3000"
 
     async def test_correlation_id_echo_and_generate(self: TestMiddleware, test_app: FastAPI) -> None:
+        """Test that correlation ID is echoed back or generated if not provided."""
         transport = ASGITransport(app=test_app)
         custom_id = "test-correlation-id-123"
 
@@ -137,6 +148,7 @@ class TestMiddleware:
             assert auto_id is not None and auto_id != custom_id and len(auto_id) > 0
 
     async def test_csp_header_injected(self: TestMiddleware, test_app: FastAPI) -> None:
+        """Test that Content Security Policy (CSP) header is injected."""
         # Arrange
         transport = ASGITransport(app=test_app)
 
@@ -150,6 +162,7 @@ class TestMiddleware:
         assert "default-src" in resp.headers["content-security-policy"]
 
     async def test_csrf_cookie_and_header_validation(self: TestMiddleware, test_app: FastAPI) -> None:
+        """Test CSRF cookie and header validation."""
         transport = ASGITransport(app=test_app)
 
         async with AsyncClient(transport=transport, base_url="http://test") as client:
@@ -177,6 +190,7 @@ class TestMiddleware:
             assert "doesn't match the cookie" in post_resp_mismatch.text.lower()
 
     async def test_rate_limit_resets_cleanly(self: TestMiddleware, isolated_rate_limited_app: FastAPI) -> None:
+        """Test that rate limiting resets cleanly after the block duration."""
         # Arrange
         transport = ASGITransport(app=isolated_rate_limited_app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
@@ -199,6 +213,7 @@ class TestMiddleware:
             assert r4.json()["message"] == "allowed"
 
     async def test_noop_rate_limit_does_not_block(self: TestMiddleware, no_op_rate_limit_app: FastAPI) -> None:
+        """Test that no-op rate limiting does not block requests."""
         # Arrange
         transport = ASGITransport(app=no_op_rate_limit_app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
@@ -210,6 +225,7 @@ class TestMiddleware:
         assert all(r.json()["message"] == "still allowed" for r in responses)
 
     async def test_body_too_large_returns_413(self: TestMiddleware, body_limited_app: FastAPI) -> None:
+        """Test that request body larger than limit returns 413 status code."""
         # Arrange
         transport = ASGITransport(app=body_limited_app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:

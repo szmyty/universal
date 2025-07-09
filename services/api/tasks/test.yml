@@ -98,34 +98,34 @@ tasks:
       - poetry run pytest {{.ROOT_DIR}}/tests/api/test_profile_api.py --tb=short
     silent: true
 
-  mapstate:
-    desc: Run map state tests
+  maps:
+    desc: Run map tests
     cmds:
-      - poetry run pytest -m map_states --tb=short
+      - poetry run pytest -m map --tb=short
     silent: true
 
-  mapstate:service:
-    desc: Run map state service tests
+  maps:service:
+    desc: Run map service tests
     cmds:
-      - poetry run pytest {{.ROOT_DIR}}/tests/services/test_map_states_service.py --tb=short
+      - poetry run pytest {{.ROOT_DIR}}/tests/services/test_map_service.py --tb=short
     silent: true
 
-  mapstate:dao:
-    desc: Run map state DAO tests
+  maps:dao:
+    desc: Run map DAO tests
     cmds:
-      - poetry run pytest {{.ROOT_DIR}}/tests/db/test_map_states_dao.py --tb=short
+      - poetry run pytest {{.ROOT_DIR}}/tests/db/test_map_dao.py --tb=short
     silent: true
 
-  mapstate:repository:
-    desc: Run map state repository tests
+  maps:repository:
+    desc: Run map repository tests
     cmds:
-      - poetry run pytest {{.ROOT_DIR}}/tests/db/test_map_states_repository.py --tb=short
+      - poetry run pytest {{.ROOT_DIR}}/tests/db/test_map_repository.py --tb=short
     silent: true
 
-  mapstate:api:
-    desc: Run map state API tests
+  maps:api:
+    desc: Run map API tests
     cmds:
-      - poetry run pytest {{.ROOT_DIR}}/tests/api/test_map_states_api.py --tb=short
+      - poetry run pytest {{.ROOT_DIR}}/tests/api/test_map_api.py --tb=short
     silent: true
 
   middleware:
