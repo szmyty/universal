@@ -9,18 +9,23 @@ from app.schemas.messages.messages import MessageCreate
 
 class MessageDAO:
     """Data Access Object for Message entity."""
+
     def __init__(self: MessageDAO, session: AsyncSession) -> None:
         """Initialize with an async database session."""
         self.session: AsyncSession = session
 
     @overload
-    async def create(self: MessageDAO, user_id: str, content: str) -> Message: ...
+    async def create(self: MessageDAO, user_id: str, content: str) -> Message:
+        """Create a message using a content string."""
+        ...
 
     @overload
-    async def create(self: MessageDAO, user_id: str, content: MessageCreate) -> Message: ...
+    async def create(self: MessageDAO, user_id: str, content: MessageCreate) -> Message:
+        """Create a message using a MessageCreate object."""
+        ...
 
     async def create(
-        self,
+        self: MessageDAO,
         user_id: str,
         content: Union[str, MessageCreate],
     ) -> Message:

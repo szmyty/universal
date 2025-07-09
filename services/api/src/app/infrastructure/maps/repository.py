@@ -13,7 +13,7 @@ class SqlAlchemyMapRepository(MapRepository):
 
     def __init__(self: SqlAlchemyMapRepository, dao: MapDAO) -> None:
         """Initialize the repository with a MapDAO instance."""
-        self.dao = dao
+        self.dao: MapDAO = dao
 
     async def create(
         self: SqlAlchemyMapRepository,
@@ -31,7 +31,7 @@ class SqlAlchemyMapRepository(MapRepository):
 
     async def get(self: SqlAlchemyMapRepository, id: int) -> MapDomain | None:
         """Retrieve a map by its ID."""
-        db_obj = await self.dao.get(id)
+        db_obj: Map | None = await self.dao.get(id)
         return MapDomain.from_entity(db_obj) if db_obj else None
 
     async def list(self: SqlAlchemyMapRepository) -> list[MapDomain]:
@@ -46,7 +46,7 @@ class SqlAlchemyMapRepository(MapRepository):
         state: str,
     ) -> MapDomain | None:
         """Update a map's fields by ID."""
-        db_obj = await self.dao.update(
+        db_obj: Map | None = await self.dao.update(
             id,
             MapUpdate(name=name, description=description, state=state),
         )

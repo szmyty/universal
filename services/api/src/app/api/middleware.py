@@ -7,6 +7,7 @@ from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from piccolo_api.csrf.middleware import CSRFMiddleware
 from piccolo_api.rate_limiting.middleware import RateLimitingMiddleware
+from structlog import BoundLogger
 
 from app.extensions.body_size_middleware import BodySizeLimitMiddleware
 from app.extensions.csp_middleware import CSPMiddleware
@@ -20,7 +21,7 @@ from app.utils.general import get_class_name as get_middleware_name
 def add_middlewares(app: FastAPI) -> None:
     """Add middlewares to the FastAPI application, in correct order."""
     settings: Settings = get_settings()
-    log = get_logger()
+    log: BoundLogger = get_logger()
 
     # Rate Limiting (first line of defense)
     app.add_middleware(RateLimitingMiddleware, provider=settings.rate_limit_provider)

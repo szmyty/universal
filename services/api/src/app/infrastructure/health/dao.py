@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 class HealthDAO:
     """Data Access Object for health checks."""
+
     def __init__(self: HealthDAO, session: AsyncSession) -> None:
         """Initialize the HealthDAO with a database session."""
         self.session: AsyncSession = session

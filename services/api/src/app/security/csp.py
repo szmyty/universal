@@ -9,6 +9,7 @@ from app.core.settings import get_settings
 @dataclass
 class CSPConfig:
     """Configuration for Content Security Policy."""
+
     default_src: str = "'self'"
     script_src: Optional[str] = None
     style_src: Optional[str] = None
@@ -43,6 +44,7 @@ class CSPConfig:
 
 class CSPStrategy(ABC):
     """Abstract base class for CSP strategies."""
+
     @staticmethod
     @abstractmethod
     def match(env: str) -> bool:
@@ -56,6 +58,7 @@ class CSPStrategy(ABC):
 
 class DevCSPStrategy(CSPStrategy):
     """Development environment CSP strategy."""
+
     @staticmethod
     def match(env: str) -> bool:
         """Check if the environment is development."""
@@ -75,6 +78,7 @@ class DevCSPStrategy(CSPStrategy):
 
 class ProdCSPStrategy(CSPStrategy):
     """Production environment CSP strategy."""
+
     @staticmethod
     def match(env: str) -> bool:
         """Check if the environment is production."""
@@ -94,6 +98,7 @@ class ProdCSPStrategy(CSPStrategy):
 
 class DemoCSPStrategy(CSPStrategy):
     """Demo environment CSP strategy."""
+
     @staticmethod
     def match(env: str) -> bool:
         """Check if the environment is demo."""

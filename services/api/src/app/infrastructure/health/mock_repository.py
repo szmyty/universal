@@ -8,7 +8,9 @@ from app.domain.health.interfaces import HealthCheckRepository
 
 class MockHealthCheckRepository(HealthCheckRepository):
     """Mock implementation of HealthCheckRepository for testing purposes."""
+
     def __init__(self: MockHealthCheckRepository, healthy: bool | None = None) -> None:
+        """Initialize the mock health check repository."""
         # If healthy is not provided, randomize it
         self.healthy: bool = healthy if healthy is not None else random.choice([True, False])
 

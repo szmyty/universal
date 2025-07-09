@@ -8,6 +8,7 @@ from app.infrastructure.messages.dao import MessageDAO
 
 class SqlAlchemyMessageRepository(MessageRepository):
     """SQLAlchemy implementation of MessageRepository."""
+
     def __init__(self: SqlAlchemyMessageRepository, dao: MessageDAO) -> None:
         """Initialize with a MessageDAO instance."""
         self.dao: MessageDAO = dao

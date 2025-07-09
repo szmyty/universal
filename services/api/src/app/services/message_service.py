@@ -39,5 +39,5 @@ class MessageService:
 
     async def generate(self, user_id: str) -> MessageDomain:
         """Generate and create a random message for the given user."""
-        content = f"Hello from ChatGPT {uuid4()}"
+        content: str = f"Hello from ChatGPT {uuid4()}"
         return await self.repo.create(user_id, content)

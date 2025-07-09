@@ -16,7 +16,7 @@ class MapDAO:
 
     def __init__(self: MapDAO, session: AsyncSession) -> None:
         """Initialize the MapDAO with an async session."""
-        self.session = session
+        self.session: AsyncSession = session
 
     async def create(self: MapDAO, user_id: str, payload: MapCreate) -> Map:
         """Insert a new map record into the database."""
@@ -52,7 +52,7 @@ class MapDAO:
 
     async def update(self: MapDAO, id: int, payload: MapUpdate) -> Map | None:
         """Update a map by ID."""
-        db_obj = await self.get(id)
+        db_obj: Map | None = await self.get(id)
         if not db_obj:
             return None
 
@@ -66,7 +66,7 @@ class MapDAO:
 
     async def delete(self, id: int) -> bool:
         """Delete a map by ID."""
-        db_obj = await self.get(id)
+        db_obj: Map | None = await self.get(id)
         if not db_obj:
             return False
 

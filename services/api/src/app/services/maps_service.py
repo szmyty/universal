@@ -11,7 +11,7 @@ class MapService:
 
     def __init__(self: MapService, repo: MapRepository) -> None:
         """Initialize the MapService with a repository."""
-        self.repo = repo
+        self.repo: MapRepository = repo
 
     async def create(self: MapService, user_id: str, payload: MapCreate) -> MapDomain:
         """Create a new map owned by the given user."""
