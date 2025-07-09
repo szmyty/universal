@@ -9,7 +9,7 @@ from app.infrastructure.maps.repository import SqlAlchemyMapRepository
 
 @pytest.mark.anyio
 @pytest.mark.unit
-@pytest.mark.map_states
+@pytest.mark.maps
 class TestSqlMapRepository:
     """Unit tests for SqlAlchemyMapStateRepository."""
 

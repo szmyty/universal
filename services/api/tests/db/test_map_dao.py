@@ -11,7 +11,7 @@ from app.schemas.maps import MapCreate, MapUpdate
 
 @pytest.mark.anyio
 @pytest.mark.unit
-@pytest.mark.map_states
+@pytest.mark.maps
 class TestMapDAO:
     """Unit tests for MapStateDAO."""
 

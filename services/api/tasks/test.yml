@@ -101,7 +101,7 @@ tasks:
   maps:
     desc: Run map tests
     cmds:
-      - poetry run pytest -m map --tb=short
+      - poetry run pytest -m maps --tb=short
     silent: true
 
   maps:service:

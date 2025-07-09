@@ -34,7 +34,7 @@ def test_app(db_session: AsyncSession, test_user: OIDCUser) -> FastAPI:
 @pytest.mark.anyio
 @pytest.mark.unit
 @pytest.mark.api
-@pytest.mark.map_states
+@pytest.mark.maps
 class TestMapApi:
     """API tests for map state endpoints."""
 
