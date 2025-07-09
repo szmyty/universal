@@ -15,6 +15,7 @@ tasks:
   install:
     desc: Install dependencies using Poetry
     cmds:
+      - task: clean
       - poetry install --no-interaction --no-ansi --no-cache --no-root
     silent: true
 
@@ -51,8 +52,10 @@ tasks:
   clean:
     desc: Clean up Python cache files and directories
     cmds:
+      - echo "Cleaning up Python cache files and directories..."
       - find . -type d -name "__pycache__" -exec rm -rf {} +
       - find . -type f -name "*.pyc" -exec rm -f {} +
       - rm -rf .cache
       - rm -rf .venv
+      - rm -rf logs
     silent: true

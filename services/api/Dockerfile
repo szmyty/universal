@@ -24,13 +24,15 @@ ARG APP_GROUP=universal
 
 # API server port
 ARG API_PORT=8000
+ARG API_PREFIX=/api
 
 # Set environment variables.
 ENV APP_USER=${APP_USER}
 ENV APP_GROUP=${APP_GROUP}
 ENV APP_UID=65532
 ENV APP_GID=65532
-ENV APP_HOME=/home/${APP_USER}
+ENV APP_USER_HOME=/${APP_USER}
+ENV APP_HOME=/${APP_USER}/api
 
 # Core environment variables for non-interactive apt operations and consistent behaviour.
 ENV DEBIAN_FRONTEND=noninteractive \
@@ -55,22 +57,19 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PIP_NO_WARN_SCRIPT_LOCATION=on \
     PIP_DEFAULT_TIMEOUT=200 \
     GNUTLS_FORCE_FIPS_MODE=1 \
-    PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" \
     DEVTOOLS_HOME=/opt/devtools \
     TASKFILE_HOME_DIR=/opt/devtools/.task \
     ASDF_DIR=/opt/devtools/.asdf \
     ASDF_DATA_DIR=/opt/devtools/.asdf/data \
     ASDF_SHIMS_DIR=/opt/devtools/.asdf/data/shims \
-    API_PORT=${API_PORT}
+    API_PORT=${API_PORT} \
+    API_PREFIX=${API_PREFIX}
 
 # Add devtools to PATH
 ENV PATH="${TASKFILE_HOME_DIR}:${ASDF_DIR}/bin:${ASDF_SHIMS_DIR}:${PATH}"
 
 # Set the Python path to include the application source code.
-ENV PYTHONPATH="/app/src"
-
-# Change to the application directory.
-WORKDIR /app
+ENV PYTHONPATH="${PYTHONPATH}:${APP_HOME}"
 
 # Disable the automatic removal of downloaded packages
 RUN rm -f /etc/apt/apt.conf.d/docker-clean
@@ -94,12 +93,12 @@ RUN groupadd \
     --uid ${APP_UID} \
     --gid ${APP_GID} \
     --comment "Non-root User for Running Applications" \
-    --home-dir ${APP_HOME} \
+    --home-dir ${APP_USER_HOME} \
     --shell /usr/sbin/nologin \
     ${APP_USER} \
-    && mkdir --parents ${APP_HOME} \
-    && chown --recursive ${APP_USER}:${APP_GROUP} ${APP_HOME} \
-    && chmod --recursive 700 ${APP_HOME}
+    && mkdir --parents ${APP_USER_HOME} ${APP_HOME} \
+    && chown --recursive ${APP_USER}:${APP_GROUP} ${APP_USER_HOME} ${APP_HOME} \
+    && chmod --recursive 700 ${APP_USER_HOME} ${APP_HOME}
 
 # Install dependencies with pinned versions for reproducible builds
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-cache \
@@ -141,6 +140,9 @@ RUN echo "LC_ALL=en_US.UTF-8" >> /etc/environment \
     && update-locale LANG=en_US.UTF-8 \
     && dpkg-reconfigure locales
 
+# Change to the application directory.
+WORKDIR ${APP_HOME}
+
 # Install asdf-managed tools (Python, Poetry, etc.)
 COPY scripts/devtools.sh /tmp/devtools.sh
 COPY services/api/.tool-versions .tool-versions
@@ -149,11 +151,17 @@ RUN chmod +x /tmp/devtools.sh && \
     rm /tmp/devtools.sh
 
 # Copy application files
-COPY services/api /app/
-RUN cp entrypoint.sh /entrypoint.sh && chmod +x /entrypoint.sh
+COPY services/api ./
 
 # Install Python dependencies via Poetry
 RUN task install
+
+# Take ownership of /app.
+RUN chown -R ${APP_USER}:${APP_GROUP} ${APP_HOME}
+
+# Copy the entrypoint script and make it executable.
+COPY services/api/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 # Copy and source custom shell aliases
 COPY shell/aliases.sh /etc/profile.d/docker_aliases.sh
@@ -162,9 +170,6 @@ COPY shell/aliases.sh /etc/profile.d/docker_aliases.sh
 RUN chmod 644 /etc/profile.d/docker_aliases.sh && \
     echo '[ -d /etc/profile.d ] && for f in /etc/profile.d/*.sh; do [ -r "$f" ] && . "$f"; done' \
     >> /etc/bash.bashrc
-
-# Take ownership of /app.
-RUN chown -R ${APP_USER}:${APP_GROUP} /app
 
 # Switch to the non-root user.
 USER ${APP_USER}:${APP_GROUP}
