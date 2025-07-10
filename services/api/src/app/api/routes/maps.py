@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from structlog import BoundLogger
 from starlette import status
 
+from app.auth.check_roles import require_roles
 from app.auth.oidc_user import OIDCUser, map_oidc_user
 from app.db.session import get_async_session
 from app.domain.maps.models import MapDomain
@@ -69,13 +70,10 @@ async def save_map(
 
 @router.get("/", response_model=list[MapRead])
 async def list_all_maps(
-    user: OIDCUser = Depends(map_oidc_user),
+    user: OIDCUser = Depends(require_roles([])),
     service: MapService = Depends(get_map_service),
 ) -> list[MapRead]:
-    """List all maps (admin-only)."""
-    if "admin" not in (user.roles or []):
-        raise HTTPException(status_code=403, detail="Admin privileges required")
-
+    """List all maps."""
     maps: Sequence[MapDomain] = await service.list()
     for map in maps:
         map.user = user
@@ -97,13 +95,10 @@ async def list_my_maps(
 @router.get("/by/{user_id}", response_model=list[MapRead])
 async def list_maps_by_user_id(
     user_id: str,
-    user: OIDCUser = Depends(map_oidc_user),
+    user: OIDCUser = Depends(require_roles([])),
     service: MapService = Depends(get_map_service),
 ) -> list[MapRead]:
-    """List all maps owned by a specific user (admin-only)."""
-    if "admin" not in (user.roles or []):
-        raise HTTPException(status_code=403, detail="Admin privileges required")
-
+    """List all maps owned by a specific user."""
     maps: Sequence[MapDomain] = await service.list_by_user(user_id)
     for map in maps:
         map.user = user
