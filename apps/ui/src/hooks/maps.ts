@@ -1,6 +1,6 @@
 import type { QueryClient, UseMutationResult } from "@tanstack/react-query";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createMap, saveMap } from "@universal/api/maps";
+import { createMap, fetchAllMaps, saveMap } from "@universal/api/maps";
 import type {
     MapCreate,
     MapBase,
@@ -50,5 +50,15 @@ export const useSaveMapMutation = (): UseMutationResult<
         onError: (error) => {
             console.error("❌ Failed to save map:", error);
         },
+    });
+};
+
+import { useQuery } from "@tanstack/react-query";
+import { fetchMyMaps } from "@universal/api/maps";
+
+export const useMaps = () => {
+    return useQuery<MapRead[]>({
+        queryKey: ["maps", "me"],
+        queryFn: fetchAllMaps,
     });
 };
