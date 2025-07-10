@@ -12,6 +12,10 @@ export type MapCreate = MapBase;
 
 export type MapUpdate = MapBase;
 
+export type MapSave = {
+    id?: number; // optional: triggers update
+} & MapBase;
+
 export type MapRead = MapBase & {
     id: number;
     user_id: string;

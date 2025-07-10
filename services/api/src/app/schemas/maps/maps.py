@@ -35,3 +35,7 @@ class MapRead(MapBase):
     updated_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+class MapSave(MapBase):
+    """Model for creating or updating a map."""
+    id: int | None = None

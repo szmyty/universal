@@ -1,14 +1,15 @@
 from __future__ import annotations
 from typing import Sequence
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from structlog import BoundLogger
+from starlette import status
 
 from app.auth.oidc_user import OIDCUser, map_oidc_user
 from app.db.session import get_async_session
 from app.domain.maps.models import MapDomain
-from app.schemas.maps import MapCreate, MapRead, MapUpdate
+from app.schemas.maps import MapRead, MapSave
 from app.services.maps_service import MapService
 from app.infrastructure.maps.dao import MapDAO
 from app.infrastructure.maps.repository import SqlAlchemyMapRepository
@@ -16,8 +17,11 @@ from app.core.logging import get_logger
 
 log: BoundLogger = get_logger()
 
-router = APIRouter(prefix="/maps", tags=["Maps"])
+# Prefix for all map-related API endpoints
+MAPS_API_PREFIX: str = "/maps"
 
+# Create the API router for maps
+router = APIRouter(prefix=MAPS_API_PREFIX, tags=["Maps"])
 
 def get_map_service(
     session: AsyncSession = Depends(get_async_session),
@@ -27,18 +31,40 @@ def get_map_service(
     repo = SqlAlchemyMapRepository(dao)
     return MapService(repo)
 
+from fastapi.responses import JSONResponse
 
-@router.post("/", response_model=MapRead, status_code=status.HTTP_201_CREATED)
-async def create_map(
-    payload: MapCreate,
+@router.post("/", response_model=MapRead)
+async def save_map(
+    payload: MapSave,
     user: OIDCUser = Depends(map_oidc_user),
     service: MapService = Depends(get_map_service),
-) -> MapRead:
-    """Create a new map associated with the current user."""
-    created: MapDomain = await service.create(user_id=user.sub, payload=payload)
+) -> JSONResponse:
+    """
+    Create or update a map depending on whether `id` is provided.
+    Returns 201 for new maps, 200 for updates.
+    """
+    if payload.id:
+        existing: MapDomain | None = await service.get(payload.id)
+        if existing is None:
+            raise HTTPException(404, "Map not found")
+        if existing.user_id != user.sub:
+            raise HTTPException(403, "Not authorized to modify this map")
+
+        updated: MapDomain | None = await service.update(payload.id, payload)
+        if updated is None:
+            raise HTTPException(500, "Failed to update map")
+        updated.user = user
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content=MapRead.model_validate(updated).model_dump(mode="json"),
+        )
+
+    created: MapDomain = await service.create(user.sub, payload)
     created.user = user
-    log.info("Created map", map_id=created.id, user_id=user.sub)
-    return MapRead.model_validate(created)
+    return JSONResponse(
+        status_code=status.HTTP_201_CREATED,
+        content=MapRead.model_validate(created).model_dump(mode="json"),
+    )
 
 
 @router.get("/", response_model=list[MapRead])
@@ -51,9 +77,9 @@ async def list_all_maps(
         raise HTTPException(status_code=403, detail="Admin privileges required")
 
     maps: Sequence[MapDomain] = await service.list()
-    for m in maps:
-        m.user = user
-    return [MapRead.model_validate(m) for m in maps]
+    for map in maps:
+        map.user = user
+    return [MapRead.model_validate(map) for map in maps]
 
 
 @router.get("/me", response_model=list[MapRead])
@@ -63,9 +89,9 @@ async def list_my_maps(
 ) -> list[MapRead]:
     """List all maps owned by the current user."""
     maps: Sequence[MapDomain] = await service.list_by_user(user.sub)
-    for m in maps:
-        m.user = user
-    return [MapRead.model_validate(m) for m in maps]
+    for map in maps:
+        map.user = user
+    return [MapRead.model_validate(map) for map in maps]
 
 
 @router.get("/by/{user_id}", response_model=list[MapRead])
@@ -79,9 +105,9 @@ async def list_maps_by_user_id(
         raise HTTPException(status_code=403, detail="Admin privileges required")
 
     maps: Sequence[MapDomain] = await service.list_by_user(user_id)
-    for m in maps:
-        m.user = user
-    return [MapRead.model_validate(m) for m in maps]
+    for map in maps:
+        map.user = user
+    return [MapRead.model_validate(map) for map in maps]
 
 
 @router.get("/{map_id}", response_model=MapRead)
@@ -91,30 +117,30 @@ async def get_map(
     service: MapService = Depends(get_map_service),
 ) -> MapRead:
     """Get a single map by ID (must own or be admin)."""
-    m: MapDomain | None = await service.get(map_id)
-    if not m:
+    map: MapDomain | None = await service.get(map_id)
+    if not map:
         raise HTTPException(status_code=404, detail="Map not found")
 
-    if m.user_id != user.sub and "admin" not in (user.roles or []):
+    if map.user_id != user.sub and "admin" not in (user.roles or []):
         raise HTTPException(status_code=403, detail="Not authorized to access this map")
 
-    m.user = user
-    return MapRead.model_validate(m)
+    map.user = user
+    return MapRead.model_validate(map)
 
 
 @router.put("/{map_id}", response_model=MapRead)
 async def update_map(
     map_id: int,
-    payload: MapUpdate,
+    payload: MapSave,
     user: OIDCUser = Depends(map_oidc_user),
     service: MapService = Depends(get_map_service),
 ) -> MapRead:
     """Update a map (must own or be admin)."""
-    m: MapDomain | None = await service.get(map_id)
-    if not m:
+    map: MapDomain | None = await service.get(map_id)
+    if not map:
         raise HTTPException(status_code=404, detail="Map not found")
 
-    if m.user_id != user.sub and "admin" not in (user.roles or []):
+    if map.user_id != user.sub and "admin" not in (user.roles or []):
         raise HTTPException(status_code=403, detail="Not authorized to update this map")
 
     updated: MapDomain | None = await service.update(map_id, payload)
@@ -130,14 +156,14 @@ async def delete_map(
     service: MapService = Depends(get_map_service),
 ) -> MapRead:
     """Delete a map (must own or be admin)."""
-    m: MapDomain | None = await service.get(map_id)
-    if not m:
+    map: MapDomain | None = await service.get(map_id)
+    if not map:
         raise HTTPException(status_code=404, detail="Map not found")
 
-    if m.user_id != user.sub and "admin" not in (user.roles or []):
+    if map.user_id != user.sub and "admin" not in (user.roles or []):
         raise HTTPException(status_code=403, detail="Not authorized to delete this map")
 
-    m.user = user
+    map.user = user
     await service.delete(map_id)
     log.info("Deleted map", map_id=map_id, user_id=user.sub)
-    return MapRead.model_validate(m)
+    return MapRead.model_validate(map)

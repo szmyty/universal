@@ -3,7 +3,7 @@ from typing import Sequence
 
 from app.domain.maps.interfaces import MapRepository
 from app.domain.maps.models import MapDomain
-from app.schemas.maps import MapCreate, MapUpdate
+from app.schemas.maps import MapSave
 
 
 class MapService:
@@ -13,7 +13,7 @@ class MapService:
         """Initialize the MapService with a repository."""
         self.repo: MapRepository = repo
 
-    async def create(self: MapService, user_id: str, payload: MapCreate) -> MapDomain:
+    async def create(self: MapService, user_id: str, payload: MapSave) -> MapDomain:
         """Create a new map owned by the given user."""
         return await self.repo.create(
             user_id=user_id,
@@ -34,13 +34,10 @@ class MapService:
         """List all maps owned by a given user."""
         return await self.repo.list_by_user(user_id)
 
-    async def update(self: MapService, id: int, payload: MapUpdate) -> MapDomain | None:
-        """Update a map by ID."""
+    async def update(self: MapService, id: int, payload: MapSave) -> MapDomain | None:
+        """Update an existing map by ID."""
         return await self.repo.update(
-            id=id,
-            name=payload.name,
-            description=payload.description,
-            state=payload.state,
+            id, payload.name, payload.description, payload.state
         )
 
     async def delete(self: MapService, id: int) -> bool:
