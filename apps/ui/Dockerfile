@@ -27,6 +27,7 @@ ARG WEB_HTTP_PORT=80
 ARG WEB_HTTPS_PORT=443
 ARG FQDN=localhost
 ARG API_PREFIX=/api
+ARG LOG_ROTATE_COUNT=3
 
 # Set environment variables.
 ENV APP_USER=${APP_USER}
@@ -68,7 +69,8 @@ ENV DEBIAN_FRONTEND=noninteractive \
     FQDN=${FQDN} \
     WEB_HTTP_PORT=${WEB_HTTP_PORT} \
     WEB_HTTPS_PORT=${WEB_HTTPS_PORT} \
-    API_PREFIX=${API_PREFIX}
+    API_PREFIX=${API_PREFIX} \
+    LOG_ROTATE_COUNT=${LOG_ROTATE_COUNT}
 
 # Add devtools to PATH
 ENV PATH="${TASKFILE_HOME_DIR}:${ASDF_DIR}/bin:${ASDF_SHIMS_DIR}:${PATH}"
@@ -173,23 +175,26 @@ RUN chown -R ${APP_USER}:${APP_GROUP} ${APP_SERVE_DIR} ${APP_HOME}
 ENV APACHE_RUNTIME_DIR=${APP_HOME}/runtime/apache
 ENV APACHE_RUN_DIR=${APACHE_RUNTIME_DIR}
 ENV APACHE_PID_FILE=${APACHE_RUNTIME_DIR}/apache2.pid
+ENV APACHE_LOG_DIR=${APACHE_RUNTIME_DIR}/logs
 
 RUN mkdir -p /usr/local/apache2 \
     $APACHE_RUNTIME_DIR/lock \
-    $APACHE_RUNTIME_DIR/logs \
+    $APACHE_LOG_DIR \
     $APACHE_RUNTIME_DIR/socks && \
     chown -R ${APP_USER}:${APP_GROUP} \
     /usr/local/apache2 \
     $APACHE_RUNTIME_DIR/lock \
-    $APACHE_RUNTIME_DIR/logs \
+    $APACHE_LOG_DIR \
     $APACHE_RUNTIME_DIR/socks
 
 RUN mkdir -p /etc/apache2 && \
     chown -R ${APP_USER}:${APP_GROUP} /etc/apache2
 
 # Copy Apache configuration files
+# TODO move to volume mounts
 COPY services/apache/conf /usr/local/apache2/conf/
 COPY services/apache/envvars /etc/apache2/envvars
+COPY services/apache/logrotate.template /etc/logrotate.d/logrotate.template
 
 # Copy mkcert root CA into container
 COPY services/apache/certs/rootCA.pem /usr/local/share/ca-certificates/mkcert-root.crt

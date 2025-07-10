@@ -1,5 +1,3 @@
-# app/api/middleware.py
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
@@ -9,11 +7,15 @@ from piccolo_api.csrf.middleware import CSRFMiddleware
 from piccolo_api.rate_limiting.middleware import RateLimitingMiddleware
 from structlog import BoundLogger
 
-from app.extensions.body_size_middleware import BodySizeLimitMiddleware
-from app.extensions.csp_middleware import CSPMiddleware
-from app.extensions.powered_by_middleware import PoweredByMiddleware
-from app.extensions.process_time_middleware import ProcessTimeMiddleware
-from app.extensions.correlation_id_middleware import CorrelationIdMiddleware
+from app.extensions import (
+    BodySizeLimitMiddleware,
+    CorrelationIdMiddleware,
+    LoggingMiddleware,
+    PoweredByMiddleware,
+    CSPMiddleware,
+    ProcessTimeMiddleware
+)
+
 from app.core.settings import Settings, get_settings
 from app.core.logging import get_logger
 from app.utils.general import get_class_name as get_middleware_name
@@ -75,6 +77,9 @@ def add_middlewares(app: FastAPI) -> None:
 
     # Correlation ID
     app.add_middleware(CorrelationIdMiddleware)
+
+    # Request/Response Logging
+    app.add_middleware(LoggingMiddleware)
 
     # X-Service header
     app.add_middleware(PoweredByMiddleware)

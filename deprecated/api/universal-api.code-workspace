@@ -1,8 +1,8 @@
 {
     "folders": [
         {
-            "path": "."
-        }
+            "path": ".",
+        },
     ],
     "settings": {
         "git.ignoreLimitWarning": true,
@@ -30,11 +30,11 @@
             "**/*.code-workspace",
             "**/build/**",
             "**/dist/**",
-            "**/Notes/**"
+            "**/Notes/**",
         ],
         "yaml.schemas": {
             "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible-lint-config.json": "**/.ansible-lint",
-            "https://taskfile.dev/schema.json": "**/Taskfile.yml"
+            "https://taskfile.dev/schema.json": "**/Taskfile.yml",
         },
         "local-history.path": "${workspaceFolder}/.cache/vscode",
         "latex-workshop.bibtex-fields.sort.enabled": true,
@@ -58,7 +58,8 @@
         "latex-workshop.linting.lacheck.enabled": true,
         "latex-workshop.latex.autoBuild.run": "never",
         "files.associations": {
-            ".mailmap": "plaintext"
+            ".mailmap": "plaintext",
+            "*.logrotate.template": "shellscript",
         },
         "cSpell.words": [
             "customise",
@@ -69,7 +70,7 @@
             "sessionmaker",
             "sessionstart",
             "startpath",
-            "usefixtures"
-        ]
-    }
+            "usefixtures",
+        ],
+    },
 }

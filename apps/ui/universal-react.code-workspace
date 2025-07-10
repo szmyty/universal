@@ -59,6 +59,7 @@
         "latex-workshop.latex.autoBuild.run": "never",
         "files.associations": {
             ".mailmap": "plaintext",
+            "*.logrotate.template": "shellscript",
         },
         "typescript.tsdk": "./node_modules/typescript/lib",
     },

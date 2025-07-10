@@ -15,6 +15,9 @@ HTTPD_CONF=/usr/local/apache2/conf/httpd.conf
 
 OIDC_REWRITE_CONF=/usr/local/apache2/conf/extra/oidc-rewrite.conf
 
+LOGROTATE_TEMPLATE=/etc/logrotate.d/logrotate.template
+LOGROTATE_CONF=/etc/logrotate.d/apache2
+
 # ------------------------------------------------------------------------------
 # Function: render_template
 # Description:
@@ -118,7 +121,8 @@ render_httpd_conf() {
         KEYCLOAK_HTTP_PORT=8080 \
         API_PREFIX=/api \
         API_HOSTNAME=api \
-        API_PORT=4000
+        API_PORT=4000 \
+        APACHE_LOG_DIR=/var/log/apache2
 
     printf "✅ Rendered Apache HTTPD config to %s\n" "${HTTPD_CONF}"
 }
@@ -138,6 +142,18 @@ render_dev_reverse_proxy() {
     fi
 }
 
+render_logrotate() {
+    printf "🔧 Configuring logrotate for Apache logs...\n"
+
+    render_template \
+        "${LOGROTATE_TEMPLATE}" \
+        "${LOGROTATE_CONF}" \
+        LOG_ROTATE_COUNT=3 \
+        APACHE_LOG_DIR=/var/log/apache2
+
+    printf "✅ Logrotate configuration written to %s\n" "${LOGROTATE_CONF}"
+}
+
 start_apache() {
     printf "🚀 Starting Apache HTTP Server in foreground as %s...\n" "${APP_USER:-root}"
     exec httpd-foreground
@@ -154,6 +170,9 @@ main() {
 
     # If in local development, render the dev reverse proxy config.
     render_dev_reverse_proxy
+
+    # Configure logrotate for Apache logs
+    render_logrotate
 
     # Start Apache HTTP Server
     start_apache

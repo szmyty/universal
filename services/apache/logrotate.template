@@ -1,0 +1,11 @@
+${APACHE_LOG_DIR}/*.log {
+    daily
+    rotate ${LOG_ROTATE_COUNT}
+    compress
+    notifempty
+    missingok
+    create 640 root adm
+    postrotate
+        systemctl reload apache2 > /dev/null 2>&1 || true
+    endscript
+}

@@ -144,6 +144,7 @@ class Settings(BaseSettings):
     debug: bool = Field(default=False, alias="UI_DEBUG_MODE", description="Enable debug mode")
     log_level: str = Field(default="INFO", alias="UI_LOG_LEVEL", description="Logging level for the application")
     log_file: str = Field(default="logs/app.log", alias="UI_LOG_FILE", description="Path to the log file")
+    log_requests: bool = Field(default=True, alias="UI_LOG_REQUESTS", description="Enable logging of HTTP requests")
     api_prefix: str = Field(default="/api", alias="API_PREFIX", description="API URL prefix")
     cors_allow_credentials: bool = Field(default=True, alias="CORS_ALLOW_CREDENTIALS", description="Allow credentials in CORS")
     cors_allow_methods: str = Field(default="*")
