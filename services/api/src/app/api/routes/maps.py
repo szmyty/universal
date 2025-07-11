@@ -40,33 +40,42 @@ async def save_map(
     user: OIDCUser = Depends(map_oidc_user),
     service: MapService = Depends(get_map_service),
 ) -> JSONResponse:
-    """
-    Create or update a map depending on whether `id` exists in DB.
-    Returns 201 for new maps, 200 for updates.
-    """
+    log.info("🧭 Received save_map request", user_id=user.sub, map_id=payload.id)
+
     if payload.id:
         existing: MapDomain | None = await service.get(payload.id)
+
         if existing:
+            log.info("📝 Existing map found", map_id=payload.id, owner=existing.user_id)
+
             if existing.user_id != user.sub:
-                raise HTTPException(403, "Not authorized to modify this map")
+                log.warning("🚫 User not authorized to update map", user_id=user.sub, map_owner=existing.user_id)
+                raise HTTPException(status_code=403, detail="Not authorized to modify this map")
 
             updated: MapDomain | None = await service.update(payload.id, payload)
-            if updated is None:
-                raise HTTPException(500, "Failed to update map")
+
+            if not updated:
+                log.error("❌ Failed to update map", map_id=payload.id)
+                raise HTTPException(status_code=500, detail="Failed to update map")
+
             updated.user = user
+            log.info("✅ Map updated successfully", map_id=updated.id)
             return JSONResponse(
                 status_code=status.HTTP_200_OK,
                 content=MapRead.model_validate(updated).model_dump(mode="json"),
             )
 
-    # Create new map (either no ID, or ID not in DB)
+        log.info("📄 Map ID provided but not found, creating new", map_id=payload.id)
+
     created: MapDomain = await service.create(user.sub, payload)
     created.user = user
+
+    log.info("🎉 Map created successfully", map_id=created.id, user_id=user.sub)
+
     return JSONResponse(
         status_code=status.HTTP_201_CREATED,
         content=MapRead.model_validate(created).model_dump(mode="json"),
     )
-
 
 @router.get("/", response_model=list[MapRead])
 async def list_all_maps(
