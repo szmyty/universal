@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Sequence
+from typing import Any, Sequence
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -96,11 +96,28 @@ async def list_all_maps(
     service: MapService = Depends(get_map_service),
 ) -> list[MapRead]:
     """List all maps."""
-    maps: Sequence[MapDomain] = await service.list()
-    for map in maps:
-        map.user = user
-    return [MapRead.model_validate(map) for map in maps]
+    log.info("📥 Received list_all_maps request", user_id=user.sub)
 
+    try:
+        maps: Sequence[MapDomain] = await service.list()
+
+        if not maps:
+            log.info("📭 No maps found", user_id=user.sub)
+
+        for map in maps:
+            map.user = user
+
+        response: list[MapRead] = [MapRead.model_validate(m) for m in maps]
+        log.info("📦 Returning map list", count=len(response))
+        return response
+
+    except HTTPException as http_err:
+        log.warning("⚠️ HTTPException during map listing", status=http_err.status_code, detail=http_err.detail)
+        raise http_err
+
+    except Exception as err:
+        log.exception("🔥 Unhandled error during list_all_maps", error=str(err))
+        raise HTTPException(status_code=500, detail="Failed to list maps due to unexpected error.")
 
 @router.get("/me", response_model=list[MapRead])
 async def list_my_maps(
@@ -134,16 +151,25 @@ async def get_map(
     service: MapService = Depends(get_map_service),
 ) -> MapRead:
     """Get a single map by ID (must own or be admin)."""
-    map: MapDomain | None = await service.get(map_id)
-    if not map:
-        raise HTTPException(status_code=404, detail="Map not found")
+    log.info("📥 get_map_by_id request", map_id=map_id, user_id=user.sub)
 
-    if map.user_id != user.sub and "admin" not in (user.roles or []):
-        raise HTTPException(status_code=403, detail="Not authorized to access this map")
+    try:
+        map_: MapDomain | None = await service.get(map_id)
 
-    map.user = user
-    return MapRead.model_validate(map)
+        if not map_:
+            log.warning("❌ Map not found", map_id=map_id)
+            raise HTTPException(status_code=404, detail="Map not found")
 
+        log.info("✅ Returning map", map_id=map_id)
+        return MapRead.model_validate(map_)
+
+    except HTTPException as http_err:
+        log.warning("⚠️ HTTPException in get_map_by_id", status=http_err.status_code, detail=http_err.detail)
+        raise http_err
+
+    except Exception as err:
+        log.exception("🔥 Unhandled error in get_map_by_id", error=str(err), map_id=map_id)
+        raise HTTPException(status_code=500, detail="Failed to retrieve map due to unexpected error.")
 
 @router.put("/{map_id}", response_model=MapRead)
 async def update_map(

@@ -55,3 +55,9 @@ services:
       - .env.development
     # volumes:
     #   - ./apps/ui:/app
+
+  portainer:
+    image: portainer/portainer-ce@sha256:224a378fbc5ae579dc9d570c5ca2e5e981a4a003c8d7c2c5b5e482af97c2f87c
+    env_file:
+      - .env.universal
+      - .env.development
