@@ -40,42 +40,40 @@ async def save_map(
     user: OIDCUser = Depends(map_oidc_user),
     service: MapService = Depends(get_map_service),
 ) -> JSONResponse:
-    log.info("🧭 Received save_map request", map_id=payload.id, user_id=user.sub)
+    log.info("📦 Received save_map upsert request", map_id=payload.id, user_id=user.sub)
 
     try:
-        # Update existing map
-        if payload.id:
-            existing: MapDomain | None = await service.get(payload.id)
+        existing: MapDomain | None = await service.get(payload.id)
 
-            if existing:
-                log.info("🔁 Updating existing map", map_id=payload.id)
+        if existing:
+            log.info("🔁 Map exists, attempting update", map_id=payload.id, owner=existing.user_id)
 
-                if existing.user_id != user.sub:
-                    log.warning("🚫 Unauthorized map update attempt", user_id=user.sub, owner_id=existing.user_id)
-                    raise HTTPException(status_code=403, detail="You do not have permission to update this map.")
+            if existing.user_id != user.sub:
+                log.warning("🚫 Unauthorized map update attempt", user_id=user.sub, owner_id=existing.user_id)
+                raise HTTPException(status_code=403, detail="Not authorized to update this map")
 
-                updated = await service.update(payload.id, payload)
-                if not updated:
-                    log.error("❌ Update failed - service returned None", map_id=payload.id)
-                    raise HTTPException(status_code=500, detail="Update failed due to internal service error.")
+            updated = await service.update(payload.id, payload)
+            if not updated:
+                log.error("❌ Update failed — service returned None", map_id=payload.id)
+                raise HTTPException(status_code=500, detail="Failed to update map")
 
-                updated.user = user
-                log.info("✅ Map successfully updated", map_id=updated.id)
-                return JSONResponse(
-                    status_code=status.HTTP_200_OK,
-                    content=MapRead.model_validate(updated).model_dump(mode="json"),
-                )
+            updated.user = user
+            log.info("✅ Map updated successfully", map_id=updated.id)
+            return JSONResponse(
+                status_code=status.HTTP_200_OK,
+                content=MapRead.model_validate(updated).model_dump(mode="json"),
+            )
 
-            log.info("📄 Map not found for update - treating as create", map_id=payload.id)
+        # Create new map with provided UUID
+        log.info("📄 Map not found — creating new", map_id=payload.id)
 
-        # Create new map
-        created = await service.create(user.sub, payload)
+        created: MapDomain = await service.create(user.sub, payload)
         if not created:
-            log.error("❌ Map creation failed - service returned None", payload=payload.model_dump())
-            raise HTTPException(status_code=500, detail="Failed to create map.")
+            log.error("❌ Map creation failed — service returned None", payload=payload.model_dump())
+            raise HTTPException(status_code=500, detail="Failed to create map")
 
         created.user = user
-        log.info("🎉 Map successfully created", map_id=created.id, user_id=user.sub)
+        log.info("🎉 Map created successfully", map_id=created.id, user_id=user.sub)
         return JSONResponse(
             status_code=status.HTTP_201_CREATED,
             content=MapRead.model_validate(created).model_dump(mode="json"),
