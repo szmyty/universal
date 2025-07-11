@@ -1,6 +1,11 @@
 import type { QueryClient, UseMutationResult } from "@tanstack/react-query";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createMap, fetchAllMaps, saveMap } from "@universal/api/maps";
+import {
+    createMap,
+    fetchAllMaps,
+    fetchMapById,
+    saveMap,
+} from "@universal/api/maps";
 import type {
     MapCreate,
     MapBase,
@@ -60,5 +65,17 @@ export const useMaps = () => {
     return useQuery<MapRead[]>({
         queryKey: ["maps", "me"],
         queryFn: fetchAllMaps,
+    });
+};
+
+// ✅ NEW: Get single map by ID
+export const useMapById = (id?: string) => {
+    return useQuery<MapRead>({
+        queryKey: ["map", id],
+        queryFn: () => {
+            if (!id) throw new Error("Map ID is required");
+            return fetchMapById(id);
+        },
+        enabled: !!id, // only run when `id` is defined
     });
 };

@@ -41,25 +41,25 @@ async def save_map(
     service: MapService = Depends(get_map_service),
 ) -> JSONResponse:
     """
-    Create or update a map depending on whether `id` is provided.
+    Create or update a map depending on whether `id` exists in DB.
     Returns 201 for new maps, 200 for updates.
     """
     if payload.id:
         existing: MapDomain | None = await service.get(payload.id)
-        if existing is None:
-            raise HTTPException(404, "Map not found")
-        if existing.user_id != user.sub:
-            raise HTTPException(403, "Not authorized to modify this map")
+        if existing:
+            if existing.user_id != user.sub:
+                raise HTTPException(403, "Not authorized to modify this map")
 
-        updated: MapDomain | None = await service.update(payload.id, payload)
-        if updated is None:
-            raise HTTPException(500, "Failed to update map")
-        updated.user = user
-        return JSONResponse(
-            status_code=status.HTTP_200_OK,
-            content=MapRead.model_validate(updated).model_dump(mode="json"),
-        )
+            updated: MapDomain | None = await service.update(payload.id, payload)
+            if updated is None:
+                raise HTTPException(500, "Failed to update map")
+            updated.user = user
+            return JSONResponse(
+                status_code=status.HTTP_200_OK,
+                content=MapRead.model_validate(updated).model_dump(mode="json"),
+            )
 
+    # Create new map (either no ID, or ID not in DB)
     created: MapDomain = await service.create(user.sub, payload)
     created.user = user
     return JSONResponse(
