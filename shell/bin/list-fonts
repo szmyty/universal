@@ -1,0 +1,137 @@
+#!/usr/bin/env bash
+# list-fonts: list installed fonts with metadata
+
+set -euo pipefail
+
+USE_COLOR=true
+FILTER=""
+WRITE_LOCK=false
+OUTPUT_FILE="fonts.lock"
+OUTPUT_JSON=false
+SCOPE="all" # user, system, or all
+
+print_help() {
+    cat <<EOF
+Usage: list-fonts [options]
+
+Lists installed fonts and their file paths.
+
+Options:
+  --grep <pattern>      Filter font list using grep
+  --lock                Write output to 'fonts.lock'
+  --out <file>          Write output to a specific file
+  --no-color            Disable color output
+  --json                Output font list as JSON
+  --user                Show only user-installed fonts
+  --system              Show only system fonts
+  -h, --help            Show this help message
+EOF
+}
+
+color() {
+    [[ "${USE_COLOR}" == true ]] || return 0
+    case "$1" in
+    green) echo -e "\033[32m" ;;
+    cyan) echo -e "\033[36m" ;;
+    reset) echo -e "\033[0m" ;;
+    *) echo "" ;;
+    esac
+}
+
+main() {
+    # Parse args
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+        --no-color)
+            USE_COLOR=false
+            shift
+            ;;
+        --grep)
+            FILTER="$2"
+            shift 2
+            ;;
+        --lock)
+            WRITE_LOCK=true
+            shift
+            ;;
+        --out)
+            OUTPUT_FILE="$2"
+            shift 2
+            ;;
+        --json)
+            OUTPUT_JSON=true
+            shift
+            ;;
+        --user)
+            SCOPE="user"
+            shift
+            ;;
+        --system)
+            SCOPE="system"
+            shift
+            ;;
+        -h | --help)
+            print_help
+            exit 0
+            ;;
+        *)
+            printf "❌ Unknown option: %s\n\n" "$1" >&2
+            print_help
+            exit 1
+            ;;
+        esac
+    done
+
+    if ! command -v fc-list >/dev/null 2>&1; then
+        echo "❌ fc-list not found. Please install 'fontconfig'." >&2
+        exit 1
+    fi
+
+    # Select scope
+    local query_scope=""
+    case "${SCOPE}" in
+    user) query_scope=":appdir" ;;
+    system) query_scope=":system" ;;
+    *) query_scope=":" ;;
+    esac
+
+    # Fetch raw list
+    local raw_output
+    raw_output=$(fc-list "${query_scope}" family file | sort)
+
+    # Filter by pattern
+    if [[ -n "${FILTER}" ]]; then
+        raw_output=$(echo "${raw_output}" | grep --color=never --ignore-case "${FILTER}" || true)
+    fi
+
+    # Output to file if requested
+    if [[ "${WRITE_LOCK}" == true || -n "${OUTPUT_FILE}" ]]; then
+        echo "${raw_output}" >"${OUTPUT_FILE}"
+        printf "🔒 Font list written to %s\n" "${OUTPUT_FILE}" >&2
+    fi
+
+    # Format as JSON
+    if [[ "${OUTPUT_JSON}" == true ]]; then
+        echo "${raw_output}" | awk -F ': ' '
+      {
+        name=$1; file=$2;
+        gsub(/^[[:space:]]+|[[:space:]]+$/, "", name);
+        gsub(/^[[:space:]]+|[[:space:]]+$/, "", file);
+        printf("{\"name\": \"%s\", \"file\": \"%s\"}\n", name, file);
+      }' | jq -s '.'
+        return
+    fi
+
+    # Colorized terminal output
+    if [[ "${USE_COLOR}" == true ]]; then
+        local green cyan reset
+        green=$(color green)
+        cyan=$(color cyan)
+        reset=$(color reset)
+        raw_output=$(echo "${raw_output}" | sed -E "s/^(.*): (.*)/${green}\1${reset} → ${cyan}\2${reset}/")
+    fi
+
+    echo "${raw_output}"
+}
+
+main "$@"

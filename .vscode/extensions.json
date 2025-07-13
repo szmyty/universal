@@ -16,6 +16,16 @@
         "mrmlnc.vscode-apache",
         "foxundermoon.shell-format",
         "timonwong.shellcheck",
-        "irongeek.vscode-env"
+        "irongeek.vscode-env",
+        "ivory-lab.jenkinsfile-support",
+        "htmlhint.vscode-htmlhint",
+        "codezombiech.gitignore",
+        "johnpapa.vscode-peacock",
+        "wmaurer.change-case",
+        "xaver.clang-format",
+        "twxs.cmake",
+        "josetr.cmake-language-support-vscode",
+        "ms-vscode.cmake-tools",
+        "coolbear.systemd-unit-file"
     ]
 }

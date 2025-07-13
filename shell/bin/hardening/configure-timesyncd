@@ -1,0 +1,209 @@
+#!/usr/bin/env bash
+# configure-timesyncd: Generates a tuned timesyncd.conf based on NTP latency
+
+set -euo pipefail
+
+USE_COLOR=true
+VERBOSE=false
+DRY_RUN=false
+APPLY=true
+LATENCY_THRESHOLD=50
+NTP_COUNT=4
+TIMEZONE=""
+CONF_PATH="/etc/systemd/timesyncd.conf"
+TMP_CONF="$(mktemp --tmpdir ntpconf.XXXXX)"
+
+NTPSERVERPOOL=(
+    0.ubuntu.pool.ntp.org
+    1.ubuntu.pool.ntp.org
+    2.ubuntu.pool.ntp.org
+    3.ubuntu.pool.ntp.org
+    pool.ntp.org
+)
+
+PING_CMD="ping -c 2 -W 1"
+DIG_CMD="dig +noall +answer +nocomments"
+
+SERVER_ARRAY=()
+FALLBACK_ARRAY=()
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Logging
+# ─────────────────────────────────────────────────────────────────────────────
+color() {
+    [[ "${USE_COLOR}" == true ]] || return 0
+    case "$1" in
+    reset) echo -e "\033[0m" ;;
+    cyan) echo -e "\033[36m" ;;
+    green) echo -e "\033[32m" ;;
+    yellow) echo -e "\033[33m" ;;
+    red) echo -e "\033[31m" ;;
+    *) echo "" ;;
+    esac
+}
+
+log() {
+    local type="$1"
+    shift
+    local prefix color_code output
+    case "${type}" in
+    info)
+        prefix="👉"
+        color_code=$(color cyan)
+        ;;
+    success)
+        prefix="✅"
+        color_code=$(color green)
+        ;;
+    warn)
+        prefix="⚠️"
+        color_code=$(color yellow)
+        ;;
+    error)
+        prefix="❌"
+        color_code=$(color red)
+        ;;
+    *)
+        prefix=""
+        color_code=$(color reset)
+        ;;
+    esac
+    output="${color_code}${prefix} $*$(color reset)"
+    if [[ "${type}" == "error" ]]; then
+        printf "%s\n" "${output}" >&2
+        exit 1
+    elif [[ "${VERBOSE}" == true ]]; then
+        printf "%s\n" "${output}"
+    fi
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# CLI Parsing
+# ─────────────────────────────────────────────────────────────────────────────
+print_help() {
+    cat <<EOF
+Usage: $(basename "$0") [options]
+
+Options:
+  --latency N       Max latency (ms) allowed per NTP server (default: 50)
+  --count N         Number of preferred NTP servers to include (default: 4)
+  --timezone ZONE   Set timezone via timedatectl (optional)
+  --dry-run         Print config and actions without applying
+  --no-apply        Generate config but don't overwrite system file
+  --verbose         Print verbose output
+  --no-color        Disable colorized logs
+  -h, --help        Show this help message
+EOF
+    exit 0
+}
+
+for arg in "$@"; do
+    case "${arg}" in
+    --latency)
+        shift
+        LATENCY_THRESHOLD="${1}"
+        ;;
+    --count)
+        shift
+        NTP_COUNT="${1}"
+        ;;
+    --timezone)
+        shift
+        TIMEZONE="${1}"
+        ;;
+    --dry-run) DRY_RUN=true ;;
+    --no-apply) APPLY=false ;;
+    --verbose) VERBOSE=true ;;
+    --no-color) USE_COLOR=false ;;
+    -h | --help) print_help ;;
+    *) log error "Unknown argument: ${arg}" ;;
+    esac
+done
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Core Logic
+# ─────────────────────────────────────────────────────────────────────────────
+ping_latency() {
+    local host=$1
+    local latency
+    latency=$(${PING_CMD} "${host}" | grep 'rtt' | awk -F '/' '{printf "%.0f", $5}' || echo "999")
+    echo "${latency}"
+}
+
+select_ntp_servers() {
+    log info "Probing NTP servers with max latency: ${LATENCY_THRESHOLD}ms"
+
+    local servers=0
+    local dig_hosts
+    dig_hosts=$(${DIG_CMD} "${NTPSERVERPOOL[@]}" | awk '{print $5}' || true)
+
+    while read -r host; do
+        [[ ${servers} -ge ${NTP_COUNT} ]] && break
+        latency=$(ping_latency "${host}")
+        if [[ "${latency}" -lt "${LATENCY_THRESHOLD}" ]]; then
+            ns=$(nslookup "${host}" 2>/dev/null | awk '/name =/ {print $4}' | sed 's/\.$//')
+            if [[ -n "${ns}" && ! "${SERVER_ARRAY[*]}" =~ ${ns} ]]; then
+                SERVER_ARRAY+=("${ns}")
+                log info "✔️  ${ns} (${latency} ms)"
+                ((servers++))
+            fi
+        fi
+    done <<<"${dig_hosts}"
+
+    # fallback if not enough
+    if [[ "${#SERVER_ARRAY[@]}" -lt 2 ]]; then
+        log warn "Not enough fast servers found. Using pool fallback."
+        SERVER_ARRAY+=("${NTPSERVERPOOL[@]:0:2}")
+    fi
+
+    FALLBACK_ARRAY=("${NTPSERVERPOOL[@]: -2}")
+}
+
+write_config() {
+    {
+        echo "[Time]"
+        echo "NTP=${SERVER_ARRAY[*]}"
+        echo "FallbackNTP=${FALLBACK_ARRAY[*]}"
+        echo "RootDistanceMaxSec=1"
+    } >"${TMP_CONF}"
+
+    log info "Generated config:"
+    echo "---------------------------"
+    cat "${TMP_CONF}"
+    echo "---------------------------"
+
+    if [[ "${DRY_RUN}" == false && "${APPLY}" == true ]]; then
+        cp "${TMP_CONF}" "${CONF_PATH}"
+        systemctl restart systemd-timesyncd
+        log success "Applied config and restarted timesyncd"
+    elif [[ "${DRY_RUN}" == true ]]; then
+        log info "Dry run: skipping apply"
+    else
+        log info "Config written to: ${TMP_CONF}"
+    fi
+}
+
+set_timezone_if_needed() {
+    if [[ -n "${TIMEZONE}" ]]; then
+        timedatectl set-timezone "${TIMEZONE}"
+        log success "Timezone set to: ${TIMEZONE}"
+    fi
+}
+
+show_status() {
+    if [[ "${VERBOSE}" == true ]]; then
+        timedatectl
+        echo
+        systemctl status systemd-timesyncd --no-pager || true
+    fi
+}
+
+main() {
+    select_ntp_servers
+    write_config
+    set_timezone_if_needed
+    show_status
+    rm -f "${TMP_CONF}"
+}
+
+main

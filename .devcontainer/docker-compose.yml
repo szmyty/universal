@@ -1,3 +1,6 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json
+
 ######################################################################
 # docker-compose configuration for the devcontainer
 #
@@ -5,10 +8,58 @@
 # repository into /workspace. The container is kept running with a
 # "sleep infinity" command so that VS Code can attach to it.
 ######################################################################
+
+# Define common labels for Docker objects
+x-labels: &labels
+  labels:
+    app.name: development
+    app.scope: development
+
+# Shared settings for all services
+x-settings: &settings # Restart containers unless stopped manually
+  restart: unless-stopped
+  # Environment variables for all services
+  environment:
+    - TZ=${TZ:-UTC}
+  # Use a common .env file for environment variables
+  env_file:
+    - .env.devcontainer
+  # Allow access to the host machine from the container
+  extra_hosts:
+    - "host.docker.internal:host-gateway"
+  # Init system for graceful shutdown
+  init: true
+  # Pull policy for images
+  pull_policy: missing
+  # Attach the container to the project network
+  networks:
+    default:
+      aliases:
+        - development-network
+  # Use a specific platform for compatibility
+  platform: linux/amd64
+  # Apply the common labels to all services
+  <<: *labels
+
+# Define the Docker network for all services
+networks:
+  default:
+    # Name of the Docker network, based on the project name
+    name: development-network
+    # Use the bridge driver for the network (https://docs.docker.com/compose/networking/)
+    driver: bridge
+    # Allows containers to manually attach to this network
+    attachable: true
+    # Custom options for bridge network driver
+    driver_opts:
+      com.docker.network.bridge.enable_icc: "true"
+      com.docker.network.bridge.enable_ip_masquerade: "true"
+    <<: *labels
+
 services:
-  dev:
-    container_name: ${COMPOSE_PROJECT_NAME:-devcontainer}-dev
-    hostname: ${COMPOSE_PROJECT_NAME:-devcontainer}-dev
+  development:
+    container_name: development
+    hostname: development
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
@@ -18,33 +69,28 @@ services:
     command: sleep infinity
     privileged: true # required for docker-in-docker
     user: vscode
-    networks:
-      - devnet
-    env_file:
-      - .env.devcontainer
+    <<: *settings
 
   codetotal:
     image: ghcr.io/oxsecurity/codetotal@sha256:350b78b86cdfad1c509cf70c4aed5d3c26dce4c70508aae4b8786e06561e0918
     container_name: ${COMPOSE_PROJECT_NAME:-devcontainer}-codetotal
     hostname: ${CODETOTAL_HOSTNAME:-codetotal}
     depends_on:
-      dev:
+      development:
         condition: service_healthy
     volumes:
       - ..:/workspace:cached
     working_dir: /workspace
     ports:
       - "${CODETOTAL_PORT:-3001}:3000"
-    networks:
-      - devnet
+    <<: *settings
 
   megalinter:
     image: oxsecurity/megalinter@sha256:c9de62bce677cfb57c7168b774e388e04e8a85db4782d4dabd002f4274ea0116
     container_name: ${COMPOSE_PROJECT_NAME:-devcontainer}-megalinter
     depends_on:
-      dev:
+      development:
         condition: service_healthy
-
     volumes:
       - ..:/workspace:cached
     working_dir: /workspace
@@ -59,13 +105,6 @@ services:
           --codetotal-url http://localhost:${CODETOTAL_PORT:-3001} \
           --enable-all \
           --remove-mounts
-    networks:
-      - devnet
     environment:
       - GITHUB_TOKEN=${GITHUB_TOKEN:-}
       - CODETOTAL_PORT=${CODETOTAL_PORT:-3001}
-
-networks:
-  devnet:
-    # Simple bridge network for development containers
-    driver: bridge

@@ -1,0 +1,148 @@
+#!/usr/bin/env bash
+# git-remove-exec-no-shebang: Removes +x from Git-visible files without a shebang
+
+set -euo pipefail
+
+USE_COLOR=true
+QUIET=false
+SHEBANG_REGEX='^#!'
+
+# ─────────────────────────────────────────────────────────────────────────────
+# CLI
+# ─────────────────────────────────────────────────────────────────────────────
+print_help() {
+    cat <<EOF
+Usage: $(basename "$0") [options]
+
+Removes the executable bit (+x) from Git-visible files that do not start with a shebang.
+
+Options:
+  --quiet         Suppress per-file output
+  --no-color      Disable colored output
+  -h, --help      Show this help message
+EOF
+}
+
+POSITIONAL_ARGS=()
+for arg in "$@"; do
+    case "${arg}" in
+    --no-color) USE_COLOR=false ;;
+    --quiet) QUIET=true ;;
+    -h | --help)
+        print_help
+        exit 0
+        ;;
+    -*)
+        echo "❌ Unknown option: ${arg}" >&2
+        print_help
+        exit 1
+        ;;
+    *) POSITIONAL_ARGS+=("${arg}") ;;
+    esac
+done
+set -- "${POSITIONAL_ARGS[@]:-}"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Logging + Color
+# ─────────────────────────────────────────────────────────────────────────────
+color() {
+    [[ "${USE_COLOR}" == true ]] || return 0
+    case "$1" in
+    reset) echo -e "\033[0m" ;;
+    cyan) echo -e "\033[36m" ;;
+    green) echo -e "\033[32m" ;;
+    yellow) echo -e "\033[33m" ;;
+    red) echo -e "\033[31m" ;;
+    *) echo "" ;;
+    esac
+}
+
+log() {
+    local type="$1"
+    shift
+    local prefix color_code output
+
+    case "${type}" in
+    info)
+        prefix="👉"
+        color_code=$(color cyan)
+        ;;
+    success)
+        prefix="✅"
+        color_code=$(color green)
+        ;;
+    warn)
+        prefix="⚠️"
+        color_code=$(color yellow)
+        ;;
+    error)
+        prefix="❌"
+        color_code=$(color red)
+        ;;
+    *)
+        prefix=""
+        color_code=$(color reset)
+        ;;
+    esac
+
+    output="${color_code}${prefix} $*$(color reset)"
+    if [[ "${type}" == "error" ]]; then
+        printf "%s\n" "${output}" >&2
+        exit 1
+    elif [[ "${QUIET}" != true ]]; then
+        printf "%s\n" "${output}"
+    fi
+}
+
+error_trap() {
+    local exit_code=$?
+    local line_no=${1:-unknown}
+    log error "Script failed on line ${line_no} (exit code ${exit_code})"
+    exit "${exit_code}"
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Core Logic
+# ─────────────────────────────────────────────────────────────────────────────
+has_exec_bit() {
+    [[ -x "$1" ]]
+}
+
+has_shebang() {
+    head -n 1 "$1" | grep -qE "${SHEBANG_REGEX}"
+}
+
+main() {
+    trap 'error_trap $LINENO' ERR
+
+    if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+        log error "Not inside a Git repository. Aborting."
+    fi
+
+    log info "Scanning Git-visible files for invalid executable bits..."
+
+    local count=0
+    local file
+
+    # Load list of files into an array
+    mapfile -d '' files < <(git ls-files --cached --others --exclude-standard -z || true)
+
+    for file in "${files[@]}"; do
+        [[ -f "${file}" ]] || continue
+
+        # shellcheck disable=SC2310
+        if has_exec_bit "${file}" && ! has_shebang "${file}"; then
+            chmod -x "${file}"
+            log warn "🛠️  Removed exec bit: ${file}"
+            count=$((count + 1))
+        fi
+    done
+
+    if ((count == 0)); then
+        log success "No invalid exec bits found. Repo is clean."
+    else
+        log success "Stripped exec bit from ${count} file(s)."
+    fi
+}
+
+main "$@"

@@ -49,14 +49,56 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "[shellscript]": {
-        "editor.defaultFormatter": "foxundermoon.shell-format"
+        "editor.defaultFormatter": "foxundermoon.shell-format",
+        "editor.formatOnSave": false,
     },
     "cSpell.words": ["TASKFILE"],
     "json.schemas": [
         {
             "fileMatch": ["manifest.webmanifest"],
             "url": "https://json.schemastore.org/web-manifest-combined.json"
+        },
+        {
+            "fileMatch": [".htmlhintrc"],
+            "url": "https://json.schemastore.org/htmlhint.json"
+        },
+        {
+            "fileMatch": [".npmpackagejsonlintrc.json"],
+            "url": "https://json.schemastore.org/npm-package-json-lint.json"
+        },
+        {
+            "fileMatch": [".prettierrc", ".prettierrc.json", ".prettierrc.yaml", ".prettierrc.yml", ".prettierrc.js", ".prettierrc.cjs", ".prettierrc.mjs"],
+            "url": "https://json.schemastore.org/prettierrc.json"
+        },
+        {
+            "fileMatch": [".luacheckrc"],
+            "url": "https://json.schemastore.org/luacheckrc.json"
+        },
+        {
+            "fileMatch": [".markdown-link-check.json"],
+            "url": "https://www.schemastore.org/markdown-link-check.json"
+        },
+        {
+            "fileMatch": [".yamllint.yml", ".yamllint.yaml", ".yamllint.yml"],
+            "url": "https://www.schemastore.org/yamllint.json"
         }
     ],
-    "shellcheck.enable": true
+    "shfmt.executablePath": "shfmt",
+    "[dockerfile]": {
+        "editor.formatOnSave": false,
+        "editor.defaultFormatter": "ms-azuretools.vscode-containers"
+    },
+    "[ignore]": {
+        "editor.formatOnSave": false,
+        "editor.defaultFormatter": null
+    },
+    "[gitignore]": {
+        "editor.formatOnSave": false,
+        "editor.defaultFormatter": null
+    },
+    "shellcheck.enable": true,
+    "shellcheck.disableVersionCheck": false,
+    "shellcheck.enableQuickFix": true,
+    "shellcheck.useWorkspaceRootAsCwd": false,
+    "shellcheck.run": "onSave",
 }

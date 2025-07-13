@@ -1,0 +1,116 @@
+#!/usr/bin/env bash
+# show-systemd-delta: Displays local overrides to systemd units
+
+set -euo pipefail
+
+USE_COLOR=true
+VERBOSE=false
+DRY_RUN=false
+QUIET=false
+
+# ─────────────────────────────────────────────────────────────────────────────
+# CLI + Logging
+# ─────────────────────────────────────────────────────────────────────────────
+print_help() {
+    cat <<EOF
+Usage: $(basename "$0") [options]
+
+Show local overrides to systemd unit files using systemd-delta.
+
+Options:
+  --dry-run     Validate systemd presence but don’t run delta
+  --verbose     Print extra details (e.g., where overrides are stored)
+  --no-color    Disable colored output
+  --quiet       Suppress most output
+  -h, --help    Show this help message
+EOF
+    exit 0
+}
+
+color() {
+    [[ "${USE_COLOR}" == true ]] || return 0
+    case "$1" in
+    reset) echo -e "\033[0m" ;;
+    cyan) echo -e "\033[36m" ;;
+    green) echo -e "\033[32m" ;;
+    yellow) echo -e "\033[33m" ;;
+    red) echo -e "\033[31m" ;;
+    *) echo "" ;;
+    esac
+}
+
+log() {
+    local type="$1"
+    shift
+    local prefix color_code output
+    case "${type}" in
+    info)
+        prefix="👉"
+        color_code=$(color cyan)
+        ;;
+    success)
+        prefix="✅"
+        color_code=$(color green)
+        ;;
+    warn)
+        prefix="⚠️"
+        color_code=$(color yellow)
+        ;;
+    error)
+        prefix="❌"
+        color_code=$(color red)
+        ;;
+    *)
+        prefix=""
+        color_code=$(color reset)
+        ;;
+    esac
+    output="${color_code}${prefix} $*$(color reset)"
+    if [[ "${type}" == "error" ]]; then
+        printf "%s\n" "${output}" >&2
+        exit 1
+    elif [[ "${VERBOSE}" == true || "${QUIET}" != true ]]; then
+        printf "%s\n" "${output}"
+    fi
+}
+
+parse_args() {
+    for arg in "$@"; do
+        case "${arg}" in
+        --dry-run) DRY_RUN=true ;;
+        --verbose) VERBOSE=true ;;
+        --no-color) USE_COLOR=false ;;
+        --quiet) QUIET=true ;;
+        -h | --help) print_help ;;
+        *) log error "Unknown argument: ${arg}" ;;
+        esac
+    done
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Main
+# ─────────────────────────────────────────────────────────────────────────────
+check_systemd_support() {
+    if ! command -v systemd-delta &>/dev/null; then
+        log error "systemd-delta is not available on this system."
+    fi
+}
+
+show_delta() {
+    log info "Scanning systemd overrides..."
+    systemd-delta --no-pager || true
+}
+
+main() {
+    parse_args "$@"
+    check_systemd_support
+
+    if [[ "${DRY_RUN}" == true ]]; then
+        log success "systemd-delta is available. Dry run successful."
+        exit 0
+    fi
+
+    show_delta
+}
+
+main "$@"

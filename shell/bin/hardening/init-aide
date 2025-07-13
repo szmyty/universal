@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+# init-aide: Initializes AIDE and enables its systemd timer
+
+set -euo pipefail
+
+USE_COLOR=true
+VERBOSE=false
+
+color() {
+    [[ "${USE_COLOR}" == true ]] || return 0
+    case "$1" in
+    reset) echo -e "\033[0m" ;;
+    cyan) echo -e "\033[36m" ;;
+    green) echo -e "\033[32m" ;;
+    yellow) echo -e "\033[33m" ;;
+    red) echo -e "\033[31m" ;;
+    *) echo "" ;;
+    esac
+}
+
+log() {
+    local type="$1"
+    shift
+    local prefix color_code output
+    case "${type}" in
+    info)
+        prefix="👉"
+        color_code=$(color cyan)
+        ;;
+    success)
+        prefix="✅"
+        color_code=$(color green)
+        ;;
+    warn)
+        prefix="⚠️"
+        color_code=$(color yellow)
+        ;;
+    error)
+        prefix="❌"
+        color_code=$(color red)
+        ;;
+    *)
+        prefix=""
+        color_code=$(color reset)
+        ;;
+    esac
+    output="${color_code}${prefix} $*$(color reset)"
+    if [[ "${type}" == "error" ]]; then
+        printf "%s\n" "${output}" >&2
+        exit 1
+    elif [[ "${VERBOSE}" == true ]]; then
+        printf "%s\n" "${output}"
+    fi
+}
+
+main() {
+    log info "Initializing AIDE..."
+    aideinit --yes
+    log success "Initial AIDE database created."
+
+    log info "Enabling AIDE systemd timer..."
+    systemctl daemon-reload
+    systemctl enable --now aidecheck.timer
+
+    log info "Disabling daily cron job if present..."
+    rm -f /etc/cron.daily/aide || true
+
+    log success "AIDE setup complete. Daily checks scheduled with systemd."
+}
+
+main "$@"

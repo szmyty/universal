@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+# list-packages: list installed APT packages with version info
+
+set -euo pipefail
+
+USE_COLOR=true
+FILTER=""
+WRITE_LOCK=false
+OUTPUT_FILE="packages.lock"
+OUTPUT_JSON=false
+
+print_help() {
+    cat <<EOF
+Usage: list-packages [options]
+
+Lists installed APT packages with their versions.
+
+Options:
+  --grep <pattern>     Filter package list using grep
+  --lock               Write output to 'packages.lock'
+  --out <file>         Write output to a specific file
+  --json               Output package list as JSON
+  --no-color           Disable color highlighting
+  -h, --help           Show this help message
+EOF
+}
+
+color() {
+    [[ "${USE_COLOR}" == true ]] || return 0
+    case "$1" in
+    cyan) echo -e "\033[36m" ;;
+    reset) echo -e "\033[0m" ;;
+    *) echo "" ;;
+    esac
+}
+
+main() {
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+        --no-color)
+            USE_COLOR=false
+            shift
+            ;;
+        --grep)
+            FILTER="$2"
+            shift 2
+            ;;
+        --lock)
+            WRITE_LOCK=true
+            shift
+            ;;
+        --out)
+            OUTPUT_FILE="$2"
+            shift 2
+            ;;
+        --json)
+            OUTPUT_JSON=true
+            shift
+            ;;
+        -h | --help)
+            print_help
+            exit 0
+            ;;
+        *)
+            printf "❌ Unknown option: %s\n\n" "$1" >&2
+            print_help
+            exit 1
+            ;;
+        esac
+    done
+
+    local raw_output
+    raw_output=$(dpkg-query --show --showformat='${Package}=${Version}\n' | sort)
+
+    if [[ -n "${FILTER}" ]]; then
+        raw_output=$(echo "${raw_output}" | grep --color=never --ignore-case "${FILTER}" || true)
+    fi
+
+    if [[ "${WRITE_LOCK}" == true || -n "${OUTPUT_FILE}" ]]; then
+        echo "${raw_output}" >"${OUTPUT_FILE}"
+        printf "🔒 Package list written to %s\n" "${OUTPUT_FILE}" >&2
+    fi
+
+    if [[ "${OUTPUT_JSON}" == true ]]; then
+        echo "${raw_output}" | awk -F '=' '
+      {
+        pkg=$1; ver=$2;
+        gsub(/^[[:space:]]+|[[:space:]]+$/, "", pkg);
+        gsub(/^[[:space:]]+|[[:space:]]+$/, "", ver);
+        printf("{\"name\": \"%s\", \"version\": \"%s\"}\n", pkg, ver);
+      }' | jq -s '.'
+        return
+    fi
+
+    if [[ "${USE_COLOR}" == true ]]; then
+        local cyan reset
+        cyan=$(color cyan)
+        reset=$(color reset)
+        raw_output=$(echo "${raw_output}" | sed -E "s/^(.*)=([0-9a-zA-Z\.\:\-\+~]+)/\1=${cyan}\2${reset}/")
+    fi
+
+    echo "${raw_output}"
+}
+
+main "$@"

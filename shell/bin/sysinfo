@@ -1,0 +1,144 @@
+#!/usr/bin/env bash
+# sysinfo: summarize system state with optional color
+
+set -euo pipefail
+
+USE_COLOR=true
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Options & Flags
+# ─────────────────────────────────────────────────────────────────────────────
+print_help() {
+    cat <<EOF
+Usage: sysinfo [options]
+
+Displays a summary of system information including:
+  - Hostname
+  - System time
+  - Memory and CPU details
+  - Disk usage
+  - IP address
+  - Open ports (TCP/UDP)
+
+Options:
+  --no-color   Disable color output
+  -h, --help   Show this help message
+EOF
+}
+
+for arg in "$@"; do
+    case "${arg}" in
+    --no-color)
+        USE_COLOR=false
+        ;;
+    -h | --help)
+        print_help
+        exit 0
+        ;;
+    *)
+        printf "❌ Unknown option: %s\n\n" "${arg}" >&2
+        print_help
+        exit 1
+        ;;
+    esac
+done
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Color Helpers
+# ─────────────────────────────────────────────────────────────────────────────
+color() {
+    [[ "${USE_COLOR}" == true ]] || return 0
+    case "$1" in
+    reset) echo -e "\033[0m" ;;
+    bold) echo -e "\033[1m" ;;
+    cyan) echo -e "\033[36m" ;;
+    yellow) echo -e "\033[33m" ;;
+    green) echo -e "\033[32m" ;;
+    blue) echo -e "\033[34m" ;;
+    magenta) echo -e "\033[35m" ;;
+    *) echo "" ;;
+    esac
+}
+
+print_section() {
+    local label="${1}"
+    local reset_color bold cyan
+    reset_color=$(color reset)
+    bold=$(color bold)
+    cyan=$(color cyan)
+
+    printf "\n%s%s%s\n" "${bold}${cyan}" "${label}" "${reset_color}"
+
+    local dashes
+    dashes=$(printf '%*s' "${#label}" '' | tr ' ' '-')
+    printf "%s%s%s\n" "${bold}${cyan}" "${dashes}" "${reset_color}"
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Data Sections
+# ─────────────────────────────────────────────────────────────────────────────
+show_hostname() {
+    print_section "🖥️ Hostname"
+    if command -v hostnamectl >/dev/null 2>&1; then
+        hostnamectl status | grep --color=never "Static hostname"
+    else
+        local hostname
+        hostname=$(hostname)
+        if [[ -n "${hostname}" ]]; then
+            echo "Hostname: ${hostname}"
+        else
+            echo "Hostname not set."
+        fi
+    fi
+}
+
+show_time() {
+    print_section "🕰️ System Time"
+    date --rfc-2822
+}
+
+show_memory() {
+    print_section "🧠 Memory"
+    free --human
+}
+
+show_cpu() {
+    print_section "🧮 CPU"
+    lscpu | grep --extended-regexp '^Model name|^CPU\(s\)|^Thread|^Socket'
+}
+
+show_disk() {
+    print_section "📦 Disk Usage"
+    df --human-readable --print-type /
+}
+
+show_ip() {
+    print_section "🌍 IP Address"
+    hostname -I 2>/dev/null || ip addr show
+}
+
+show_ports() {
+    print_section "🔒 Listening Ports (TCP/UDP)"
+    if command -v ss >/dev/null; then
+        ss --listening --numeric --tcp --udp
+    elif command -v netstat >/dev/null; then
+        netstat --listening --numeric --tcp --udp
+    else
+        echo "Neither ss nor netstat found."
+    fi
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Main
+# ─────────────────────────────────────────────────────────────────────────────
+main() {
+    show_hostname
+    show_time
+    show_memory
+    show_cpu
+    show_disk
+    show_ip
+    show_ports
+}
+
+main

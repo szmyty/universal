@@ -1,0 +1,127 @@
+#------------------------------------------------------------------------------
+# User-provided entries
+#------------------------------------------------------------------------------
+
+# Compiled Python files
+*.pyc
+
+# Folder view configuration files
+.DS_Store
+Desktop.ini
+
+# Thumbnail cache files
+._*
+Thumbs.db
+
+# Files that might appear on external disks
+.Spotlight-V100
+.Trashes
+
+#------------------------------------------------------------------------------
+# Universal OS noise
+#------------------------------------------------------------------------------
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.nfs*
+
+#------------------------------------------------------------------------------
+# Editor and IDE artifacts
+#------------------------------------------------------------------------------
+
+# JetBrains IDEs
+*.iml
+*.iws
+out/
+
+# Sublime
+*.sublime-workspace
+*.sublime-project
+
+# Vim
+*.swp
+*.swo
+*.swn
+*.un~
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+#------------------------------------------------------------------------------
+# Node / JS / TS
+#------------------------------------------------------------------------------
+
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.cache/
+.eslintcache
+
+#------------------------------------------------------------------------------
+# Python
+#------------------------------------------------------------------------------
+
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+build/
+.eggs/
+pip-wheel-metadata/
+.tox/
+.coverage
+coverage.xml
+htmlcov/
+.mypy_cache/
+.pytest_cache/
+.pyre/
+.pytype/
+
+#------------------------------------------------------------------------------
+# Logs and Temp Files
+#------------------------------------------------------------------------------
+
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+*.swn
+*.orig
+*.rej
+
+#------------------------------------------------------------------------------
+# Miscellaneous project-specific
+#------------------------------------------------------------------------------
+
+logs/
+*.log
+.cache/
+.venv/
+venv/
+__pypackages__/
+
+# VS / dotnet test files
+TestResult*/
+*.trx
+*.coverage
+*.coveragexml
+
+# Jupyter
+.ipynb_checkpoints/

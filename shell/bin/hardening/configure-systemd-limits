@@ -1,0 +1,178 @@
+#!/usr/bin/env bash
+# configure-systemd-limits: Set core, file, and process limits in systemd system/user configs
+
+set -euo pipefail
+
+USE_COLOR=true
+VERBOSE=false
+DRY_RUN=false
+FORCE=false
+
+DEFAULT_LIMIT_NOFILE=1024
+DEFAULT_LIMIT_NPROC=1024
+DEFAULT_LIMIT_CORE=0
+DISABLE_CORE_DUMPS=true
+
+SYSTEM_CONF="/etc/systemd/system.conf"
+USER_CONF="/etc/systemd/user.conf"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Logging + CLI
+# ─────────────────────────────────────────────────────────────────────────────
+print_help() {
+    cat <<EOF
+Usage: $(basename "$0") [options]
+
+Configure global systemd resource limits.
+
+Options:
+  --nofile N       Set max open files per process (Default: 1024)
+  --nproc N        Set max number of processes (Default: 1024)
+  --core N         Set max core file size (Default: 0)
+  --no-core-dump   Skip disabling DumpCore and CrashShell
+  --dry-run        Show changes without applying
+  --force          Skip confirmation
+  --verbose        Show status messages
+  --no-color       Disable color output
+  -h, --help       Show this help message
+EOF
+    exit 0
+}
+
+color() {
+    [[ "${USE_COLOR}" == true ]] || return 0
+    case "$1" in
+    reset) echo -e "\033[0m" ;;
+    cyan) echo -e "\033[36m" ;;
+    green) echo -e "\033[32m" ;;
+    yellow) echo -e "\033[33m" ;;
+    red) echo -e "\033[31m" ;;
+    *) echo "" ;;
+    esac
+}
+
+log() {
+    local type="$1"
+    shift
+    local prefix color_code output
+    case "${type}" in
+    info)
+        prefix="👉"
+        color_code=$(color cyan)
+        ;;
+    success)
+        prefix="✅"
+        color_code=$(color green)
+        ;;
+    warn)
+        prefix="⚠️"
+        color_code=$(color yellow)
+        ;;
+    error)
+        prefix="❌"
+        color_code=$(color red)
+        ;;
+    *)
+        prefix=""
+        color_code=$(color reset)
+        ;;
+    esac
+    output="${color_code}${prefix} $*$(color reset)"
+    if [[ "${type}" == "error" ]]; then
+        printf "%s\n" "${output}" >&2
+        exit 1
+    elif [[ "${VERBOSE}" == true ]]; then
+        printf "%s\n" "${output}"
+    fi
+}
+
+parse_args() {
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+        --nofile)
+            shift
+            DEFAULT_LIMIT_NOFILE="$1"
+            ;;
+        --nproc)
+            shift
+            DEFAULT_LIMIT_NPROC="$1"
+            ;;
+        --core)
+            shift
+            DEFAULT_LIMIT_CORE="$1"
+            ;;
+        --no-core-dump) DISABLE_CORE_DUMPS=false ;;
+        --dry-run) DRY_RUN=true ;;
+        --force) FORCE=true ;;
+        --verbose) VERBOSE=true ;;
+        --no-color) USE_COLOR=false ;;
+        -h | --help) print_help ;;
+        *) log error "Unknown argument: $1" ;;
+        esac
+        shift
+    done
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Core Logic
+# ─────────────────────────────────────────────────────────────────────────────
+set_limit_in_file() {
+    local key="$1"
+    local value="$2"
+    local file="$3"
+
+    if [[ ! -f "${file}" ]]; then
+        log warn "Config not found: ${file} (skipping)"
+        return
+    fi
+
+    if grep -qE "^[#]*${key}=" "${file}"; then
+        if [[ "${DRY_RUN}" == true ]]; then
+            log info "Would update ${key}=${value} in ${file}"
+            sed -i "s|^[#]*${key}=.*|${key}=${value}|" "${file}"
+        fi
+    else
+        if [[ "${DRY_RUN}" == true ]]; then
+            log info "Would add ${key}=${value} to ${file}"
+            echo "${key}=${value}" >>"${file}"
+        fi
+    fi
+
+    [[ "${DRY_RUN}" == false ]] && log success "Set ${key}=${value} in ${file}"
+}
+
+apply_limits() {
+    log info "Applying systemd limits..."
+
+    if [[ "${DISABLE_CORE_DUMPS}" == true ]]; then
+        set_limit_in_file "DumpCore" "no" "${SYSTEM_CONF}"
+        set_limit_in_file "CrashShell" "no" "${SYSTEM_CONF}"
+    fi
+
+    for file in "${SYSTEM_CONF}" "${USER_CONF}"; do
+        set_limit_in_file "DefaultLimitCORE" "${DEFAULT_LIMIT_CORE}" "${file}"
+        set_limit_in_file "DefaultLimitNOFILE" "${DEFAULT_LIMIT_NOFILE}" "${file}"
+        set_limit_in_file "DefaultLimitNPROC" "${DEFAULT_LIMIT_NPROC}" "${file}"
+    done
+
+    if [[ "${DRY_RUN}" == false ]]; then
+        systemctl daemon-reexec
+        log success "systemd reloaded"
+    fi
+}
+
+confirm_or_abort() {
+    if [[ "${FORCE}" == true ]]; then return; fi
+    log warn "This will update system-wide resource limits for all users."
+    read -rp "Continue? (y/N): " confirm
+    [[ "${confirm}" =~ ^[Yy]$ ]] || log error "Cancelled by user."
+}
+
+main() {
+    parse_args "$@"
+    confirm_or_abort
+    apply_limits
+    log success "Systemd limits configured successfully."
+}
+
+main "$@"

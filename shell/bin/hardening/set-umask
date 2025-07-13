@@ -1,0 +1,158 @@
+#!/usr/bin/env bash
+# set-umask: Sets system-wide umask and optional auto-logout (TMOUT)
+
+set -euo pipefail
+
+USE_COLOR=true
+FORCE=false
+DRY_RUN=false
+VERBOSE=false
+DESIRED_UMASK="077"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# CLI + Logging
+# ─────────────────────────────────────────────────────────────────────────────
+print_help() {
+    cat <<EOF
+Usage: $(basename "$0") [options]
+
+Sets a system-wide umask and enforces auto-logout after inactivity (600s).
+
+Options:
+  --umask VALUE     Set desired umask value (default: 077)
+  --force           Skip confirmation prompt
+  --dry-run         Show actions without modifying system
+  --verbose         Print additional details
+  --no-color        Disable colored output
+  -h, --help        Show this help message
+EOF
+    exit 0
+}
+
+color() {
+    [[ "${USE_COLOR}" == true ]] || return 0
+    case "$1" in
+    reset) echo -e "\033[0m" ;;
+    cyan) echo -e "\033[36m" ;;
+    green) echo -e "\033[32m" ;;
+    yellow) echo -e "\033[33m" ;;
+    red) echo -e "\033[31m" ;;
+    *) echo "" ;;
+    esac
+}
+
+log() {
+    local type="$1"
+    shift
+    local prefix color_code output
+    case "${type}" in
+    info)
+        prefix="👉"
+        color_code=$(color cyan)
+        ;;
+    success)
+        prefix="✅"
+        color_code=$(color green)
+        ;;
+    warn)
+        prefix="⚠️"
+        color_code=$(color yellow)
+        ;;
+    error)
+        prefix="❌"
+        color_code=$(color red)
+        ;;
+    *)
+        prefix=""
+        color_code=$(color reset)
+        ;;
+    esac
+    output="${color_code}${prefix} $*$(color reset)"
+    if [[ "${type}" == "error" ]]; then
+        printf "%s\n" "${output}" >&2
+        exit 1
+    elif [[ "${VERBOSE}" == true || "${QUIET:-false}" != true ]]; then
+        printf "%s\n" "${output}"
+    fi
+}
+
+parse_args() {
+    for arg in "$@"; do
+        case "${arg}" in
+        --force) FORCE=true ;;
+        --dry-run) DRY_RUN=true ;;
+        --verbose) VERBOSE=true ;;
+        --no-color) USE_COLOR=false ;;
+        -h | --help) print_help ;;
+        --umask)
+            shift
+            DESIRED_UMASK="$1"
+            ;;
+        *) log error "Unknown argument: ${arg}" ;;
+        esac
+    done
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Core Functions
+# ─────────────────────────────────────────────────────────────────────────────
+confirm_or_abort() {
+    if [[ "${FORCE}" == true ]]; then return; fi
+    log warn "This will apply umask ${DESIRED_UMASK} system-wide and enforce autologout."
+    read -rp "Continue? (y/N): " confirm
+    [[ "${confirm}" =~ ^[Yy]$ ]] || log error "Cancelled by user."
+}
+
+set_umask_in_file() {
+    local file="$1"
+    if grep -qE "umask\s+${DESIRED_UMASK}" "${file}" 2>/dev/null; then
+        log info "umask ${DESIRED_UMASK} already present in ${file}"
+        return
+    fi
+
+    if [[ "${DRY_RUN}" == true ]]; then
+        log info "Would append 'umask ${DESIRED_UMASK}' to ${file}"
+    else
+        echo "umask ${DESIRED_UMASK}" >>"${file}"
+        log success "Set umask in ${file}"
+    fi
+}
+
+harden_umask() {
+    log info "Setting umask ${DESIRED_UMASK} globally..."
+
+    [[ -f /etc/init.d/rc ]] && sed -i "s/umask 022/umask ${DESIRED_UMASK}/g" /etc/init.d/rc
+
+    set_umask_in_file /etc/profile
+    set_umask_in_file /etc/bash.bashrc
+}
+
+configure_autologout() {
+    local path="/etc/profile.d/autologout.sh"
+    if [[ "${DRY_RUN}" == true ]]; then
+        log info "Would create autologout script at ${path}"
+        return
+    fi
+
+    if ! grep -q "TMOUT" "${path}" 2>/dev/null; then
+        cat <<EOF >"${path}"
+TMOUT=600
+readonly TMOUT
+export TMOUT
+EOF
+        chmod +x "${path}"
+        log success "Created autologout script: ${path}"
+    else
+        log info "Autologout script already configured."
+    fi
+}
+
+main() {
+    parse_args "$@"
+    confirm_or_abort
+    harden_umask
+    configure_autologout
+    log success "System umask set to ${DESIRED_UMASK} and autologout enabled."
+}
+
+main "$@"

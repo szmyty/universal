@@ -1,0 +1,162 @@
+#!/usr/bin/env bash
+# install-imagemagick.sh
+# Build + install ImageMagick with pinned source and full format support
+# cspell:ignore fftw rsvg gslib
+
+set -euo pipefail
+
+# Reproducible build metadata
+IMAGEMAGICK_VERSION="${IMAGEMAGICK_VERSION:-7.1.1-47}"
+SOURCE_URL="https://api.github.com/repos/ImageMagick/ImageMagick/tarball/${IMAGEMAGICK_VERSION}"
+IMAGEMAGICK_COMMIT_SHA256="${IMAGEMAGICK_COMMIT_SHA256:-53ea43035cf0a1573bebd215932ea6ffeaa7ca1703f4e57d1e849b5bc0bed859}"
+IMAGEMAGICK_COMMIT_MD5="${IMAGEMAGICK_COMMIT_MD5:-895118664de9d97a10c2d86e222c60c5}"
+
+# Paths
+DEVTOOLS_HOME="${DEVTOOLS_HOME:-/opt/devtools}"
+IMAGEMAGICK_PREFIX="${DEVTOOLS_HOME}/imagemagick"
+DEVTOOLS_BIN_DIR="${DEVTOOLS_HOME}/bin"
+
+# Temp
+IMAGEMAGICK_TARBALL="/tmp/imagemagick.tar.gz"
+IMAGEMAGICK_SRC_DIR="/tmp/imagemagick-src"
+
+install_build_deps() {
+    echo "📦 Installing build dependencies..."
+    apt-get update --quiet
+    apt-get install --yes --no-install-recommends \
+        build-essential \
+        autoconf \
+        git \
+        libtool \
+        pkg-config \
+        curl \
+        ca-certificates \
+        libjpeg-dev \
+        libpng-dev \
+        libtiff-dev \
+        libgif-dev \
+        libwebp-dev \
+        libopenjp2-7-dev \
+        libraw-dev \
+        libheif-dev \
+        libavif-dev \
+        libfreetype-dev \
+        libfontconfig1-dev \
+        libxml2-dev \
+        libx11-dev \
+        libxext-dev \
+        libxft-dev \
+        libbz2-dev \
+        liblzma-dev \
+        libzip-dev \
+        libopenexr-dev \
+        liblqr-1-0-dev \
+        libgs-dev \
+        libminidjvu-dev \
+        libwmf-dev \
+        libuemf-dev \
+        libwmf-bin \
+        libfftw3-dev \
+        liblcms2-dev \
+        libmagickcore-dev \
+        libmagickwand-dev \
+        libcairo2-dev \
+        librsvg2-dev \
+        libpango1.0-dev \
+        libperl-dev \
+        ghostscript
+}
+
+fetch_and_verify_source() {
+    echo "⬇️  Downloading ImageMagick v${IMAGEMAGICK_VERSION}..."
+    curl --silent --show-error --location "${SOURCE_URL}" --output "${IMAGEMAGICK_TARBALL}"
+
+    echo "🔐 Verifying SHA256 checksum..."
+    local actual_sha256
+    actual_sha256=$(sha256sum "${IMAGEMAGICK_TARBALL}" | awk '{print $1}')
+    if [[ "${actual_sha256}" != "${IMAGEMAGICK_COMMIT_SHA256}" ]]; then
+        echo "❌ SHA256 mismatch! Expected: ${IMAGEMAGICK_COMMIT_SHA256}, Got: ${actual_sha256}" >&2
+        exit 1
+    fi
+
+    echo "🔐 Verifying MD5 checksum..."
+    local actual_md5
+    actual_md5=$(md5sum "${IMAGEMAGICK_TARBALL}" | awk '{print $1}')
+    if [[ "${actual_md5}" != "${IMAGEMAGICK_COMMIT_MD5}" ]]; then
+        echo "❌ MD5 mismatch! Expected: ${IMAGEMAGICK_COMMIT_MD5}, Got: ${actual_md5}" >&2
+        exit 1
+    fi
+
+    echo "✅ Checksums verified."
+}
+
+extract_and_build() {
+    echo "📂 Extracting source..."
+    mkdir -p "${IMAGEMAGICK_SRC_DIR}"
+    tar --extract --gzip --strip-components=1 --file="${IMAGEMAGICK_TARBALL}" --directory="${IMAGEMAGICK_SRC_DIR}"
+
+    echo "🔧 Configuring build..."
+    cd "${IMAGEMAGICK_SRC_DIR}"
+    ./configure \
+        --prefix="${IMAGEMAGICK_PREFIX}" \
+        --with-modules \
+        --enable-shared \
+        --with-perl \
+        --with-gslib \
+        --with-wmf \
+        --with-rsvg \
+        --with-webp \
+        --with-openexr \
+        --with-heic \
+        --with-raw \
+        --with-fftw \
+        --with-fontconfig \
+        --with-freetype \
+        --with-lqr \
+        --with-lcms \
+        --with-x \
+        --enable-hdri
+
+    echo "🛠️  Compiling ImageMagick..."
+    local num_jobs
+    num_jobs=$(nproc)
+    make --jobs="${num_jobs}"
+
+    echo "📦 Installing to ${IMAGEMAGICK_PREFIX}..."
+    make install
+    ldconfig
+}
+
+symlink_binaries() {
+    echo "🔗 Linking ImageMagick binaries to ${DEVTOOLS_BIN_DIR}..."
+    mkdir -p "${DEVTOOLS_BIN_DIR}"
+    for bin in "${IMAGEMAGICK_PREFIX}/bin/"*; do
+        ln -sf "${bin}" "${DEVTOOLS_BIN_DIR}/$(basename "${bin}")"
+    done
+}
+
+cleanup() {
+    echo "🧹 Cleaning up build artifacts..."
+    rm -rf "${IMAGEMAGICK_TARBALL}" "${IMAGEMAGICK_SRC_DIR}"
+}
+
+verify_install() {
+    echo "🔍 Verifying installation..."
+    if ! command -v "${DEVTOOLS_BIN_DIR}/magick" >/dev/null; then
+        echo "❌ ImageMagick 'magick' binary not found in ${DEVTOOLS_BIN_DIR}!" >&2
+        exit 1
+    fi
+    "${DEVTOOLS_BIN_DIR}/magick" -version
+}
+
+main() {
+    trap cleanup EXIT
+    install_build_deps
+    fetch_and_verify_source
+    extract_and_build
+    symlink_binaries
+    verify_install
+    echo "🎉 ImageMagick v${IMAGEMAGICK_VERSION} installed successfully."
+}
+
+main "$@"

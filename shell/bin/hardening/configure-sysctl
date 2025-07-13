@@ -1,0 +1,193 @@
+#!/usr/bin/env bash
+# configure-sysctl: Apply sysctl config, patch interface-specific IPv6 behavior
+
+set -euo pipefail
+
+USE_COLOR=true
+VERBOSE=false
+DRY_RUN=false
+FORCE=false
+APPLY=true
+
+SYSCTL_TARGET="/etc/sysctl.conf"
+SYSCTL_TEMPLATE="/etc/sysctl.d/custom.conf"
+ARP_COMMAND="arp -n -a"
+LXC_DETECTED=false
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Logging + CLI
+# ─────────────────────────────────────────────────────────────────────────────
+print_help() {
+    cat <<EOF
+Usage: $(basename "$0") [options]
+
+Copy and apply sysctl configuration with interface-specific IPv6 hardening.
+
+Options:
+  --template FILE   Path to sysctl template (default: ${SYSCTL_TEMPLATE})
+  --target FILE     Output sysctl file (default: ${SYSCTL_TARGET})
+  --dry-run         Show actions without applying
+  --force           Skip confirmation prompt
+  --no-apply        Only generate sysctl.conf, don’t reload sysctl
+  --verbose         Show detailed output
+  --no-color        Disable color output
+  -h, --help        Show this help message
+EOF
+    exit 0
+}
+
+color() {
+    [[ "${USE_COLOR}" == true ]] || return 0
+    case "$1" in
+    reset) echo -e "\033[0m" ;;
+    cyan) echo -e "\033[36m" ;;
+    green) echo -e "\033[32m" ;;
+    yellow) echo -e "\033[33m" ;;
+    red) echo -e "\033[31m" ;;
+    *) echo "" ;;
+    esac
+}
+
+log() {
+    local type="$1"
+    shift
+    local prefix color_code output
+    case "${type}" in
+    info)
+        prefix="👉"
+        color_code=$(color cyan)
+        ;;
+    success)
+        prefix="✅"
+        color_code=$(color green)
+        ;;
+    warn)
+        prefix="⚠️"
+        color_code=$(color yellow)
+        ;;
+    error)
+        prefix="❌"
+        color_code=$(color red)
+        ;;
+    *)
+        prefix=""
+        color_code=$(color reset)
+        ;;
+    esac
+    output="${color_code}${prefix} $*$(color reset)"
+    if [[ "${type}" == "error" ]]; then
+        printf "%s\n" "${output}" >&2
+        exit 1
+    elif [[ "${VERBOSE}" == true ]]; then
+        printf "%s\n" "${output}"
+    fi
+}
+
+parse_args() {
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+        --template)
+            shift
+            SYSCTL_TEMPLATE="$1"
+            ;;
+        --target)
+            shift
+            SYSCTL_TARGET="$1"
+            ;;
+        --dry-run) DRY_RUN=true ;;
+        --force) FORCE=true ;;
+        --no-apply) APPLY=false ;;
+        --verbose) VERBOSE=true ;;
+        --no-color) USE_COLOR=false ;;
+        -h | --help) print_help ;;
+        *) log error "Unknown argument: $1" ;;
+        esac
+        shift
+    done
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Core Functions
+# ─────────────────────────────────────────────────────────────────────────────
+check_lxc_environment() {
+    if grep -q 'container=lxc' /proc/1/environ 2>/dev/null; then
+        log warn "Running in an LXC container — skipping sysctl changes"
+        LXC_DETECTED=true
+    fi
+}
+
+confirm_or_abort() {
+    if [[ "${FORCE}" == true ]]; then return; fi
+    log warn "This will overwrite ${SYSCTL_TARGET} with your sysctl template."
+    read -rp "Continue? (y/N): " confirm
+    [[ "${confirm}" =~ ^[Yy]$ ]] || log error "Cancelled by user."
+}
+
+copy_sysctl_template() {
+    if [[ ! -f "${SYSCTL_TEMPLATE}" ]]; then
+        log error "Template not found: ${SYSCTL_TEMPLATE}"
+    fi
+
+    log info "Copying template to ${SYSCTL_TARGET}"
+
+    if [[ "${DRY_RUN}" == true ]]; then
+        log info "Would copy: ${SYSCTL_TEMPLATE} → ${SYSCTL_TARGET}"
+    else
+        cp "${SYSCTL_TEMPLATE}" "${SYSCTL_TARGET}"
+        log success "Copied sysctl config"
+    fi
+}
+
+patch_accept_ra_rtr_pref() {
+    if [[ "${DRY_RUN}" == true ]]; then
+        log info "Would patch interface-based IPv6 RA rules"
+        return
+    fi
+
+    sed -i '/net.ipv6.conf.eth0.accept_ra_rtr_pref/d' "${SYSCTL_TARGET}"
+
+    local interfaces
+    interfaces=$(${ARP_COMMAND} | awk '{print $NF}' | sort -u)
+
+    for iface in ${interfaces}; do
+        echo "net.ipv6.conf.${iface}.accept_ra_rtr_pref = 0" >>"${SYSCTL_TARGET}"
+        log info "Patched: net.ipv6.conf.${iface}.accept_ra_rtr_pref = 0"
+    done
+
+    chmod 0600 "${SYSCTL_TARGET}"
+    log success "Patched IPv6 RA preferences for interfaces"
+}
+
+apply_sysctl() {
+    if [[ "${DRY_RUN}" == true || "${APPLY}" == false ]]; then
+        log info "Skipping sysctl reload (dry-run or no-apply)"
+        return
+    fi
+
+    systemctl restart systemd-sysctl
+    log success "Reloaded systemd-sysctl"
+}
+
+show_sysctl_status() {
+    if [[ "${VERBOSE}" == true ]]; then
+        systemctl status systemd-sysctl --no-pager || true
+        echo
+        sysctl -a | grep accept_ra_rtr_pref || true
+    fi
+}
+
+main() {
+    parse_args "$@"
+    check_lxc_environment
+    if [[ "${LXC_DETECTED}" == true ]]; then exit 0; fi
+
+    confirm_or_abort
+    copy_sysctl_template
+    patch_accept_ra_rtr_pref
+    apply_sysctl
+    show_sysctl_status
+
+    log success "Sysctl configuration complete."
+}
+
+main "$@"

@@ -1,0 +1,33 @@
+# Node.js
+node_modules/
+dist/
+build/
+coverage/
+.cache/
+*.min.js
+
+# Logs & lockfiles
+*.log
+
+# Package manager folders
+.pnpm/
+.yarn/
+.nyc_output/
+
+# Output of test runners or bundlers
+cypress/videos/
+cypress/screenshots/
+.vitest/
+*.tsbuildinfo
+
+# IDE & environment
+.vscode/
+*.swp
+*.swo
+
+# Git hooks & configs
+.husky/
+.eslintcache
+
+# Devcontainer runtime
+.devcontainer/target/

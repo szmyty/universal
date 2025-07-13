@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+# freeze-github-release.sh
+# Outputs reproducible URL, SHA256, and MD5 for a GitHub release tarball.
+
+set -euo pipefail
+
+TEMP_TARBALL="tmp-release.tar.gz"
+
+require_deps() {
+    for cmd in curl jq sha256sum md5sum; do
+        command -v "${cmd}" >/dev/null || {
+            echo "❌ Required command '${cmd}' not found. Please install it." >&2
+            exit 1
+        }
+    done
+}
+
+usage() {
+    echo "Usage: $0 <github_owner/repo>"
+    echo "Example: $0 ImageMagick/ImageMagick"
+    exit 1
+}
+
+cleanup() {
+    [[ -f "${TEMP_TARBALL}" ]] && rm -f "${TEMP_TARBALL}"
+}
+
+fetch_latest_tarball_url() {
+    local repo="$1"
+    local gh_api="https://api.github.com/repos/${repo}/releases/latest"
+    echo "🌐 Fetching latest release from GitHub API: ${gh_api}" >&2
+
+    local url
+    url=$(curl --silent --show-error --location "${gh_api}" | jq --raw-output '.tarball_url')
+
+    if [[ -z "${url}" || "${url}" == "null" ]]; then
+        echo "❌ Failed to fetch tarball URL from GitHub API." >&2
+        exit 1
+    fi
+
+    echo "${url}"
+}
+
+download_and_hash() {
+    local url="$1"
+    echo "⬇️  Downloading release tarball..." >&2
+    curl -L "${url}" -o "${TEMP_TARBALL}"
+
+    echo "🔐 Calculating checksums..." >&2
+    local sha256 md5
+    sha256=$(sha256sum "${TEMP_TARBALL}" | awk '{print $1}')
+    md5=$(md5sum "${TEMP_TARBALL}" | awk '{print $1}')
+
+    echo ""
+    echo "✅ Reproducible Release Metadata:"
+    echo "export SOURCE_URL=\"${url}\""
+    echo "export SOURCE_SHA256=\"${sha256}\""
+    echo "export SOURCE_MD5=\"${md5}\""
+    echo ""
+    echo "# Copy these into your Dockerfile or install script."
+}
+
+main() {
+    trap cleanup EXIT
+    require_deps
+    [[ $# -eq 1 ]] || usage
+    local repo="$1"
+    local url
+    url=$(fetch_latest_tarball_url "${repo}")
+    download_and_hash "${url}"
+}
+
+main "$@"

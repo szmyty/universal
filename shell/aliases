@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# aliases – Shell aliases for DevContainer UX
+
+# ─── Environment and Path ─────────────────────────────────────────────
+alias environment='printenv | sort'
+alias path='echo "${PATH}" | tr ":" "\n" | sort'
+
+# ─── Filesystem Navigation ────────────────────────────────────────────
+alias ll='ls --all --human-readable --color=auto --group-directories-first --format=long'
+alias la='ls --almost-all --human-readable --color=auto'
+alias dux='du --human-readable --max-depth=1'
+alias dfx='df --human-readable --print-type'
+alias mkdirp='mkdir --parents'
+alias touchn='touch --no-create' # update timestamp, don't create
+
+# ─── Files and Grep Helpers ──────────────────────────────────────────
+alias grepv='grep --invert-match'
+alias cpv='cp --verbose'
+alias rmf='rm --recursive --force'
+
+# ─── Process Monitoring ───────────────────────────────────────────────
+alias psg='ps --no-headers --format=pid,ppid,cmd --sort=-pid'
+alias topc='top --interactive --delay=1'
+alias freeh='free --human'
+alias historyt='history | tail --lines=50'
+
+# ─── Networking ───────────────────────────────────────────────────────
+alias ports='ss --listening --numeric --tcp --udp'
+alias ipaddr='hostname -I | tr " " "\n"'
+
+# ─── System Utilities ─────────────────────────────────────────────────
+alias cls='clear'
+alias reload='exec "${SHELL}" --login'
+
+# ─── Safety ───────────────────────────────────────────────────────────
+alias cp='cp --interactive --verbose'
+alias mv='mv --interactive --verbose'
+alias rm='rm --interactive'

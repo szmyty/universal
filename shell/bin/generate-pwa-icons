@@ -1,0 +1,162 @@
+#!/usr/bin/env bash
+# generate-pwa-icons: Generates PWA icons + favicon.ico from a single source image
+
+set -euo pipefail
+
+USE_COLOR=true
+SOURCE="icon.png"
+OUT_DIR="icons"
+FORCE_REGEN=false
+
+FAVICON_SIZES=(16 32 48 64 128 256)
+ALL_SIZES=(16 32 48 64 128 192 256 384 512)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# CLI Flags
+# ─────────────────────────────────────────────────────────────────────────────
+print_help() {
+    cat <<EOF
+Usage: $(basename "$0") [options]
+
+Generate PWA-compatible icons and favicon from a single PNG source image.
+
+Options:
+  --source FILE      Source image (default: icon.png)
+  --out DIR          Output directory (default: icons)
+  --force            Overwrite existing icons
+  --no-color         Disable color output
+  -h, --help         Show this help message
+EOF
+}
+
+POSITIONAL_ARGS=()
+for arg in "$@"; do
+    case "${arg}" in
+    --no-color) USE_COLOR=false ;;
+    --force) FORCE_REGEN=true ;;
+    --source)
+        shift
+        SOURCE="${1:-icon.png}"
+        ;;
+    --out)
+        shift
+        OUT_DIR="${1:-icons}"
+        ;;
+    -h | --help)
+        print_help
+        exit 0
+        ;;
+    -*)
+        echo "❌ Unknown flag: ${arg}" >&2
+        print_help
+        exit 1
+        ;;
+    *) POSITIONAL_ARGS+=("${arg}") ;;
+    esac
+done
+set -- "${POSITIONAL_ARGS[@]:-}"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Logging + Color
+# ─────────────────────────────────────────────────────────────────────────────
+color() {
+    [[ "${USE_COLOR}" == true ]] || return 0
+    case "$1" in
+    reset) echo -e "\033[0m" ;;
+    cyan) echo -e "\033[36m" ;;
+    green) echo -e "\033[32m" ;;
+    yellow) echo -e "\033[33m" ;;
+    red) echo -e "\033[31m" ;;
+    *) echo "" ;;
+    esac
+}
+
+log() {
+    local type="$1"
+    shift
+    local prefix color_code output
+    case "${type}" in
+    info)
+        prefix="👉"
+        color_code=$(color cyan)
+        ;;
+    success)
+        prefix="✅"
+        color_code=$(color green)
+        ;;
+    warn)
+        prefix="⚠️"
+        color_code=$(color yellow)
+        ;;
+    error)
+        prefix="❌"
+        color_code=$(color red)
+        ;;
+    *)
+        prefix=""
+        color_code=$(color reset)
+        ;;
+    esac
+    output="${color_code}${prefix} $*$(color reset)"
+    if [[ "${type}" == "error" ]]; then
+        printf "%s\n" "${output}" >&2
+        exit 1
+    else
+        printf "%s\n" "${output}"
+    fi
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Icon Generation
+# ─────────────────────────────────────────────────────────────────────────────
+check_imagemagick_installed() {
+    if ! command -v convert &>/dev/null; then
+        log error "ImageMagick 'convert' command not found. Please install ImageMagick."
+    fi
+}
+
+check_source_exists() {
+    if [[ ! -f "${SOURCE}" ]]; then
+        log error "Source image not found: ${SOURCE}"
+    fi
+}
+
+create_output_dir() {
+    mkdir -p "${OUT_DIR}"
+}
+
+generate_png_icons() {
+    log info "Generating PNG icons (32-bit RGBA)..."
+    for size in "${ALL_SIZES[@]}"; do
+        local file="${OUT_DIR}/icon-${size}x${size}.png"
+        if [[ -f "${file}" && "${FORCE_REGEN}" != true ]]; then
+            log warn "Skipping existing: ${file}"
+            continue
+        fi
+        convert "${SOURCE}" \
+            -resize "${size}x${size}" \
+            -define png:color-type=6 -depth 8 \
+            "${file}"
+    done
+}
+
+generate_favicon() {
+    log info "Generating favicon.ico..."
+    local favicon_sources=()
+    for size in "${FAVICON_SIZES[@]}"; do
+        favicon_sources+=("${OUT_DIR}/icon-${size}x${size}.png")
+    done
+    convert "${favicon_sources[@]}" "${OUT_DIR}/favicon.ico"
+}
+
+main() {
+    log info "Starting PWA icon generation..."
+    check_imagemagick_installed
+    check_source_exists
+    create_output_dir
+    generate_png_icons
+    generate_favicon
+    log success "Icons and favicon.ico generated in: ${OUT_DIR}"
+}
+
+main "$@"

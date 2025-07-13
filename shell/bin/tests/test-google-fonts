@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+# test-google-fonts.sh
+# Verifies that Google Fonts were installed and registered with fontconfig.
+
+set -euo pipefail
+
+DEVTOOLS_HOME="${DEVTOOLS_HOME:-/opt/devtools}"
+FONTS_DIR="${DEVTOOLS_HOME}/fonts/google"
+REQUIRED_FONT="${REQUIRED_FONT:-Roboto}"
+
+check_font_dir() {
+    if [[ ! -d "${FONTS_DIR}" ]]; then
+        echo "❌ Fonts directory not found: ${FONTS_DIR}" >&2
+        return 1
+    fi
+
+    local font_count
+    font_count=$(find "${FONTS_DIR}" -type f \( -iname '*.ttf' -o -iname '*.otf' \) | wc -l)
+    if [[ "${font_count}" -eq 0 ]]; then
+        echo "❌ No fonts found in: ${FONTS_DIR}" >&2
+        return 1
+    fi
+}
+
+check_font_registered() {
+    if ! command -v fc-list >/dev/null; then
+        echo "❌ fc-list not found (fontconfig missing?)" >&2
+        return 1
+    fi
+
+    if ! fc-list | grep -qi "${REQUIRED_FONT}"; then
+        echo "❌ Font '${REQUIRED_FONT}' not registered in font cache" >&2
+        return 1
+    fi
+}
+
+main() {
+    echo "🔍 Testing Google Fonts..."
+    check_font_dir
+    check_font_registered
+    echo "✅ Google Fonts check passed"
+}
+
+main "$@"

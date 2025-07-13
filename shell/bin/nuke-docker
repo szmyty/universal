@@ -1,0 +1,205 @@
+#!/usr/bin/env bash
+# docker-clean: Safely remove Docker resources by label or everything if --all is passed
+
+set -euo pipefail
+
+USE_COLOR=true
+FORCE=false
+USE_LABELS=true
+DANGEROUS=false
+NUKE_ALL=false
+
+LABEL_NAME=""
+LABEL_SCOPE=""
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Color + Logging
+# ─────────────────────────────────────────────────────────────────────────────
+color() {
+    [[ "${USE_COLOR}" == true ]] || return 0
+    case "$1" in
+    reset) echo -e "\033[0m" ;;
+    cyan) echo -e "\033[36m" ;;
+    green) echo -e "\033[32m" ;;
+    yellow) echo -e "\033[33m" ;;
+    red) echo -e "\033[31m" ;;
+    *) echo "" ;;
+    esac
+}
+
+log() {
+    local type="$1"
+    shift
+    local prefix color_code output
+
+    case "${type}" in
+    info)
+        prefix="👉"
+        color_code=$(color cyan)
+        ;;
+    success)
+        prefix="✅"
+        color_code=$(color green)
+        ;;
+    warn)
+        prefix="⚠️"
+        color_code=$(color yellow)
+        ;;
+    error)
+        prefix="❌"
+        color_code=$(color red)
+        ;;
+    *)
+        prefix=""
+        color_code=$(color reset)
+        ;;
+    esac
+
+    output="${color_code}${prefix} $*$(color reset)"
+    if [[ "${type}" == "error" ]]; then
+        printf "%s\n" "${output}" >&2
+        exit 1
+    else
+        printf "%s\n" "${output}"
+    fi
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Docker Filters
+# ─────────────────────────────────────────────────────────────────────────────
+filter_by_labels() {
+    if [[ "${USE_LABELS}" == true ]]; then
+        docker "$@" --filter "label=${LABEL_NAME}" --filter "label=${LABEL_SCOPE}"
+    else
+        docker "$@"
+    fi
+}
+
+stop_containers() {
+    log info "Stopping containers..."
+    filter_by_labels ps -aq | xargs -r docker stop
+}
+
+remove_containers() {
+    log info "Removing containers..."
+    filter_by_labels ps -aq | xargs -r docker rm --force
+}
+
+remove_networks() {
+    log info "Removing networks..."
+    docker network ls -q | while read -r net_id; do
+        if [[ "${USE_LABELS}" == false ]] || docker network inspect "${net_id}" | grep -q "${LABEL_NAME}"; then
+            docker network rm "${net_id}" || true
+        fi
+    done
+}
+
+remove_volumes() {
+    log info "Removing volumes..."
+    docker volume ls -q | while read -r vol_id; do
+        if [[ "${USE_LABELS}" == false ]] || docker volume inspect "${vol_id}" | grep -q "${LABEL_NAME}"; then
+            docker volume rm "${vol_id}" || true
+        fi
+    done
+}
+
+remove_images() {
+    if [[ "${DANGEROUS}" == true ]]; then
+        log warn "Removing Docker images..."
+        docker images -aq | xargs -r docker rmi --force
+    else
+        log info "Skipping image removal (use --dangerous to enable)"
+    fi
+}
+
+clean_build_cache() {
+    log info "Cleaning Docker build cache..."
+    docker builder prune --all --force
+}
+
+system_prune() {
+    if [[ "${DANGEROUS}" == true ]]; then
+        log warn "Performing system prune..."
+        docker system prune --all --volumes --force
+    fi
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Flow Control
+# ─────────────────────────────────────────────────────────────────────────────
+main() {
+    stop_containers
+    remove_containers
+    remove_networks
+    remove_volumes
+    remove_images
+    clean_build_cache
+    system_prune
+    log success "Docker cleanup complete."
+}
+
+usage() {
+    cat <<EOF
+Usage: $(basename "$0") [options]
+
+Options:
+  --label-name VALUE     Docker app.name label (required unless --all)
+  --label-scope VALUE    Docker app.scope label (required unless --all)
+  --all                  Ignore labels and nuke all matching resources
+  --dangerous            Also remove images and system prune
+  --force                Skip confirmation prompt
+  --no-color             Disable colored output
+  -h, --help             Show this help message
+EOF
+    exit 1
+}
+
+main_wrapper() {
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+        --label-name)
+            LABEL_NAME="$2"
+            shift
+            ;;
+        --label-scope)
+            LABEL_SCOPE="$2"
+            shift
+            ;;
+        --all)
+            USE_LABELS=false
+            NUKE_ALL=true
+            ;;
+        --dangerous) DANGEROUS=true ;;
+        --force) FORCE=true ;;
+        --no-color) USE_COLOR=false ;;
+        -h | --help) usage ;;
+        *)
+            log error "Unknown argument: $1"
+            usage
+            ;;
+        esac
+        shift
+    done
+
+    if [[ "${USE_LABELS}" == true ]]; then
+        [[ -z "${LABEL_NAME}" || -z "${LABEL_SCOPE}" ]] && log error "--label-name and --label-scope are required unless --all is used."
+    fi
+
+    log warn "You are about to remove Docker resources..."
+    [[ "${NUKE_ALL}" == true ]] && log warn "☢️  --all specified: This will ignore labels and clean EVERYTHING."
+    [[ "${DANGEROUS}" == true ]] && log warn "🔥 --dangerous specified: Images and build cache will also be deleted."
+    [[ "${USE_LABELS}" == true ]] && log info "Label filters: ${LABEL_NAME}, ${LABEL_SCOPE}"
+
+    if [[ "${FORCE}" == true ]]; then
+        main
+    else
+        read -rp "Are you sure? (y/N): " confirm
+        if [[ "${confirm}" =~ ^[Yy]$ ]]; then
+            main
+        else
+            log error "Cancelled."
+        fi
+    fi
+}
+
+main_wrapper "$@"

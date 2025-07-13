@@ -1,0 +1,39 @@
+# Build outputs
+dist/
+build/
+coverage/
+node_modules/
+
+# Configs & metadata
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+*.log
+
+# System files
+.DS_Store
+*.swp
+
+# IDE & generated files
+.vscode/
+.env
+.env.*
+
+# Non-source files
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.mp4
+*.mp3
+*.zip
+*.tar.gz
+
+# Static assets
+public/
+static/
+
+# Skip formatting for minified or compiled assets
+*.min.js
+*.min.css

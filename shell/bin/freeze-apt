@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# freeze-apt.sh
+# Generate reproducible APT install state for Docker builds
+
+set -euo pipefail
+
+LOCKFILE="packages.lock"
+PIN_DIR="shell/apt/preferences.d"
+PIN_PRIORITY="1001"
+
+mkdir -p "$(dirname "${LOCKFILE}")" "${PIN_DIR}"
+
+echo "🔐 Freezing APT install state..."
+
+# 1. Generate full version lockfile
+dpkg-query -W -f='${Package}=${Version}\n' | sort >"${LOCKFILE}"
+echo "✅ Saved package version list to: ${LOCKFILE}"
+
+# 2. Generate .pref pin files for important manually installed packages
+echo "📦 Generating pin files for manually installed packages..."
+
+manual_packages=$(apt-mark showmanual | grep -vE '^(bash|coreutils|libc6|gcc|perl|python|linux-|grub|init|login|util-linux)' | sort)
+
+for pkg in ${manual_packages}; do
+    version=$(dpkg-query --show --showformat='${Version}' "${pkg}" 2>/dev/null || true)
+    [[ -n "${version}" ]] || continue
+
+    cat >"${PIN_DIR}/${pkg}.pref" <<EOF
+Package: ${pkg}
+Pin: version ${version}
+Pin-Priority: ${PIN_PRIORITY}
+EOF
+
+    echo "📌 Pinned ${pkg}=${version}"
+done
+
+echo "✅ Finished generating APT freeze files."

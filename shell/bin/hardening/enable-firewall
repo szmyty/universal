@@ -1,0 +1,181 @@
+#!/usr/bin/env bash
+# enable-firewall: Configures and enables UFW firewall with admin IPs
+
+set -euo pipefail
+
+USE_COLOR=true
+VERBOSE=false
+DRY_RUN=false
+FORCE=false
+
+UFW_DEFAULT="/etc/default/ufw"
+SSH_PORT=22
+ADMIN_IPS=()
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Logging + CLI
+# ─────────────────────────────────────────────────────────────────────────────
+print_help() {
+    cat <<EOF
+Usage: $(basename "$0") [options]
+
+Configure UFW with hardened loopback rules and admin-only SSH access.
+
+Options:
+  --admin IP        Whitelist this admin IP for SSH access (can repeat)
+  --ssh-port PORT   SSH port to allow (default: 22)
+  --dry-run         Show what would be done, but don’t apply changes
+  --force           Skip confirmation prompt
+  --verbose         Show verbose output
+  --no-color        Disable colorized logs
+  -h, --help        Show this help message
+EOF
+    exit 0
+}
+
+color() {
+    [[ "${USE_COLOR}" == true ]] || return 0
+    case "$1" in
+    reset) echo -e "\033[0m" ;;
+    cyan) echo -e "\033[36m" ;;
+    green) echo -e "\033[32m" ;;
+    yellow) echo -e "\033[33m" ;;
+    red) echo -e "\033[31m" ;;
+    *) echo "" ;;
+    esac
+}
+
+log() {
+    local type="$1"
+    shift
+    local prefix color_code output
+    case "${type}" in
+    info)
+        prefix="👉"
+        color_code=$(color cyan)
+        ;;
+    success)
+        prefix="✅"
+        color_code=$(color green)
+        ;;
+    warn)
+        prefix="⚠️"
+        color_code=$(color yellow)
+        ;;
+    error)
+        prefix="❌"
+        color_code=$(color red)
+        ;;
+    *)
+        prefix=""
+        color_code=$(color reset)
+        ;;
+    esac
+    output="${color_code}${prefix} $*$(color reset)"
+    if [[ "${type}" == "error" ]]; then
+        printf "%s\n" "${output}" >&2
+        exit 1
+    elif [[ "${VERBOSE}" == true || "${QUIET:-false}" != true ]]; then
+        printf "%s\n" "${output}"
+    fi
+}
+
+parse_args() {
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+        --admin)
+            shift
+            ADMIN_IPS+=("$1")
+            ;;
+        --ssh-port)
+            shift
+            SSH_PORT="$1"
+            ;;
+        --dry-run) DRY_RUN=true ;;
+        --force) FORCE=true ;;
+        --verbose) VERBOSE=true ;;
+        --no-color) USE_COLOR=false ;;
+        -h | --help) print_help ;;
+        *) log error "Unknown argument: $1" ;;
+        esac
+        shift
+    done
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Core Logic
+# ─────────────────────────────────────────────────────────────────────────────
+check_requirements() {
+    if ! command -v ufw &>/dev/null; then
+        log error "ufw is not installed. Aborting."
+    fi
+
+    if [[ ! -f "${UFW_DEFAULT}" ]]; then
+        log error "${UFW_DEFAULT} not found."
+    fi
+}
+
+confirm_or_abort() {
+    if [[ "${FORCE}" == true ]]; then return; fi
+    log warn "This will modify firewall rules and restrict SSH to admin IPs."
+    read -rp "Continue? (y/N): " confirm
+    [[ "${confirm}" =~ ^[Yy]$ ]] || log error "Cancelled by user."
+}
+
+apply_hardened_loopback_rules() {
+    ufw allow in on lo
+    ufw allow out on lo
+    ufw deny in from 127.0.0.0/8
+    ufw deny in from ::1
+}
+
+apply_default_firewall_rules() {
+    ufw logging on
+    ufw default deny incoming
+}
+
+allow_admin_ips() {
+    for ip in "${ADMIN_IPS[@]}"; do
+        ufw allow log from "${ip}" to any port "${SSH_PORT}" proto tcp
+    done
+}
+
+update_sysctl_reference() {
+    sed -i 's|^IPT_SYSCTL=.*|IPT_SYSCTL=/etc/sysctl.conf|' "${UFW_DEFAULT}"
+    log info "Updated IPT_SYSCTL in ${UFW_DEFAULT}"
+}
+
+start_firewall() {
+    ufw --force enable
+}
+
+show_status() {
+    if [[ "${VERBOSE}" == true ]]; then
+        systemctl status ufw.service --no-pager || true
+        ufw status verbose
+    fi
+}
+
+main() {
+    parse_args "$@"
+    check_requirements
+    confirm_or_abort
+
+    if [[ "${DRY_RUN}" == true ]]; then
+        log info "Would update IPT_SYSCTL in ${UFW_DEFAULT}"
+        log info "Would configure loopback hardening"
+        log info "Would allow SSH from: ${ADMIN_IPS[*]:-none}"
+        log info "Would start UFW and enable logging"
+        exit 0
+    fi
+
+    update_sysctl_reference
+    apply_hardened_loopback_rules
+    apply_default_firewall_rules
+    allow_admin_ips
+    start_firewall
+    show_status
+    log success "UFW firewall configured and enabled."
+}
+
+main "$@"

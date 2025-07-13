@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# test-imagemagick.sh
+# Verifies that ImageMagick is installed and functional.
+
+set -euo pipefail
+
+DEVTOOLS_HOME="${DEVTOOLS_HOME:-/opt/devtools}"
+IMAGEMAGICK_BIN="${DEVTOOLS_HOME}/bin/magick"
+
+check_magick_binary() {
+    if [[ ! -x "${IMAGEMAGICK_BIN}" ]]; then
+        echo "❌ ImageMagick not found at ${IMAGEMAGICK_BIN}" >&2
+        return 1
+    fi
+}
+
+check_magick_version() {
+    "${IMAGEMAGICK_BIN}" -version >/dev/null || {
+        echo "❌ 'magick -version' failed" >&2
+        return 1
+    }
+}
+
+main() {
+    echo "🔍 Testing ImageMagick..."
+    check_magick_binary
+    check_magick_version
+    echo "✅ ImageMagick check passed"
+}
+
+main "$@"

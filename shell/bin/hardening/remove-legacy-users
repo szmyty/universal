@@ -1,0 +1,145 @@
+#!/usr/bin/env bash
+# remove-legacy-users: Removes outdated system users (safe for container hardening)
+
+set -euo pipefail
+
+USE_COLOR=true
+FORCE=false
+DRY_RUN=false
+ONLY_IF_CONTAINER=true
+
+# These are safe-to-remove on most systems *if unused*
+LEGACY_USERS=(games gnats irc list news sync uucp)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Color + Log
+# ─────────────────────────────────────────────────────────────────────────────
+color() {
+    [[ "${USE_COLOR}" == true ]] || return 0
+    case "$1" in
+    reset) echo -e "\033[0m" ;;
+    cyan) echo -e "\033[36m" ;;
+    green) echo -e "\033[32m" ;;
+    yellow) echo -e "\033[33m" ;;
+    red) echo -e "\033[31m" ;;
+    *) echo "" ;;
+    esac
+}
+
+log() {
+    local type="$1"
+    shift
+    local prefix color_code output
+    case "${type}" in
+    info)
+        prefix="👉"
+        color_code=$(color cyan)
+        ;;
+    success)
+        prefix="✅"
+        color_code=$(color green)
+        ;;
+    warn)
+        prefix="⚠️"
+        color_code=$(color yellow)
+        ;;
+    error)
+        prefix="❌"
+        color_code=$(color red)
+        ;;
+    *)
+        prefix=""
+        color_code=$(color reset)
+        ;;
+    esac
+    output="${color_code}${prefix} $*$(color reset)"
+    if [[ "${type}" == "error" ]]; then
+        printf "%s\n" "${output}" >&2
+        exit 1
+    else
+        printf "%s\n" "${output}"
+    fi
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# CLI
+# ─────────────────────────────────────────────────────────────────────────────
+print_help() {
+    cat <<EOF
+Usage: $(basename "$0") [options]
+
+Remove legacy/unnecessary system users. Safe for container hardening.
+
+Options:
+  --force          Skip confirmation prompt
+  --dry-run        Show what would be removed, but don't do it
+  --no-color       Disable color output
+  --allow-outside  Allow running on host (outside containers)
+  -h, --help       Show this help message
+EOF
+    exit 0
+}
+
+for arg in "$@"; do
+    case "${arg}" in
+    --force) FORCE=true ;;
+    --dry-run) DRY_RUN=true ;;
+    --no-color) USE_COLOR=false ;;
+    --allow-outside) ONLY_IF_CONTAINER=false ;;
+    -h | --help) print_help ;;
+    *)
+        log error "Unknown argument: ${arg}"
+        ;;
+    esac
+done
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Safety
+# ─────────────────────────────────────────────────────────────────────────────
+check_container_context() {
+    if [[ "${ONLY_IF_CONTAINER}" == true ]] && ! grep -qE 'docker|containerd' /proc/1/cgroup 2>/dev/null; then
+        log warn "🛑 Not running in a container. Skipping user removal."
+        exit 0
+    fi
+}
+
+remove_user() {
+    local user="$1"
+
+    if ! id "${user}" &>/dev/null; then
+        log info "User not found: ${user}"
+        return
+    fi
+
+    log warn "User found: ${user}"
+
+    if [[ "${DRY_RUN}" == true ]]; then
+        log info "Would remove: ${user}"
+        return
+    fi
+
+    pkill -u "${user}" || true
+    if userdel -r "${user}" &>/dev/null; then
+        log success "Removed user: ${user}"
+    else
+        log error "Failed to remove user: ${user}"
+    fi
+}
+
+main() {
+    check_container_context
+
+    log info "Targeting legacy users: ${LEGACY_USERS[*]}"
+    if [[ "${FORCE}" != true ]]; then
+        read -rp "⚠️  Continue with user removal? (y/N): " confirm
+        [[ "${confirm}" =~ ^[Yy]$ ]] || {
+            log error "Cancelled by user."
+        }
+    fi
+
+    for user in "${LEGACY_USERS[@]}"; do
+        remove_user "${user}"
+    done
+}
+
+main

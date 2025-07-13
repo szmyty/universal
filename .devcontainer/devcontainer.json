@@ -2,8 +2,8 @@
     "$schema": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.schema.json",
     "name": "universal-devcontainer",
     "dockerComposeFile": ["docker-compose.yml"],
-    "service": "dev",
-    "runServices": ["dev"],
+    "service": "development",
+    "runServices": ["development"],
     "workspaceFolder": "/workspace",
     "forwardPorts": [8000, 8084, 8085, 5050, 80, 443, 5173, 9000, 3001],
     "postCreateCommand": "task --dir /workspace --taskfile /workspace/Taskfile.yml --yes setup",
@@ -19,10 +19,10 @@
             "disableIp6tables": false
         },
         "./features/docker-proxy": {
-            "http_proxy": "none",
-            "https_proxy": "none",
+            "http_proxy": "http://proxy:8080",
+            "https_proxy": "http://proxy:8080",
             "no_proxy": "localhost,127.0.0.1",
-            "docker_dns": "8.8.4.4"
+            "docker_dns": "8.8.4.4,8.8.8.8"
         }
     },
     "mounts": [
@@ -39,7 +39,15 @@
             "settings": {
                 "terminal.integrated.defaultProfile.linux": "bash",
                 "editor.formatOnSave": true,
-                "files.trimTrailingWhitespace": true
+                "files.trimTrailingWhitespace": true,
+                "[dockerfile]": {
+                    "editor.formatOnSave": false,
+                    "editor.defaultFormatter": null
+                },
+                "htmlhint.ignoreGitignore": true,
+                "htmlhint.options": {
+                    "config": "${workspaceFolder}/config/.htmlhintrc"
+                }
             },
             "extensions": [
                 "ms-python.python",
@@ -65,7 +73,17 @@
                 "DavidAnson.vscode-markdownlint",
                 "dbaeumer.vscode-eslint",
                 "foxundermoon.shell-format",
-                "IronGeek.vscode-env"
+                "IronGeek.vscode-env",
+                "ivory-lab.jenkinsfile-support",
+                "HTMLHint.vscode-htmlhint",
+                "codezombiech.gitignore",
+                "johnpapa.vscode-peacock",
+                "wmaurer.change-case",
+                "xaver.clang-format",
+                "twxs.cmake",
+                "josetr.cmake-language-support-vscode",
+                "ms-vscode.cmake-tools",
+                "coolbear.systemd-unit-file"
             ]
         }
     }

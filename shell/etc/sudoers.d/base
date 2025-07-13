@@ -1,0 +1,10 @@
+# sudoers.base
+# Safe, general-purpose sudo config for base images or shared environments.
+# cspell:ignore badpass
+
+Defaults !requiretty
+Defaults !admin_flag
+Defaults lecture = never
+Defaults mail_badpass
+
+Defaults env_keep += "PATH LANG LC_ALL"

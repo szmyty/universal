@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Converts an image file to .ico format using ImageMagick's `convert` command.
+# Usage: ./convert-to-ico.sh <image_file>
+set -euo pipefail
+
+main() {
+    if [[ $# -ne 1 ]]; then
+        echo "❌ Usage: $0 <image_file>" >&2
+        exit 1
+    fi
+
+    local input_image="$1"
+
+    if [[ ! -f "${input_image}" ]]; then
+        echo "❌ File not found: ${input_image}" >&2
+        exit 2
+    fi
+
+    if ! command -v convert >/dev/null 2>&1; then
+        echo "❌ ImageMagick 'convert' command is not available. Please install it first." >&2
+        exit 3
+    fi
+
+    local output_image="${input_image%.*}.ico"
+
+    echo "🔄 Converting '${input_image}' to '${output_image}'..."
+    convert "${input_image}" -resize 256x256 "${output_image}"
+
+    echo "✅ Successfully converted to: ${output_image}"
+}
+
+main "$@"

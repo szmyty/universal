@@ -1,0 +1,13 @@
+# sudoers.production
+# Hardened sudo config for production or secure container environments.
+
+Defaults requiretty
+Defaults admin_flag
+Defaults lecture = always
+Defaults mail_all
+Defaults syslog
+Defaults env_reset
+Defaults timestamp_timeout=0
+
+Defaults !env_keep
+Defaults secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"

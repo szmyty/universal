@@ -1,0 +1,154 @@
+#!/usr/bin/env bash
+# generate-tree: Generates a Markdown file of the Git-tracked directory structure (excluding reports/)
+
+set -euo pipefail
+
+USE_COLOR=true
+DEFAULT_OUTPUT="docs/PROJECT_STRUCTURE.md"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# CLI Flags
+# ─────────────────────────────────────────────────────────────────────────────
+print_help() {
+    cat <<EOF
+Usage: $(basename "$0") [options] [output-path]
+
+Generates a Markdown file with the Git-tracked directory structure.
+
+Arguments:
+  output-path    Optional path to write the tree (default: ${DEFAULT_OUTPUT})
+
+Options:
+  --no-color     Disable color output
+  -h, --help     Show this help message
+EOF
+}
+
+POSITIONAL_ARGS=()
+for arg in "$@"; do
+    case "${arg}" in
+    --no-color) USE_COLOR=false ;;
+    -h | --help)
+        print_help
+        exit 0
+        ;;
+    -*)
+        echo "❌ Unknown flag: ${arg}" >&2
+        print_help
+        exit 1
+        ;;
+    *) POSITIONAL_ARGS+=("${arg}") ;;
+    esac
+done
+set -- "${POSITIONAL_ARGS[@]:-}"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Color + Logging
+# ─────────────────────────────────────────────────────────────────────────────
+color() {
+    [[ "${USE_COLOR}" == true ]] || return 0
+    case "$1" in
+    reset) echo -e "\033[0m" ;;
+    bold) echo -e "\033[1m" ;;
+    cyan) echo -e "\033[36m" ;;
+    green) echo -e "\033[32m" ;;
+    yellow) echo -e "\033[33m" ;;
+    red) echo -e "\033[31m" ;;
+    *) echo "" ;;
+    esac
+}
+
+log() {
+    local type="$1"
+    shift
+    local prefix color_code output
+    color_code=$(color reset)
+
+    case "${type}" in
+    info)
+        prefix="👉"
+        color_code=$(color cyan)
+        ;;
+    success)
+        prefix="✅"
+        color_code=$(color green)
+        ;;
+    warn)
+        prefix="⚠️"
+        color_code=$(color yellow)
+        ;;
+    error)
+        prefix="❌"
+        color_code=$(color red)
+        ;;
+    *)
+        prefix=""
+        color_code=$(color reset)
+        ;;
+    esac
+
+    output="${color_code}${prefix} $*$(color reset)"
+    if [[ "${type}" == "error" ]]; then
+        printf "%s\n" "${output}" >&2
+        exit 1
+    else
+        printf "%s\n" "${output}"
+    fi
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Core Logic
+# ─────────────────────────────────────────────────────────────────────────────
+generate_tree() {
+    local output_path="$1"
+    mkdir -p "$(dirname "${output_path}")"
+
+    log info "Detecting project root..."
+    local root
+    if ! root=$(git rev-parse --show-toplevel 2>/dev/null); then
+        log warn "Not a git repository. Falling back to raw tree output from current dir."
+        root="."
+    fi
+
+    log info "Generating project structure to: ${output_path}"
+
+    {
+        echo '# Project Structure'
+        echo ''
+        echo '```text'
+
+        if [[ "${root}" != "." ]]; then
+            # Git-aware tree (ignores untracked and excluded files)
+            git -C "${root}" ls-tree -r --name-only HEAD |
+                grep -vE '^reports/' |
+                tree --fromfile || log warn "tree --fromfile failed; falling back."
+        else
+            tree -I "reports" || log error "tree command failed. Ensure it is installed."
+        fi
+
+        echo '```'
+    } >"${output_path}"
+
+    if git rev-parse --is-inside-work-tree &>/dev/null; then
+        git add "${output_path}"
+    fi
+
+    log success "Tree written to: ${output_path}"
+    echo
+    log info "Preview (top 10 lines):"
+    head -n 10 "${output_path}"
+}
+
+main() {
+    local out="${1:-${DEFAULT_OUTPUT}}"
+
+    if ! command -v tree >/dev/null; then
+        log error "'tree' command not found. Please install it to continue."
+    fi
+
+    log info "Starting directory structure generation..."
+    generate_tree "${out}"
+    log success "Project structure generation complete."
+}
+
+main "$@"

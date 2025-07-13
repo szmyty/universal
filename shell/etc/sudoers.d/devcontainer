@@ -1,0 +1,14 @@
+# sudoers.devcontainer
+# Developer-first sudo config for DevContainers, local Docker use, CI, etc.
+# cspell:ignore badpass
+
+Defaults !requiretty
+Defaults !admin_flag
+Defaults lecture = never
+Defaults !syslog
+Defaults mail_badpass
+Defaults !mail_all
+
+Defaults env_keep += "DEBIAN_FRONTEND NODE_ENV PATH LANG LC_ALL PYTHONPATH NPM_CONFIG_PREFIX"
+
+%sudo ALL=(ALL) NOPASSWD:ALL

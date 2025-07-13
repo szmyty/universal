@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+# json-pretty: safe JSON pretty printer using jq
+
+set -euo pipefail
+
+print_help() {
+    cat <<EOF
+Usage: json-pretty [file.json]...
+
+Pretty-prints JSON from one or more files, or from stdin if no file is given.
+
+Options:
+  -h, --help    Show this help message
+EOF
+}
+
+pretty_print() {
+    local input="${1}"
+    if ! jq --sort-keys '.' "${input}"; then
+        printf "⚠️ Invalid JSON in '%s'\n" "${input}" >&2
+        return 1
+    fi
+}
+
+pretty_print_stdin() {
+    if ! jq --sort-keys '.'; then
+        printf "⚠️ Invalid JSON from stdin\n" >&2
+        return 1
+    fi
+}
+
+main() {
+    if [[ "${#}" -eq 0 ]]; then
+        pretty_print_stdin
+        return
+    fi
+
+    for arg in "$@"; do
+        case "${arg}" in
+        -h | --help)
+            print_help
+            return
+            ;;
+        -*)
+            printf "❌ Unknown option: %s\n" "${arg}" >&2
+            print_help
+            return 1
+            ;;
+        *)
+            if [[ -f "${arg}" ]]; then
+                pretty_print "${arg}"
+            else
+                printf "❌ File not found: %s\n" "${arg}" >&2
+                return 1
+            fi
+            ;;
+        esac
+    done
+}
+
+main "$@"

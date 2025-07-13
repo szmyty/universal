@@ -1,0 +1,110 @@
+#!/usr/bin/env bash
+# cb: Copies the contents of a file to the system clipboard (cross-platform)
+
+set -euo pipefail
+
+USE_COLOR=true
+VERSION="1.0.0"
+
+color() {
+    [[ "${USE_COLOR}" == true ]] || return 0
+    case "$1" in
+    red) echo -e "\033[31m" ;;
+    green) echo -e "\033[32m" ;;
+    cyan) echo -e "\033[36m" ;;
+    yellow) echo -e "\033[33m" ;;
+    reset) echo -e "\033[0m" ;;
+    *) echo "" ;;
+    esac
+}
+
+log() {
+    local type="$1"
+    shift
+    local prefix color_code output
+    case "${type}" in
+    info)
+        prefix="👉"
+        color_code=$(color cyan)
+        ;;
+    success)
+        prefix="✅"
+        color_code=$(color green)
+        ;;
+    warn)
+        prefix="⚠️"
+        color_code=$(color yellow)
+        ;;
+    error)
+        prefix="❌"
+        color_code=$(color red)
+        ;;
+    *)
+        prefix=""
+        color_code=$(color reset)
+        ;;
+    esac
+    output="${color_code}${prefix} $*$(color reset)"
+    if [[ "${type}" == "error" ]]; then
+        printf "%s\n" "${output}" >&2
+        exit 1
+    else
+        printf "%s\n" "${output}"
+    fi
+}
+
+print_help() {
+    cat <<EOF
+Usage: cb <file>
+
+Copy the contents of a file to the clipboard.
+
+Options:
+--help       Show this help message
+--version    Show script version
+EOF
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Main
+# ─────────────────────────────────────────────────────────────────────────────
+
+main() {
+    if [[ "${1:-}" == "--help" ]]; then
+        print_help
+        exit 0
+    fi
+
+    if [[ "${1:-}" == "--version" ]]; then
+        echo "cb v${VERSION}"
+        exit 0
+    fi
+
+    if [[ $# -ne 1 ]]; then
+        log error "Usage: cb <file>"
+    fi
+
+    local file="$1"
+
+    if [[ ! -f "${file}" || ! -r "${file}" ]]; then
+        log error "File not found or not readable: ${file}"
+    fi
+
+    if command -v pbcopy &>/dev/null; then
+        pbcopy <"${file}"
+    elif command -v xclip &>/dev/null; then
+        xclip -selection clipboard <"${file}"
+    elif command -v xsel &>/dev/null; then
+        xsel -ib <"${file}"
+    elif command -v clip &>/dev/null; then
+        clip <"${file}"
+    elif command -v powershell &>/dev/null; then
+        powershell -NoProfile -Command "Get-Content -Path '${file}' | Set-Clipboard"
+    else
+        log error "No supported clipboard utility found (pbcopy, xclip, xsel, clip, powershell)"
+    fi
+
+    log success "Copied contents of ${file} to clipboard"
+}
+
+main "$@"

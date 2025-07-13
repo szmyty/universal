@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+# install-google-fonts.sh
+# Installs Google Fonts from GitHub using a reproducible SHA commit and SHA256 checksum.
+
+set -euo pipefail
+
+# Reproducible inputs from Dockerfile or environment
+GOOGLE_FONTS_SHA_COMMIT="${GOOGLE_FONTS_SHA_COMMIT:-main}"
+GOOGLE_FONTS_SHA256="${GOOGLE_FONTS_SHA256:-}"
+
+GOOGLE_FONTS_ARCHIVE_URL="https://github.com/google/fonts/archive"
+
+DEVTOOLS_HOME="${DEVTOOLS_HOME:-/opt/devtools}"
+FONTS_DIR="${DEVTOOLS_HOME}/fonts/google"
+ZIP_CACHE_DIR="/var/cache/fonts"
+ZIP_FILE="${ZIP_CACHE_DIR}/google-fonts-${GOOGLE_FONTS_SHA_COMMIT}.zip"
+TEMP_DIR="/tmp/google-fonts-src"
+
+install_deps() {
+    echo "📦 Installing font dependencies..."
+    apt-get update --quiet
+    apt-get install --yes --no-install-recommends unzip curl ca-certificates fontconfig
+}
+
+download_fonts_zip() {
+    local url="${GOOGLE_FONTS_ARCHIVE_URL}/${GOOGLE_FONTS_SHA_COMMIT}.zip"
+    mkdir -p "$(dirname "${ZIP_FILE}")"
+    echo "⬇️  Downloading Google Fonts from: ${url}"
+    curl --fail --location --output "${ZIP_FILE}" "${url}"
+}
+
+verify_sha256() {
+    echo "🔐 Verifying SHA256 checksum..."
+    local actual_sha256
+    actual_sha256=$(sha256sum "${ZIP_FILE}" | awk '{print $1}')
+    if [[ "${actual_sha256}" != "${GOOGLE_FONTS_SHA256}" ]]; then
+        echo "❌ SHA256 mismatch!"
+        echo "Expected: ${GOOGLE_FONTS_SHA256}"
+        echo "Actual:   ${actual_sha256}"
+        exit 1
+    fi
+    echo "✅ SHA256 verified."
+}
+
+extract_fonts() {
+    echo "📂 Extracting fonts..."
+    rm -rf "${TEMP_DIR}"
+    mkdir -p "${TEMP_DIR}"
+    unzip --quiet "${ZIP_FILE}" -d "${TEMP_DIR}"
+}
+
+install_fonts() {
+    echo "📁 Installing fonts into ${FONTS_DIR}"
+    mkdir -p "${FONTS_DIR}"
+    local font_dir
+    font_dir=$(find "${TEMP_DIR}" -type d -name "fonts-${GOOGLE_FONTS_SHA_COMMIT}" || find "${TEMP_DIR}" -type d -maxdepth 1 -name "fonts-*")
+
+    find "${font_dir}" -type f \( -iname '*.ttf' -o -iname '*.otf' \) -exec cp {} "${FONTS_DIR}" \;
+}
+
+refresh_font_cache() {
+    echo "🔄 Refreshing font cache..."
+    fc-cache --force "${FONTS_DIR}"
+}
+
+cleanup() {
+    echo "🧹 Cleaning up temp files..."
+    rm -rf "${TEMP_DIR}"
+}
+
+main() {
+    install_deps
+
+    if [[ ! -f "${ZIP_FILE}" ]]; then
+        download_fonts_zip
+    else
+        echo "📦 Using cached archive: ${${ZIP_FI}LE}"
+    fi
+
+    if [[ -n "${GOOGLE_FONTS_SHA256}" ]]; then
+        verify_sha256
+    else
+        echo "⚠️  No SHA256 provided — skipping verification"
+    fi
+
+    extract_fonts
+    install_fonts
+    refresh_font_cache
+    cleanup
+
+    echo "🎉 Google Fonts installed at$$${$FONTS_}D}I}R from commit${$${O}OGLE_FONTS_SHA_COMMI}T"
+}
+
+main "$@"
