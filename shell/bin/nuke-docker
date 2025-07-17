@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# nuke-docker: Safely remove Docker resources by label or everything if --all is passed
+# docker-clean: Safely remove Docker resources by label or everything if --all is passed
 
 set -euo pipefail
 
@@ -8,6 +8,11 @@ FORCE=false
 USE_LABELS=true
 DANGEROUS=false
 NUKE_ALL=false
+DRY_RUN=false
+
+CLEAN_CONTAINERS=true
+CLEAN_VOLUMES=false
+CLEAN_NETWORKS=false
 
 LABEL_NAME=""
 LABEL_SCOPE=""
@@ -76,48 +81,64 @@ filter_by_labels() {
 }
 
 stop_containers() {
+    [[ "${CLEAN_CONTAINERS}" == true ]] || return 0
     log info "Stopping containers..."
-    filter_by_labels ps -aq | xargs -r docker stop
+    filter_by_labels ps -aq | while read -r cid; do
+        log info "Stopping container: ${cid}"
+        [[ "${DRY_RUN}" == false ]] && docker stop "${cid}" || true
+    done
 }
 
 remove_containers() {
+    [[ "${CLEAN_CONTAINERS}" == true ]] || return 0
     log info "Removing containers..."
-    filter_by_labels ps -aq | xargs -r docker rm --force
+    filter_by_labels ps -aq | while read -r cid; do
+        log info "Removing container: ${cid}"
+        [[ "${DRY_RUN}" == false ]] && docker rm --force "${cid}" || true
+    done
 }
 
 remove_networks() {
+    [[ "${CLEAN_NETWORKS}" == true || "${NUKE_ALL}" == true ]] || {
+        log info "Skipping network removal (use --networks to enable)"
+        return 0
+    }
+
     log info "Removing networks..."
 
     if [[ "${USE_LABELS}" == true ]]; then
         docker network ls --filter "label=${LABEL_NAME}" --filter "label=${LABEL_SCOPE}" -q | while read -r net_id; do
             net_name=$(docker network inspect --format '{{ .Name }}' "${net_id}")
             log info "Removing network: ${net_name} (${net_id})"
-            docker network rm "${net_id}" || log warn "Failed to remove network: ${net_id}"
+            [[ "${DRY_RUN}" == false ]] && docker network rm "${net_id}" || true
         done
     else
         docker network ls -q | while read -r net_id; do
             net_name=$(docker network inspect --format '{{ .Name }}' "${net_id}")
-            if [[ "${net_name}" =~ ^(bridge|host|none)$ ]]; then
-                continue
-            fi
+            [[ "${net_name}" =~ ^(bridge|host|none)$ ]] && continue
             log info "Removing network: ${net_name} (${net_id})"
-            docker network rm "${net_id}" || log warn "Failed to remove network: ${net_id}"
+            [[ "${DRY_RUN}" == false ]] && docker network rm "${net_id}" || true
         done
     fi
 }
 
 remove_volumes() {
+    [[ "${CLEAN_VOLUMES}" == true || "${NUKE_ALL}" == true ]] || {
+        log info "Skipping volume removal (use --volumes to enable)"
+        return 0
+    }
+
     log info "Removing volumes..."
 
     if [[ "${USE_LABELS}" == true ]]; then
         docker volume ls --filter "label=${LABEL_NAME}" --filter "label=${LABEL_SCOPE}" -q | while read -r vol_id; do
             log info "Removing volume: ${vol_id}"
-            docker volume rm "${vol_id}" || log warn "Failed to remove volume: ${vol_id}"
+            [[ "${DRY_RUN}" == false ]] && docker volume rm "${vol_id}" || true
         done
     else
         docker volume ls -q | while read -r vol_id; do
             log info "Removing volume: ${vol_id}"
-            docker volume rm "${vol_id}" || log warn "Failed to remove volume: ${vol_id}"
+            [[ "${DRY_RUN}" == false ]] && docker volume rm "${vol_id}" || true
         done
     fi
 }
@@ -127,7 +148,7 @@ remove_images() {
         log warn "Removing Docker images..."
         docker images -aq | while read -r img_id; do
             log info "Removing image: ${img_id}"
-            docker rmi --force "${img_id}" || log warn "Failed to remove image: ${img_id}"
+            [[ "${DRY_RUN}" == false ]] && docker rmi --force "${img_id}" || true
         done
     else
         log info "Skipping image removal (use --dangerous to enable)"
@@ -136,13 +157,13 @@ remove_images() {
 
 clean_build_cache() {
     log info "Cleaning Docker build cache..."
-    docker builder prune --all --force
+    [[ "${DRY_RUN}" == false ]] && docker builder prune --all --force || log info "(dry-run) Would run: docker builder prune --all --force"
 }
 
 system_prune() {
     if [[ "${DANGEROUS}" == true ]]; then
         log warn "Performing system prune..."
-        docker system prune --all --volumes --force
+        [[ "${DRY_RUN}" == false ]] && docker system prune --all --volumes --force || log info "(dry-run) Would run: docker system prune --all --volumes --force"
     fi
 }
 
@@ -165,13 +186,19 @@ usage() {
 Usage: $(basename "$0") [options]
 
 Options:
-  --label-name VALUE     Docker app.name label (required unless --all)
-  --label-scope VALUE    Docker app.scope label (required unless --all)
-  --all                  Ignore labels and nuke all matching resources
-  --dangerous            Also remove images and system prune
-  --force                Skip confirmation prompt
-  --no-color             Disable colored output
-  -h, --help             Show this help message
+  --label-name VALUE       Docker app.name label (required unless --all)
+  --label-scope VALUE      Docker app.scope label (required unless --all)
+  --all                    Ignore labels and nuke all matching resources
+  --volumes                Also remove volumes (default: off unless --all)
+  --networks               Also remove networks (default: off unless --all)
+  --only-containers        Only remove containers (implies --no-volumes --no-networks)
+  --only-volumes           Only remove volumes (disables container/network cleanup)
+  --only-networks          Only remove networks (disables container/volume cleanup)
+  --dangerous              Also remove images and run system prune
+  --dry-run                Show what would be removed, but don't actually remove it
+  --force                  Skip confirmation prompt
+  --no-color               Disable colored output
+  -h, --help               Show this help message
 EOF
     exit 1
 }
@@ -192,6 +219,24 @@ main_wrapper() {
             NUKE_ALL=true
             ;;
         --dangerous) DANGEROUS=true ;;
+        --volumes) CLEAN_VOLUMES=true ;;
+        --networks) CLEAN_NETWORKS=true ;;
+        --only-containers)
+            CLEAN_CONTAINERS=true
+            CLEAN_VOLUMES=false
+            CLEAN_NETWORKS=false
+            ;;
+        --only-volumes)
+            CLEAN_CONTAINERS=false
+            CLEAN_VOLUMES=true
+            CLEAN_NETWORKS=false
+            ;;
+        --only-networks)
+            CLEAN_CONTAINERS=false
+            CLEAN_VOLUMES=false
+            CLEAN_NETWORKS=true
+            ;;
+        --dry-run) DRY_RUN=true ;;
         --force) FORCE=true ;;
         --no-color) USE_COLOR=false ;;
         -h | --help) usage ;;
@@ -211,6 +256,7 @@ main_wrapper() {
     [[ "${NUKE_ALL}" == true ]] && log warn "☢️  --all specified: This will ignore labels and clean EVERYTHING."
     [[ "${DANGEROUS}" == true ]] && log warn "🔥 --dangerous specified: Images and build cache will also be deleted."
     [[ "${USE_LABELS}" == true ]] && log info "Label filters: ${LABEL_NAME}, ${LABEL_SCOPE}"
+    [[ "${DRY_RUN}" == true ]] && log warn "🔍 Dry-run mode enabled — nothing will actually be removed."
 
     if [[ "${FORCE}" == true ]]; then
         main
