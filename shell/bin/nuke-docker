@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# docker-clean: Safely remove Docker resources by label or everything if --all is passed
+# nuke-docker: Safely remove Docker resources by label or everything if --all is passed
 
 set -euo pipefail
 
@@ -87,18 +87,30 @@ remove_containers() {
 
 remove_networks() {
     log info "Removing networks..."
-    docker network ls -q | while read -r net_id; do
-        if [[ "${USE_LABELS}" == false ]] || docker network inspect "${net_id}" | grep -q "${LABEL_NAME}"; then
-            docker network rm "${net_id}" || true
-        fi
-    done
+
+    if [[ "${USE_LABELS}" == true ]]; then
+        docker network ls --filter "label=${LABEL_NAME}" --filter "label=${LABEL_SCOPE}" -q | while read -r net_id; do
+            net_name=$(docker network inspect --format '{{ .Name }}' "${net_id}")
+            log info "Removing network: ${net_name} (${net_id})"
+            docker network rm "${net_id}" || log warn "Failed to remove network: ${net_id}"
+        done
+    else
+        docker network ls -q | while read -r net_id; do
+            net_name=$(docker network inspect --format '{{ .Name }}' "${net_id}")
+            if [[ "${net_name}" =~ ^(bridge|host|none)$ ]]; then
+                continue
+            fi
+            log info "Removing network: ${net_name} (${net_id})"
+            docker network rm "${net_id}" || log warn "Failed to remove network: ${net_id}"
+        done
+    fi
 }
 
 remove_volumes() {
     log info "Removing volumes..."
 
     if [[ "${USE_LABELS}" == true ]]; then
-        docker volume ls --filter "label=${LABEL_NAME}" -q | while read -r vol_id; do
+        docker volume ls --filter "label=${LABEL_NAME}" --filter "label=${LABEL_SCOPE}" -q | while read -r vol_id; do
             log info "Removing volume: ${vol_id}"
             docker volume rm "${vol_id}" || log warn "Failed to remove volume: ${vol_id}"
         done
@@ -110,11 +122,13 @@ remove_volumes() {
     fi
 }
 
-
 remove_images() {
     if [[ "${DANGEROUS}" == true ]]; then
         log warn "Removing Docker images..."
-        docker images -aq | xargs -r docker rmi --force
+        docker images -aq | while read -r img_id; do
+            log info "Removing image: ${img_id}"
+            docker rmi --force "${img_id}" || log warn "Failed to remove image: ${img_id}"
+        done
     else
         log info "Skipping image removal (use --dangerous to enable)"
     fi
