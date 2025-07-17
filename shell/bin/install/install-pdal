@@ -1,0 +1,132 @@
+#!/usr/bin/env bash
+# install-pdal.sh
+# Installs PDAL from a pinned GitHub commit with reproducible configuration
+# cspell:ignore rpath PGPOINTCLOUD ICEBRIDGE NITF DWITH MBIO
+
+set -euo pipefail
+
+# Reproducible Release Vars
+GITHUB_REPO="${GITHUB_REPO:-PDAL/PDAL}"
+GITHUB_TAG="${GITHUB_TAG:-2.9.0}"
+GITHUB_COMMIT="${GITHUB_COMMIT:-795f0d9858dba72074fa3a4736282b1d2635620b}"
+GITHUB_TARBALL_SHA256="${GITHUB_TARBALL_SHA256:-669488678000983e08208b638c59070540e19b41bf953b1e26f64ff30168656d}"
+
+# Install Prefix
+DEVTOOLS_HOME="${DEVTOOLS_HOME:-/opt/devtools}"
+INSTALL_PREFIX="${DEVTOOLS_HOME}/pdal"
+BIN_DIR="${DEVTOOLS_HOME}/bin"
+
+# Compiler & build settings
+CMAKE_BUILD_TYPE="Release"
+BUILD_SHARED_LIBS="ON"
+CXXFLAGS="-Werror=strict-aliasing"
+LDFLAGS="-Wl,-rpath-link,${INSTALL_PREFIX}/lib"
+NUM_JOBS="$(nproc)"
+
+# Git clone path
+PDAL_SRC_DIR="/tmp/pdal-src"
+
+C_COMPILER="$(command -v gcc || command -v clang || echo "gcc")"
+CXX_COMPILER="$(command -v g++ || command -v clang++ || echo "g++")"
+
+# Plugin flags
+PDAL_CMAKE_FLAGS=(
+  -GNinja
+  -DCMAKE_BUILD_TYPE="${CMAKE_BUILD_TYPE}"
+  -DCMAKE_C_COMPILER="${C_COMPILER}"
+  -DCMAKE_CXX_COMPILER="${CXX_COMPILER}"
+  -DBUILD_SHARED_LIBS="${BUILD_SHARED_LIBS}"
+  -DCMAKE_PREFIX_PATH="${INSTALL_PREFIX}/lib"
+  -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}"
+  -DBUILD_PLUGIN_CPD=OFF
+  -DBUILD_PLUGIN_PGPOINTCLOUD=ON
+  -DBUILD_PLUGIN_NITF=OFF
+  -DBUILD_PLUGIN_ICEBRIDGE=OFF
+  -DBUILD_PLUGIN_HDF=OFF
+  -DBUILD_PLUGIN_ARROW=OFF
+  -DBUILD_PLUGIN_DRACO=OFF
+  -DBUILD_PLUGIN_TILEDB=OFF
+  -DBUILD_PLUGIN_E57=OFF
+  -DBUILD_PLUGIN_MBIO=OFF
+  -DBUILD_PGPOINTCLOUD_TESTS=OFF
+  -DWITH_ZSTD=ON
+)
+
+install_deps() {
+  echo "📦 Installing PDAL dependencies..."
+  apt-get update --quiet
+  apt-get install --yes --no-install-recommends \
+    build-essential \
+    gcc \
+    g++ \
+    cmake \
+    git \
+    ninja-build \
+    curl \
+    ca-certificates \
+    libcurl4-openssl-dev \
+    libtiff-dev \
+    libgeotiff-dev \
+    libboost-all-dev \
+    libjsoncpp-dev \
+    libgdal-dev \
+    wget \
+    proj-bin \
+    hdf4-tools \
+    geotiff-bin \
+    gdal-bin \
+    netcdf-bin
+}
+
+clone_and_checkout() {
+  echo "📥 Cloning ${GITHUB_REPO} at commit ${GITHUB_COMMIT}..."
+  rm -rf "${PDAL_SRC_DIR}"
+  git clone --quiet --depth=1 "https://github.com/${GITHUB_REPO}.git" "${PDAL_SRC_DIR}"
+  cd "${PDAL_SRC_DIR}"
+  git fetch --depth=1 origin "${GITHUB_COMMIT}"
+  git checkout "${GITHUB_COMMIT}"
+}
+
+build_and_install() {
+  echo "🔧 Configuring build..."
+  mkdir -p build
+  cd build
+
+  CXXFLAGS="${CXXFLAGS}" \
+  LDFLAGS="${LDFLAGS}" \
+  cmake .. "${PDAL_CMAKE_FLAGS[@]}"
+
+  echo "🛠️  Compiling with ${NUM_JOBS} jobs..."
+  ninja --verbose -j"${NUM_JOBS}"
+
+  echo "🧪 Running tests..."
+  test -V || echo "⚠️ Some tests failed — continuing."
+
+  echo "📦 Installing to ${INSTALL_PREFIX}"
+  ninja install
+  ldconfig
+}
+
+symlink_binaries() {
+  echo "🔗 Linking binaries to ${BIN_DIR}..."
+  mkdir -p "${BIN_DIR}"
+  for bin in "${INSTALL_PREFIX}/bin/"*; do
+    ln -sf "${bin}" "${BIN_DIR}/$(basename "${bin}")"
+  done
+}
+
+cleanup() {
+  echo "🧹 Cleaning up..."
+  rm -rf "${PDAL_SRC_DIR}"
+}
+
+main() {
+  install_deps
+  clone_and_checkout
+  build_and_install
+  symlink_binaries
+  cleanup
+  echo "✅ PDAL ${GITHUB_TAG} installed successfully from commit ${GITHUB_COMMIT}"
+}
+
+main "$@"

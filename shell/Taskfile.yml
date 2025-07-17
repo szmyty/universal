@@ -1,0 +1,8 @@
+version: '3'
+
+tasks:
+  test:
+    desc: Run all Bats tests in shell/bin/lib/tests
+    dir: ./bin/lib/tests
+    cmds:
+      - bats *.bats

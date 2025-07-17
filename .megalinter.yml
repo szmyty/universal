@@ -169,7 +169,7 @@ JAVASCRIPT_ES_CONFIG_FILE: config/.eslint.config.mjs
 
 # prettier: https://prettier.io/
 # https://megalinter.io/latest/descriptors/javascript_prettier/
-JAVASCRIPT_PRETTIER_CONFIG_FILE: .prettier.config.mjs
+JAVASCRIPT_PRETTIER_CONFIG_FILE: config/.prettier.config.mjs
 
 # checkstyle: https://checkstyle.org/
 # https://megalinter.io/latest/descriptors/java_checkstyle/

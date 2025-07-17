@@ -1,0 +1,171 @@
+#!/usr/bin/env bash
+# install-apt-base.sh — Base APT setup for reproducible Docker stages
+
+set -euo pipefail
+
+DEVTOOLS_LOCKS="${DEVTOOLS_LOCKS:-/opt/devtools/locks}"
+LOCK_FILE="${DEVTOOLS_LOCKS}/base.apt.lock"
+
+APT_PACKAGES=(
+    ansible
+    apt-rdepends
+    apt-transport-https
+    aptitude
+    aspell
+    bash-completion
+    bat
+    bats
+    build-essential
+    ca-certificates
+    ccache
+    chktex
+    clang
+    clang-format
+    clang-tidy
+    cmake
+    cpanminus
+    curl
+    debtree
+    dnsutils
+    dos2unix
+    ffmpeg
+    fonts-lmodern
+    fonts-noto
+    fonts-noto-cjk
+    fonts-noto-color-emoji
+    fzf
+    gdal-bin
+    gettext
+    ghostscript
+    git
+    gnupg
+    gnupg2
+    graphviz
+    gzip
+    htop
+    inkscape
+    iputils-ping
+    jq
+    less
+    libblosc-dev
+    libboost-all-dev
+    libbz2-dev
+    libcurl4-openssl-dev
+    libdb-dev
+    libev-dev
+    libffi-dev
+    libgdal-dev
+    libgdbm-dev
+    libgeos-dev
+    liblcms2-dev
+    liblz4-dev
+    liblzma-dev
+    libncurses-dev
+    libnss3-dev
+    libperl-dev
+    libproj-dev
+    libreadline-dev
+    libspatialindex-dev
+    libsqlite3-dev
+    libssl-dev
+    libtool
+    libxi-dev
+    libxml2-dev
+    libxmlsec1-dev
+    libxslt1-dev
+    libzstd-dev
+    llvm
+    locales
+    locales-all
+    logrotate
+    lsb-release
+    lsof
+    make
+    mkcert
+    moreutils
+    nano
+    net-tools
+    netcat-openbsd
+    ninja-build
+    nmap
+    openssh-client
+    pandoc
+    pkg-config
+    plocate
+    potrace
+    proj-bin
+    pwgen
+    python3
+    python3-dev
+    python3-pip
+    python3-venv
+    ripgrep
+    software-properties-common
+    strace
+    sudo
+    sysdig
+    sysstat
+    tar
+    tcpdump
+    tk-dev
+    tzdata
+    unzip
+    uuid-dev
+    vim
+    wget
+    xz-utils
+    zlib1g-dev
+    zsh
+)
+
+usage() {
+  echo "Usage:"
+  echo "  $0               # Default install"
+  echo "  $0 --lock        # Install + generate lock file"
+  echo "  $0 --from-lock   # Install using locked versions"
+  exit 1
+}
+
+install_deps() {
+  echo "📦 Installing base packages..."
+  apt-get update -qq
+  apt-get install --yes --no-install-recommends "${APT_PACKAGES[@]}"
+}
+
+install_from_lock() {
+  echo "🔐 Installing from ${LOCK_FILE}..."
+  if [[ ! -f "${LOCK_FILE}" ]]; then
+    echo "❌ Lock file not found!" >&2
+    exit 1
+  fi
+  apt-get update -qq
+  xargs -a "${LOCK_FILE}" apt-get install --yes --no-install-recommends
+}
+
+generate_lock_file() {
+  echo "🔒 Generating lock file at ${LOCK_FILE}..."
+  mkdir -p "${DEVTOOLS_LOCKS}"
+  dpkg-query -W -f='${Package}=${Version}\n' > "${LOCK_FILE}"
+}
+
+main() {
+  case "${1:-}" in
+    --lock)
+      install_deps
+      generate_lock_file
+      ;;
+    --from-lock)
+      install_from_lock
+      ;;
+    "")
+      install_deps
+      ;;
+    *)
+      usage
+      ;;
+  esac
+
+  echo "✅ Base APT install complete."
+}
+
+main "$@"

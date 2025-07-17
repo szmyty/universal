@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+# github-latest-release.sh
+# Fetches metadata + SHA256 checksum for the latest GitHub release tarball.
+
+set -euo pipefail
+
+TMP_TARBALL="/tmp/github-release.tar.gz"
+
+require_deps() {
+  for cmd in curl jq git sha256sum; do
+    command -v "${cmd}" >/dev/null || {
+      echo "❌ Missing dependency: ${cmd}" >&2
+      exit 1
+    }
+  done
+}
+
+usage() {
+  cat <<EOF
+📦 github-latest-release.sh
+
+Usage:
+  $0 <owner>/<repo>
+  $0 --help
+
+Description:
+  Fetches the latest GitHub release metadata for a given repository.
+  Outputs:
+    - version tag
+    - actual commit SHA
+    - tarball URL
+    - SHA256 checksum of the tarball
+
+Examples:
+  $0 ImageMagick/ImageMagick
+  $0 --help
+EOF
+  exit 0
+}
+
+fetch_release_json() {
+  local repo="$1"
+  curl --silent --show-error --location "https://api.github.com/repos/${repo}/releases/latest"
+}
+
+get_commit_sha() {
+  local repo="$1"
+  local tag="$2"
+  git ls-remote "https://github.com/${repo}.git" "refs/tags/${tag}" | cut -f1
+}
+
+download_tarball() {
+  local url="$1"
+  curl --silent --location --output "${TMP_TARBALL}" "${url}"
+}
+
+get_sha256() {
+  sha256sum "${TMP_TARBALL}" | awk '{print $1}'
+}
+
+print_metadata() {
+  local repo="$1"
+  local json
+  json=$(fetch_release_json "${repo}")
+
+  local tag url published
+  tag=$(echo "${json}" | jq -r '.tag_name')
+  url=$(echo "${json}" | jq -r '.tarball_url')
+  published=$(echo "${json}" | jq -r '.published_at')
+
+  echo "📦 Fetching metadata for: ${repo}"
+  echo "Tag:            ${tag}"
+  echo "Tarball URL:    ${url}"
+  echo "Published At:   ${published}"
+
+  local sha
+  sha=$(get_commit_sha "${repo}" "${tag}")
+  echo "Commit SHA:     ${sha}"
+
+  echo "⬇️  Downloading tarball to compute checksum..."
+  download_tarball "${url}"
+
+  local sha256
+  sha256=$(get_sha256)
+  echo "SHA256:         ${sha256}"
+
+  echo
+  echo "✅ Reproducible Build Vars:"
+  echo "export GITHUB_REPO=\"${repo}\""
+  echo "export GITHUB_TAG=\"${tag}\""
+  echo "export GITHUB_COMMIT=\"${sha}\""
+  echo "export GITHUB_TARBALL_URL=\"${url}\""
+  echo "export GITHUB_TARBALL_SHA256=\"${sha256}\""
+}
+
+main() {
+  require_deps
+  [[ $# -eq 1 ]] || usage
+  [[ "$1" == "--help" || "$1" == "-h" ]] && usage
+
+  print_metadata "$1"
+  rm -f "${TMP_TARBALL}"
+}
+
+main "$@"

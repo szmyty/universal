@@ -26,6 +26,9 @@
         "twxs.cmake",
         "josetr.cmake-language-support-vscode",
         "ms-vscode.cmake-tools",
-        "coolbear.systemd-unit-file"
+        "coolbear.systemd-unit-file",
+        "jetmartin.bats",
+        "ms-vscode.cpptools-extension-pack",
+        "ms-vscode.cpptools"
     ]
 }

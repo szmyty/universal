@@ -1,0 +1,22 @@
+<policymap>
+  <policy domain="resource" name="memory" value="256MiB"/>
+  <policy domain="resource" name="map" value="512MiB"/>
+  <policy domain="resource" name="area" value="100MP"/>
+  <policy domain="resource" name="disk" value="1GiB"/>
+  <policy domain="resource" name="file" value="768"/>
+  <policy domain="resource" name="thread" value="2"/>
+  <policy domain="resource" name="time" value="60"/>
+
+  <!-- Enable PDF and PS (Ghostscript) -->
+  <policy domain="coder" rights="read|write" pattern="PDF"/>
+  <policy domain="coder" rights="read|write" pattern="PS"/>
+  <policy domain="coder" rights="read|write" pattern="EPS"/>
+  <policy domain="coder" rights="read|write" pattern="XPS"/>
+
+  <!-- Disable external URLs (unless you trust input!) -->
+  <policy domain="delegate" rights="none" pattern="HTTPS"/>
+  <policy domain="delegate" rights="none" pattern="HTTP"/>
+
+  <!-- You can disable MVG and WMF if not needed -->
+  <!-- <policy domain="coder" rights="none" pattern="MVG"/> -->
+</policymap>

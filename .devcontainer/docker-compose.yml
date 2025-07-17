@@ -62,6 +62,7 @@ services:
     hostname: development
     build:
       context: ..
+      target: final
       dockerfile: .devcontainer/Dockerfile
     volumes:
       # Mount the repository so that changes on the host are reflected inside the container

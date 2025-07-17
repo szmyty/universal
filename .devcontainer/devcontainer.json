@@ -37,18 +37,196 @@
     "customizations": {
         "vscode": {
             "settings": {
-                "terminal.integrated.defaultProfile.linux": "bash",
-                "editor.formatOnSave": true,
-                "files.trimTrailingWhitespace": true,
-                "[dockerfile]": {
-                    "editor.formatOnSave": false,
-                    "editor.defaultFormatter": null
-                },
-                "htmlhint.ignoreGitignore": true,
-                "htmlhint.options": {
-                    "config": "${workspaceFolder}/config/.htmlhintrc"
-                }
-            },
+    "git.ignoreLimitWarning": true,
+    "telemetry.feedback.enabled": false,
+    "editor.insertSpaces": true,
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "always"
+    },
+    "files.trimTrailingWhitespace": true,
+    "terminal.integrated.defaultProfile.linux": "bash",
+    "terminal.integrated.gpuAcceleration": "off",
+    "terminal.integrated.enablePersistentSessions": true,
+    "cSpell.enabled": true,
+    "cSpell.language": "en",
+    "cSpell.caseSensitive": false,
+    "cSpell.useGitignore": true,
+    "cSpell.logFile": "${containerWorkspaceFolder}/.cache/cspell/cspell.log",
+    "cSpell.trustedWorkspace": true,
+    "cSpell.mergeCSpellSettings": true,
+    "cSpell.words": ["cspell", "TASKFILE"],
+    "cSpell.ignorePaths": [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/build/**",
+      "**/.next/**",
+      "**/.vercel/**",
+      "**/.turbo/**",
+      "**/coverage/**",
+      "**/out/**",
+      "**/tmp/**",
+      "**/temp/**",
+      "**/logs/**",
+      "**/log/**",
+      "**/vendor/**",
+      "**/bower_components/**",
+      "**/pnpm-lock.yaml",
+      "**/yarn.lock",
+      "**/package-lock.json",
+      "**/.cache/**",
+      "**/reports/**",
+      "**/.vscode/**",
+      "**/.git/**",
+      "**/package.json",
+      "**/.spectral.yaml"
+    ],
+    "cSpell.customDictionaries": {
+      "project-words": {
+        "path": "${containerWorkspaceFolder}/.vscode/dictionaries/project-words.dictionary",
+        "addWords": true
+      },
+      "backend-terms": {
+        "path": "${containerWorkspaceFolder}/.vscode/dictionaries/backend-terms.dictionary",
+        "addWords": false
+      },
+      "devops-cloud-terms": {
+        "path": "${containerWorkspaceFolder}/.vscode/dictionaries/devops-cloud-terms.dictionary",
+        "addWords": false
+      },
+      "frontend-terms": {
+        "path": "${containerWorkspaceFolder}/.vscode/dictionaries/frontend-terms.dictionary",
+        "addWords": false
+      },
+      "programming-terms": {
+        "path": "${containerWorkspaceFolder}/.vscode/dictionaries/programming-terms.dictionary",
+        "addWords": false
+      },
+      "software-terms": {
+        "path": "${containerWorkspaceFolder}/.vscode/dictionaries/software-terms.dictionary",
+        "addWords": false
+      }
+    },
+    "prettier.useEditorConfig": true,
+    "prettier.configPath": "${containerWorkspaceFolder}/config/.prettier.config.mjs",
+    "[shellscript]": {
+      "editor.defaultFormatter": "foxundermoon.shell-format",
+      "editor.formatOnSave": false
+    },
+    "[dockerfile]": {
+      "editor.formatOnSave": false,
+      "editor.defaultFormatter": "ms-azuretools.vscode-containers"
+    },
+    "[ignore]": {
+      "editor.formatOnSave": false,
+      "editor.defaultFormatter": null
+    },
+    "[gitignore]": {
+      "editor.formatOnSave": false,
+      "editor.defaultFormatter": null
+    },
+    "[javascript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+    "[typescript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+    "[json]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+    "[jsonc]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+    "[markdown]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+    "[yaml]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+    "[html]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+    "json.schemas": [
+      { "fileMatch": ["manifest.webmanifest"], "url": "https://json.schemastore.org/web-manifest-combined.json" },
+      { "fileMatch": [".htmlhintrc"], "url": "https://json.schemastore.org/htmlhint.json" },
+      { "fileMatch": [".npmpackagejsonlintrc.json"], "url": "https://json.schemastore.org/npm-package-json-lint.json" },
+      { "fileMatch": [".prettierrc", ".prettierrc.*"], "url": "https://json.schemastore.org/prettierrc.json" },
+      { "fileMatch": [".luacheckrc"], "url": "https://json.schemastore.org/luacheckrc.json" },
+      { "fileMatch": [".markdown-link-check.json"], "url": "https://www.schemastore.org/markdown-link-check.json" },
+      { "fileMatch": [".yamllint.yml", ".yamllint.yaml"], "url": "https://www.schemastore.org/yamllint.json" }
+    ],
+    "yaml.schemas": {
+      "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible-lint-config.json": "**/.ansible-lint",
+      "https://taskfile.dev/schema.json": "**/Taskfile.yml",
+      "https://json.schemastore.org/github-issue-config.json": "**/.github/ISSUE_TEMPLATE/config.yml",
+      "https://json.schemastore.org/github-workflow.json": "**/.github/workflows/*.yml",
+      "https://json.schemastore.org/github-action.json": "**/.github/actions/*.yml"
+    },
+    "htmlhint.ignoreGitignore": true,
+    "htmlhint.options": {
+      "config": "${containerWorkspaceFolder}/config/.htmlhintrc"
+    },
+    "shellcheck.enable": true,
+    "shellcheck.disableVersionCheck": false,
+    "shellcheck.enableQuickFix": true,
+    "shellcheck.useWorkspaceRootAsCwd": false,
+    "shellcheck.run": "onSave",
+    "local-history.enabled": 1,
+    "local-history.daysLimit": 3,
+    "local-history.maxDisplay": 10,
+    "local-history.saveDelay": 0,
+    "local-history.dateLocale": "en-US",
+    "local-history.exclude": [
+      "**/.history/**",
+      "**/.vscode/**",
+      "**/node_modules/**",
+      "**/typings/**",
+      "**/out/**",
+      "**/Code/User/**",
+      "**/*.code-workspace",
+      "**/build/**",
+      "**/dist/**",
+      "**/Notes/**"
+    ],
+    "local-history.path": "${containerWorkspaceFolder}/.cache/vscode",
+
+    // --- Peacock Colors ---
+    "peacock.color": "#5B1A53",
+    "peacock.affectActivityBar": true,
+    "peacock.affectDebuggingStatusBar": true,
+    "peacock.affectEditorGroupBorder": true,
+    "peacock.affectPanelBorder": true,
+    "peacock.affectSashHover": true,
+    "peacock.affectSideBarBorder": true,
+    "peacock.affectStatusAndTitleBorders": true,
+    "peacock.affectStatusBar": true,
+    "peacock.affectTabActiveBorder": true,
+    "peacock.affectTitleBar": true,
+    "peacock.darkForegroundColor": "#15202b",
+    "peacock.lightForegroundColor": "#e7e7e7",
+    "peacock.keepBadgeColor": false,
+    "peacock.keepForegroundColor": false,
+    "peacock.darkenLightenPercentage": 5,
+    "peacock.showColorInStatusBar": true,
+    "peacock.surpriseMeFromFavoritesOnly": true,
+    "peacock.surpriseMeOnStartup": true,
+    "workbench.colorCustomizations": {
+      "activityBar.background": "#65c89b",
+      "statusBar.background": "#42b883",
+      "statusBar.border": "#42b883",
+      "editorGroup.border": "#65c89b",
+      "tab.activeBorder": "#65c89b",
+      "titleBar.activeBackground": "#42b883",
+      "titleBar.border": "#42b883",
+      "activityBar.activeBackground": "#65c89b",
+      "activityBar.foreground": "#15202b",
+      "activityBar.inactiveForeground": "#15202b99",
+      "activityBarBadge.background": "#945bc4",
+      "activityBarBadge.foreground": "#e7e7e7",
+      "commandCenter.border": "#15202b99",
+      "panel.border": "#65c89b",
+      "sash.hoverBorder": "#65c89b",
+      "sideBar.border": "#65c89b",
+      "statusBar.debuggingBackground": "#b84277",
+      "statusBar.debuggingBorder": "#b84277",
+      "statusBar.debuggingForeground": "#e7e7e7",
+      "statusBar.foreground": "#15202b",
+      "statusBarItem.hoverBackground": "#359268",
+      "statusBarItem.remoteBackground": "#42b883",
+      "statusBarItem.remoteForeground": "#15202b",
+      "titleBar.activeForeground": "#15202b",
+      "titleBar.inactiveBackground": "#42b88399",
+      "titleBar.inactiveForeground": "#15202b99"
+    },
+    "peacock.remoteColor": "#42b883"
+    },
             "extensions": [
                 "ms-python.python",
                 "SanjulaGanepola.github-local-actions",
@@ -83,7 +261,10 @@
                 "twxs.cmake",
                 "josetr.cmake-language-support-vscode",
                 "ms-vscode.cmake-tools",
-                "coolbear.systemd-unit-file"
+                "coolbear.systemd-unit-file",
+                "jetmartin.bats",
+                "ms-vscode.cpptools-extension-pack",
+                "ms-vscode.cpptools"
             ]
         }
     }

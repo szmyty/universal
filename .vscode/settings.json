@@ -26,7 +26,7 @@
         "source.fixAll": "always"
     },
     "prettier.useEditorConfig": true,
-    "prettier.configPath": "./.prettier.config.mjs",
+    "prettier.configPath": "${workspaceFolder}/config/.prettier.config.mjs",
     "[javascript]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
@@ -95,6 +95,10 @@
     "[gitignore]": {
         "editor.formatOnSave": false,
         "editor.defaultFormatter": null
+    },
+    "[bats]": {
+        "editor.defaultFormatter": "foxundermoon.shell-format",
+        "editor.formatOnSave": false
     },
     "shellcheck.enable": true,
     "shellcheck.disableVersionCheck": false,

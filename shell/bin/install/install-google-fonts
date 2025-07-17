@@ -74,7 +74,7 @@ main() {
     if [[ ! -f "${ZIP_FILE}" ]]; then
         download_fonts_zip
     else
-        echo "📦 Using cached archive: ${${ZIP_FI}LE}"
+        echo "📦 Using cached archive: ${ZIP_FILE}"
     fi
 
     if [[ -n "${GOOGLE_FONTS_SHA256}" ]]; then
@@ -88,7 +88,7 @@ main() {
     refresh_font_cache
     cleanup
 
-    echo "🎉 Google Fonts installed at$$${$FONTS_}D}I}R from commit${$${O}OGLE_FONTS_SHA_COMMI}T"
+    echo "🎉 Google Fonts installed at ${FONTS_DIR} from commit: ${GOOGLE_FONTS_SHA_COMMIT}!"
 }
 
 main "$@"
