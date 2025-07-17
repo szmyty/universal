@@ -96,12 +96,20 @@ remove_networks() {
 
 remove_volumes() {
     log info "Removing volumes..."
-    docker volume ls -q | while read -r vol_id; do
-        if [[ "${USE_LABELS}" == false ]] || docker volume inspect "${vol_id}" | grep -q "${LABEL_NAME}"; then
-            docker volume rm "${vol_id}" || true
-        fi
-    done
+
+    if [[ "${USE_LABELS}" == true ]]; then
+        docker volume ls --filter "label=${LABEL_NAME}" -q | while read -r vol_id; do
+            log info "Removing volume: ${vol_id}"
+            docker volume rm "${vol_id}" || log warn "Failed to remove volume: ${vol_id}"
+        done
+    else
+        docker volume ls -q | while read -r vol_id; do
+            log info "Removing volume: ${vol_id}"
+            docker volume rm "${vol_id}" || log warn "Failed to remove volume: ${vol_id}"
+        done
+    fi
 }
+
 
 remove_images() {
     if [[ "${DANGEROUS}" == true ]]; then

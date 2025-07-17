@@ -4,6 +4,7 @@ rdepends
 actrc
 addext
 adminpassword
+nobrowse
 aerospike
 aidecheck
 aideinit
@@ -12,6 +13,7 @@ Anson
 Appc
 APPCD
 autocompletions
+mountpoint
 autologout
 Automagica
 AUTOMATEDLAB
