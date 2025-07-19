@@ -13,6 +13,7 @@ export function RootLayout() {
           <a href="/about" onMouseEnter={() => import("../pages/About.js")}>About</a>
           <a href="/admin" onMouseEnter={() => import("../pages/Admin.js")}>Admin</a>
           <a href="/superadmin" onMouseEnter={() => import("../pages/SuperAdmin.js")}>Super Admin</a>
+          <a href="/blog" onMouseEnter={() => import("../pages/Blog.js")}>Blog</a>
         </nav>
       </header>
 

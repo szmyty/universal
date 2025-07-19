@@ -4,6 +4,7 @@ import { homeRoute } from "./home.route";
 import { aboutRoute } from "./about.route";
 import { adminRoute } from "./admin.route";
 import { superAdminRoute } from "./superadmin.route";
+import { blogRoute } from "./blog.route";
 
 import { lazy, Suspense } from "react";
 import { PageLoader } from "@universal/components";
@@ -29,6 +30,7 @@ export const routeTree = rootRoute.addChildren([
   aboutRoute,
   adminRoute,
   superAdminRoute,
+  blogRoute,
 ]);
 
 export const router = createRouter(

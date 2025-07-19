@@ -5,3 +5,4 @@ export * from "./Home";
 export * from "./NoAccess";
 export * from "./NotFound";
 export * from "./SuperAdmin";
+export * from "./Blog";
