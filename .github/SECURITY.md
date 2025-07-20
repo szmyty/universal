@@ -42,6 +42,7 @@ We use the following tools to **automate security checks**:
 - **[Snyk](https://snyk.io/)** → Scans for vulnerabilities in dependencies.
 - **[Trivy](https://aquasecurity.github.io/trivy/)** → Security scanning for containers.
 - **[Gitleaks](https://github.com/gitleaks/gitleaks)** → Detects secrets in Git commits.
+- **[Lynis](https://github.com/CISOfy/lynis)** → Audits system configuration.
 
 🔗 **You can run security scans manually using:**
 ```sh
