@@ -15,6 +15,7 @@ includes:
   utils: ./tasks/utils.yml
   dev: ./tasks/dev.yml
   write: ./tasks/write.yml
+  security: ./tasks/security.yml
 
 tasks:
   setup:

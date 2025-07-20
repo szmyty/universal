@@ -1,0 +1,18 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+
+tasks:
+  lynis:install:
+    desc: Install Lynis from GitHub
+    cmds:
+      - bash scripts/install_lynis.sh
+    silent: true
+
+  lynis:system:
+    desc: Run Lynis system audit
+    cmds:
+      - |
+        mkdir -p reports/lynis
+        lynis audit system --profile config/lynis/custom.prf
+    silent: true
