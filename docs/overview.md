@@ -44,3 +44,19 @@ Over the past several months, I’ve worked across two complex internal projects
 - Most decisions prioritized **developer experience, clarity, and long-term stability**, even during production delivery
 - The majority of this work was completed during an intense post-divorce period, while navigating extreme burnout and financial stress
 - Despite significant cognitive load and executive dysfunction, systems were designed, tested, and deployed — while preparing the foundation for more sustainable feature development in the future
+
+---
+
+## 🧾 Git Contribution Overview
+
+### 📈 Commits Over Time  
+![Commits Over Time](commits-over-time.png)
+
+### 👤 Author Contribution  
+![Author Contribution](author-contribution.png)
+
+### 🔥 Commit Frequency Heatmap  
+![Commit Frequency Heatmap](commit-frequency-heatmap.png)
+
+### 📊 Code Churn Over Time  
+![Code Churn Over Time](code-churn-over-time.png)
